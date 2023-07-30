@@ -1,7 +1,11 @@
 import formidable from 'formidable';
 import fs from 'fs';
-import extend from 'lodash/extend.js';
+import _ from 'lodash';
 import Profile from '../models/profile.schema.js';
+import User from '../models/user.shema.js';
+import errorHandler from '../helpers/dbhelper.js';
+
+const defaultImage = '/public/files/default.png';
 
 // const create = async (req, res, next) => {
 //     let form = new formidable.IncomingForm();
@@ -36,24 +40,38 @@ const updateProfile = async (req, res) => {
 
     form.parse(req, async (err, fields, files) => {
         if (err) return res.status(400).json({ error: 'Image could not be uploaded' });
-    });
-
-    let profile = req.user_profile;
-    profile = extend(profile, fields);
-
-    if (files.photo){
-        profile.image.data = fs.readFileSync(files.image[0].filepath);
-        profile.image.contentType = files.image[0].type;
-    }
-
-    try {
-        let profile = await profile.save();
-        res.json(profile);
-    } catch (error) {
-        return res.status(400).json({
-            error: errorHandler.getErrorMessage(error)
+        
+        // console.log('we are here', req.profile);
+        // get the profile from the owners id on the req.profile
+        let profile = await Profile.findOne({owner: req.profile._id}).exec().then((profile) => {
+            return profile;
+        }
+        ).catch((err) => {
+            return res.status(400).json({error: 'Could not find profile'});
         });
-    }
+
+        const updates = {
+            name: fields.name.join(' '),
+            bio: fields.bio.join(' '),
+        }
+
+        profile = _.extend(profile, updates);
+        // console.log(fields, 'fields');
+        
+        if (files.image) {  
+            profile.image.data = fs.readFileSync(files.image[0].filepath)
+            profile.image.contentType = files.image[0].mimetype
+        }
+
+        try {
+            await profile.save();
+            res.json(profile);
+        } catch (error) {
+            return res.status(400).json({
+                error: errorHandler.getErrorMessage(error)
+            });
+        }
+    });
 }
 
 const profileByID = async (req, res, next, id) => {
@@ -102,11 +120,28 @@ const photo = (req, res, next) => {
     next();
 }
 
-const isOwner = (req, res, next) => {
-    const isOwner = req.user_profile && req.auth && req.user_profile.owner._id == req.auth._id;
-    if (!isOwner) return res.status(403).json({ error: "User is not authorized" });
+const defaultPhoto = (req, res) => {
+    return res.sendFile(process.cwd() + defaultImage);
+}
+
+const list = async (req, res) => {
+    try {
+        let profiles = await Profile.find().select('name email updated created');
+        res.json(profiles);
+    } catch (error) {
+        return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
+    }
+}
+
+const isOwner = async (req, res, next) => {
+    const isOwner = req.profile && req.auth && req.profile._id == req.auth._id;
+    const isAdmin = await User.findById(req.auth._id).then(user => {
+        return user.admin;
+    })
+
+    if (!isOwner && !isAdmin) return res.status(403).json({ error: "User is not authorized" });
     next();
 }
 
 
-export default { profileByID, profileByUserId, remove, photo, isOwner, updateProfile, read };
+export default { list, defaultPhoto, profileByID, profileByUserId, remove, photo, isOwner, updateProfile, read };

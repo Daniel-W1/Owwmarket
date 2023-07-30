@@ -1,6 +1,13 @@
 import mongoose from "mongoose";
 import crypto from 'crypto';
 
+
+/*
+    web sockets 
+    oauth 2
+    using docker and trying to deploy it ig
+*/
+
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,

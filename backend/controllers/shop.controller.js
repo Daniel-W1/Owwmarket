@@ -7,13 +7,13 @@ import _ from 'lodash'
 const defaultImage = '/public/files/default.png'
 
 const create = async (req, res) => {
-    let form = formidable({multiples:false})
+    let form = formidable({multiples:false});
     form.keepExtensions = true
     form.maxFileSize = 50 * 1024 * 1024; // 5MB
 
     // console.log(form);
     form.parse(req, async (err, fields, files) => {
-        console.log(fields);
+        // console.log(fields);
         if (err) {
             return res.status(400).json({
                 error: "Image could not be uploaded"
@@ -106,7 +106,7 @@ const update = async (req, res) => {
         shop = _.extend(shop, updates)
         console.log(files.image);
         
-        if (files.image) {
+        if (files.image) {  
             shop.image.data = fs.readFileSync(files.image[0].filepath)
             shop.image.contentType = files.image[0].mimetype
         }
