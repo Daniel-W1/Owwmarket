@@ -62,13 +62,13 @@ const requireSignin = expressjwt(
 
 
 const hasAuthorization = async (req, res, next) => {
-    const authorized = req.profile && req.auth && req.profile._id === req.auth._id
     let id = req.auth._id
     const userRequesting = await UserSchema.findById(id)
+    const authorized = req.profile && req.auth && req.profile._id.equals(userRequesting._id);
     
     // if the user is an admin, they are authorized
     if (userRequesting.admin === true) {
-        return next()
+        next()
     }
 
     if (!authorized) {
