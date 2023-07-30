@@ -18,7 +18,9 @@ const ProfileSchema = new mongoose.Schema({
         data: Buffer,
         contentType: String
     },
-    owner: {type: mongoose.Schema.ObjectId, ref: 'User'}
+    owner: {type: mongoose.Schema.ObjectId, ref: 'User'},
+    following: [{type: mongoose.Schema.ObjectId, ref: 'User'}],
+    followers: [{type: mongoose.Schema.ObjectId, ref: 'User'}],
 }
 , {timestamps: true}
 );
