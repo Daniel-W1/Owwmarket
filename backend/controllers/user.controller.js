@@ -4,17 +4,20 @@ import errorHandler from '../helpers/dbhelper.js'
 import Profile from '../models/profile.schema.js'
 
 const create = async (req, res) => {
-    // console.log(req.body);
+    const { name, email, password } = req.body;
     try {
-        const user = new User(req.body)
-        let userExists = await User.findOne({ "email": req.body.email })
-
+        if(!email) return res.json({ error: "Provide an Email!" })
+        if(!name) return res.json({ error: "Provide a Name!" })
+        let userExists = await User.findOne({ "email": email })
         if (userExists)
-            return res.status(403).json({
-                error: "Email is already taken!"
+        return res.status(403).json({
+            error: "Email is already taken!"
         })
-
-        
+        const user = new User({
+            name,
+            email,
+            password
+        })     
         await user.save()
         // let's create the skeleton for the user's profile
         const profile = Profile({
@@ -25,7 +28,7 @@ const create = async (req, res) => {
         await profile.save()
         
         return res.status(200).json({
-            message: "Successfully signed up!"
+            message: "Successfully Created!"
         })
     } catch (error) {
         return res.status(400).json({

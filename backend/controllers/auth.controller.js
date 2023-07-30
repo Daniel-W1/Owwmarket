@@ -2,8 +2,9 @@ import { expressjwt } from "express-jwt"
 import UserSchema from "../models/user.shema.js"
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
-import User from "../models/user.shema.js"
 dotenv.config()
+
+
 
 const signin = async (req, res) => {
     try {
