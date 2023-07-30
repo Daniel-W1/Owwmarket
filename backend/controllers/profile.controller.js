@@ -7,32 +7,6 @@ import errorHandler from '../helpers/dbhelper.js';
 
 const defaultImage = '/public/files/default.png';
 
-// const create = async (req, res, next) => {
-//     let form = new formidable.IncomingForm();
-//     form.keepExtensions = true;
-
-//     form.parse(req, async (err, fields, files) => {
-//         if (err) return res.status(400).json({ error: 'Image could not be uploaded' });
-//     });
-
-//     const profile = new Profile(fields);
-//     profile.owner = req.profile;
-    
-//     if (files.photo){
-//         profile.image.data = fs.readFileSync(files.photo.path);
-//         profile.image.contentType = files.photo.type;
-//     }
-
-//     try {
-//         let profile = await profile.save();
-//         res.json(profile);
-//     } catch (error) {
-//         return res.status(400).json({
-//             error: errorHandler.getErrorMessage(error)
-//         });
-//     }
-// }
-
 const updateProfile = async (req, res) => {
     let form = formidable({ multiples: false })
     form.keepExtensions = true;
@@ -76,12 +50,74 @@ const updateProfile = async (req, res) => {
 
 const profileByID = async (req, res, next, id) => {
     try {
-        let profile = await Profile.findById(id);
+        let profile = await Profile.findById(id).populate('following', '_id name').populate('followers', '_id name').exec();
         if (!profile) return res.status(400).json({ error: "Profile not found" });
         req.user_profile = profile;
         next();
     } catch (error) {
         return res.status(400).json({ error: "Could not retrieve profile" });
+    }
+}
+
+const addFollowing = async (req, res, next) => {
+    try {
+        const userProfile = await Profile.findOne({ owner: req.body.followerId });
+        await Profile.findByIdAndUpdate(userProfile._id, {
+            $push: { following: req.body.theFollowedId }
+        }).populate('following', '_id name')
+            .populate('followers', '_id name')
+            .exec();
+        next()
+    } catch (error) {
+        return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
+    }
+}
+
+const addFollower = async (req, res) => {
+    try {
+        const userProfile = await Profile.findOne({owner: req.body.theFollowedId});
+        // console.log(userProfile, 'yeeeaaaa', req.body.theFollowedId);
+        const updatedProfile = await Profile.findByIdAndUpdate(userProfile._id, {
+            $push: { followers: req.body.followerId}
+        }, { new: true })
+            .populate('following', '_id name')
+            .populate('followers', '_id name')
+            .exec();
+
+        res.json(updatedProfile);
+    } catch (error) {
+        return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
+    }
+}
+
+const removeFollowing = async (req, res, next) => {
+    try {
+        const userProfile = Profile.findOne({owner : req.body.removerId});
+        await Profile.findByIdAndUpdate(userProfile._id, {
+            $pull: { following: req.body.theRemovedId }
+        }).populate('following', '_id name')
+            .populate('followers', '_id name')
+            .exec();
+        
+        next();
+    } catch (error) {
+        return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
+    }
+}
+
+const removeFollower = async (req, res) => {
+    try {
+        const userProfile = Profile.findOne({owner : req.body.theRemovedId});
+        const updatedProfile = await Profile.findByIdAndUpdate(userProfile._id, {
+            $pull: { followers: req.body.removerId }
+        }, { new: true })
+            .populate('following', '_id name')
+            .populate('followers', '_id name')
+            .exec();
+
+        res.json(updatedProfile);
+    } catch (error) {
+        return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
     }
 }
 
@@ -144,4 +180,4 @@ const isOwner = async (req, res, next) => {
 }
 
 
-export default { list, defaultPhoto, profileByID, profileByUserId, remove, photo, isOwner, updateProfile, read };
+export default { list, defaultPhoto, profileByID, profileByUserId, remove, addFollower, addFollowing, photo, isOwner, updateProfile, read, removeFollower, removeFollowing };
