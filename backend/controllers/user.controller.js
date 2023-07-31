@@ -4,17 +4,19 @@ import errorHandler from '../helpers/dbhelper.js'
 import Profile from '../models/profile.schema.js'
 
 const create = async (req, res) => {
-    // console.log(req.body);
+    const { name, email, password } = req.body;
     try {
-        const user = new User(req.body)
-        let userExists = await User.findOne({ "email": req.body.email })
-
+        let userExists = await User.findOne({ "email": email })
         if (userExists)
-            return res.status(403).json({
-                error: "Email is already taken!"
+        return res.status(403).json({
+            success: false,
+            error: "Email is already taken!"
         })
-
-        
+        const user = new User({
+            name,
+            email,
+            password
+        })     
         await user.save()
         // let's create the skeleton for the user's profile
         const profile = Profile({
@@ -25,10 +27,12 @@ const create = async (req, res) => {
         await profile.save()
         
         return res.status(200).json({
-            message: "Successfully signed up!"
+            success: true,
+            message: "Successfully Created!"
         })
     } catch (error) {
         return res.status(400).json({
+            success: false,
             error: errorHandler.getErrorMessage(error)
         })
     }
@@ -40,6 +44,7 @@ const list = async (req, res) => {
         res.json(users)
     } catch (error) {
         return res.status(400).json({
+            success: false,
             error: errorHandler.getErrorMessage(error)
         })
     }
@@ -51,12 +56,14 @@ const userByID = async (req, res, next, id) => {
         // console.log('we are here', user);
         if (!user)
             return res.status(400).json({
+                success: false,
                 error: "User not found"
             })
         req.profile = user
         next()
     } catch (error) {
         return res.status(400).json({
+            success: false,
             error: "Could not retrieve user"
         })
     }
@@ -79,6 +86,7 @@ const update = async (req, res, next) => {
         res.json(user)
     } catch (error) {
         return res.status(400).json({
+            success: false,
             error: errorHandler.getErrorMessage(error)
         })
     }
@@ -93,6 +101,7 @@ const remove = async (req, res, next) => {
         res.json(deletedUser)
     } catch (error) {
         return res.status(400).json({
+            success: false,
             error: errorHandler.getErrorMessage(error)
         })
     }
@@ -102,6 +111,7 @@ const isSeller = (req, res, next) => {
     const isSeller = req.profile && req.profile.seller
     if (!isSeller) {
         return res.status(403).json({
+            success: false,
             error: "User is not a seller"
         })
     }

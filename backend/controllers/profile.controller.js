@@ -13,12 +13,12 @@ const updateProfile = async (req, res) => {
     form.maxFileSize = 50 * 1024 * 1024; // 5MB
 
     form.parse(req, async (err, fields, files) => {
-        if (err) return res.status(400).json({ error: 'Image could not be uploaded' });
+        if (err) return res.status(400).json({ success: false, error: 'Image could not be uploaded' });
         let profile = await Profile.findOne({owner: req.profile._id}).exec().then((profile) => {
             return profile;
         }
         ).catch((err) => {
-            return res.status(400).json({error: 'Could not find profile'});
+            return res.status(400).json({ success: false,error: 'Could not find profile'});
         });
 
         const updates = {
@@ -38,7 +38,7 @@ const updateProfile = async (req, res) => {
             await profile.save();
             res.json(profile);
         } catch (error) {
-            return res.status(400).json({
+            return res.status(400).json({ success: false,
                 error: errorHandler.getErrorMessage(error)
             });
         }
@@ -48,11 +48,11 @@ const updateProfile = async (req, res) => {
 const profileByID = async (req, res, next, id) => {
     try {
         let profile = await Profile.findById(id).populate('following', '_id name').populate('followers', '_id name').exec();
-        if (!profile) return res.status(400).json({ error: "Profile not found" });
+        if (!profile) return res.status(400).json({ success: false, error: "Profile not found" });
         req.user_profile = profile;
         next();
     } catch (error) {
-        return res.status(400).json({ error: "Could not retrieve profile" });
+        return res.status(400).json({ success: false, error: "Could not retrieve profile" });
     }
 }
 
@@ -66,7 +66,7 @@ const addFollowing = async (req, res, next) => {
             .exec();
         next()
     } catch (error) {
-        return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
+        return res.status(400).json({ success: false, error: errorHandler.getErrorMessage(error) });
     }
 }
 
@@ -83,7 +83,7 @@ const addFollower = async (req, res) => {
 
         res.json(updatedProfile);
     } catch (error) {
-        return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
+        return res.status(400).json({ success: false, error: errorHandler.getErrorMessage(error) });
     }
 }
 
@@ -98,7 +98,7 @@ const removeFollowing = async (req, res, next) => {
         
         next();
     } catch (error) {
-        return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
+        return res.status(400).json({ success: false, error: errorHandler.getErrorMessage(error) });
     }
 }
 
@@ -114,7 +114,7 @@ const removeFollower = async (req, res) => {
 
         res.json(updatedProfile);
     } catch (error) {
-        return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
+        return res.status(400).json({ success: false, error: errorHandler.getErrorMessage(error) });
     }
 }
 
@@ -122,11 +122,11 @@ const profileByUserId = async (req, res) => {
     try {
         let id = req.profile._id;
         let profile = await Profile.findOne({owner: id});
-        if (!profile) return res.status(400).json({ error: "Profile not found" });
+        if (!profile) return res.status(400).json({ success: false, error: "Profile not found" });
         req.user_profile = profile;
         return res.json(profile);
     } catch (error) {
-        return res.status(400).json({ error: "Could not retrieve profile" });
+        return res.status(400).json({ success: false, error: "Could not retrieve profile" });
     }
 }
 
@@ -141,7 +141,7 @@ const remove = async (req, res) => {
         let deletedProfile = await profile.remove();
         res.json(deletedProfile);
     } catch (error) {
-        return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
+        return res.status(400).json({ success: false, error: errorHandler.getErrorMessage(error) });
     }
 }
 
@@ -162,7 +162,7 @@ const list = async (req, res) => {
         let profiles = await Profile.find().select('name email updated created');
         res.json(profiles);
     } catch (error) {
-        return res.status(400).json({ error: errorHandler.getErrorMessage(error) });
+        return res.status(400).json({ success: false, error: errorHandler.getErrorMessage(error) });
     }
 }
 
@@ -172,7 +172,7 @@ const isOwner = async (req, res, next) => {
         return user.admin;
     })
 
-    if (!isOwner && !isAdmin) return res.status(403).json({ error: "User is not authorized" });
+    if (!isOwner && !isAdmin) return res.status(403).json({ success: false, error: "User is not authorized" });
     next();
 }
 
