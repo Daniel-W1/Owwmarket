@@ -16,6 +16,7 @@ const create = async (req, res) => {
         // console.log(fields);
         if (err) {
             return res.status(400).json({
+                success: false,
                 error: "Image could not be uploaded"
             })
         }
@@ -40,6 +41,7 @@ const create = async (req, res) => {
             res.json(result)
         } catch (error) {
             return res.status(400).json({
+                success: false,
                 error: errorHandler.getErrorMessage(error)
             })
         }
@@ -53,6 +55,7 @@ const shopbyId = async (req, res, next, id) => {
         let shop = await Shop.findById(id)
         if (!shop)
             return res.status(400).json({
+                success: false,
                 error: "Shop not found"
             })
         
@@ -62,6 +65,7 @@ const shopbyId = async (req, res, next, id) => {
 
     } catch (error) {
         return res.status(400).json({
+            success: false,
             error: "Could not retrieve shop"
         })
     }
@@ -93,6 +97,7 @@ const update = async (req, res) => {
     form.parse(req, async (err, fields, files) => {
         if (err) {
             return res.status(400).json({
+                success: false,
                 error: "Photo could not be uploaded"
             })
         }
@@ -117,6 +122,7 @@ const update = async (req, res) => {
             res.json(result)
         } catch (error) {
             return res.status(400).json({
+                success: false,
                 error: errorHandler.getErrorMessage(error)
             })
         }
@@ -130,6 +136,7 @@ const remove = async (req, res) => {
         res.json(deletedShop)
     } catch (error) {
         return res.status(400).json({
+            success: false,
             error: errorHandler.getErrorMessage(error)
         })
     }
@@ -141,6 +148,7 @@ const list = async (req, res) => {
         res.json(shops)
     } catch (error) {
         return res.status(400).json({
+            success: false,
             error: errorHandler.getErrorMessage(error)
         })
     }
@@ -152,6 +160,7 @@ const listByOwner = async (req, res) => {
         res.json(shops)
     } catch (error) {
         return res.status(400).json({
+            success: false,
             error: errorHandler.getErrorMessage(error)
         })
     }
@@ -162,6 +171,7 @@ const isOwner = (req, res, next) => {
     console.log('owner is ', isOwner);
     if (!isOwner) {
         return res.status(403).json({
+            success: false,
             error: "User is not authorized"
         })
     }
