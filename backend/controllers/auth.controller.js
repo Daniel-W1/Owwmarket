@@ -12,10 +12,12 @@ const signin = async (req, res) => {
         })
         if (!user)
             return res.status(401).json({
+                success: false,
                 error: "User not found"
             })
         if (!user.authenticate(req.body.password)) {
             return res.status(401).send({
+                success: false,
                 error: "Email and password don't match."
             })
         }
@@ -38,6 +40,7 @@ const signin = async (req, res) => {
 
     } catch (error) {
         return res.status(401).json({
+            success: false,
             error: "Could not sign in"
         })
     }
@@ -46,6 +49,7 @@ const signin = async (req, res) => {
 const signout = (req, res) => {
     res.clearCookie("t")
     return res.status(200).json({
+        success: true,
         message: "signed out"
     })
 }
@@ -73,6 +77,7 @@ const hasAuthorization = async (req, res, next) => {
 
     if (!authorized) {
         return res.status(403).json({
+            success: false,
             error: "User is not authorized"
         })
     }
@@ -88,6 +93,7 @@ const isAdmin =  async (req, res, next) => {
         // console.log(user);
         if (user.admin === false) {
             return res.status(403).json({
+                success: false,
                 error: "Admin resourse! Access denied"
             })
         }
@@ -95,6 +101,7 @@ const isAdmin =  async (req, res, next) => {
         
     } catch (error) {
         return res.status(403).json({
+            success: false,
             error: "Admin resourse! Access denied"
         })
     }
