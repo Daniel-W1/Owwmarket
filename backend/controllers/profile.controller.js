@@ -14,9 +14,6 @@ const updateProfile = async (req, res) => {
 
     form.parse(req, async (err, fields, files) => {
         if (err) return res.status(400).json({ error: 'Image could not be uploaded' });
-        
-        // console.log('we are here', req.profile);
-        // get the profile from the owners id on the req.profile
         let profile = await Profile.findOne({owner: req.profile._id}).exec().then((profile) => {
             return profile;
         }
