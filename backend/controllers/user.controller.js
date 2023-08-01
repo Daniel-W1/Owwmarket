@@ -1,10 +1,10 @@
-import User from '../models/user.shema.js'
+import { User, GoogleUser } from '../models/user.schema.js'
 import _ from 'lodash'
 import errorHandler from '../helpers/dbhelper.js'
 import Profile from '../models/profile.schema.js'
 
 const create = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, gmaildata } = req.body;
     try {
         let userExists = await User.findOne({ "email": email })
         if (userExists)
@@ -12,24 +12,34 @@ const create = async (req, res) => {
             success: false,
             error: "Email is already taken!"
         })
-        const user = new User({
-            name,
-            email,
-            password
-        })     
+        let user;
+        if(gmaildata) {
+             user = new GoogleUser({
+                name: gmaildata.displayName,
+                email: email,
+                googleID: gmaildata.id,
+                gmaildata: gmaildata
+              });
+        } else {
+             user = new User({
+                name,
+                email,
+                password 
+            })     
+        }
         await user.save()
         // let's create the skeleton for the user's profile
         const profile = Profile({
-            name: req.body.name,
-            email: req.body.email,
+            name: user.name,
+            email: user.email,
             owner: user._id
         })
         await profile.save()
         
-        return res.status(200).json({
-            success: true,
-            message: "Successfully Created!"
-        })
+        // return res.status(200).json({
+        //     success: true,
+        //     message: "Successfully Created!"
+        // })
     } catch (error) {
         return res.status(400).json({
             success: false,

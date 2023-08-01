@@ -2,7 +2,7 @@ import formidable from 'formidable';
 import fs from 'fs';
 import _ from 'lodash';
 import Profile from '../models/profile.schema.js';
-import User from '../models/user.shema.js';
+import { User } from '../models/user.schema.js';
 import errorHandler from '../helpers/dbhelper.js';
 
 const defaultImage = '/public/files/default.png';
