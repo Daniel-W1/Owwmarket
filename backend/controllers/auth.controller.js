@@ -56,6 +56,9 @@ const loginFailed = (req, res) => {
 const google = passport.authenticate("google", ["profile", "email"]);
 const callback = (req, res, next) => {
     passport.authenticate("google", (err, user) => {
+
+      // checking how things work
+      console.log(user);
       if (err) {
         return res.redirect("/auth/google/failed");
       }
@@ -115,7 +118,7 @@ const signin = async (req, res) => {
         if (!user.authenticate(req.body.password)) {
             return res.status(401).send({
                 success: false,
-                error: "Email and password don't match."
+                error: "Email or password don't match."
             })
         }
 

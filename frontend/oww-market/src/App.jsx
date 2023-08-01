@@ -3,12 +3,13 @@ import "./App.css";
 import Login from "./functions/login";
 import Logout from "./functions/logout";
 import Home from "./pages/home";
+import LandingPage from "./pages/LandingPage";
 
 const App = () => {
   return (
     <>
       <Routes>
-        <Route exact path="/" element={<Home/>} />;
+        <Route exact path="/" element={<LandingPage/>} />;
         <Route path="/login/callback" element={<Login/>} />
         <Route path="/logout" element={<Logout/>} />
       </Routes>
