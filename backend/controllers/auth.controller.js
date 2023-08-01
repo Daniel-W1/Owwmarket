@@ -1,13 +1,110 @@
 import { expressjwt } from "express-jwt"
-import UserSchema from "../models/user.shema.js"
+import { User } from "../models/user.schema.js"
 import jwt from "jsonwebtoken"
+import passport from "passport";
 import dotenv from "dotenv"
-import User from "../models/user.shema.js"
 dotenv.config()
+
+const authenticateToken = (req, res, next) => {
+    const token = req.header('Authorization'); // Assuming the token is sent in the Authorization header
+  
+    if (!token) {
+      return res.status(401).json({ message: 'No token provided.' });
+    }
+  
+    jwt.verify(token.replace('Bearer ', ''), process.env.JWT_SECRET, (err, decodedToken) => {
+      if (err) {
+        return res.status(401).json({ message: 'Invalid token.' });
+      }
+      const userId = decodedToken._id;
+
+      User.findById(userId)
+        .then((user) => {
+          if (!user) {
+            return res.status(401).json({ message: 'User not found.' });
+          }
+          req.token = token.replace('Bearer ', '');
+          req.profile = user;
+          next();
+        })
+        .catch((error) => {
+          res.status(500).json({ message: 'Server error.' });
+        });
+    });
+  };
+
+const loginSuccess = (req, res) => {
+  if (req.profile) {
+    res.json({
+      success: true,
+      message: "Successfully Logged In",
+      token: req.token,
+      user: req.profile,
+    });
+  } else {
+    res.json({ success: false, message: "Not Authorized" });
+  }
+};
+
+const loginFailed = (req, res) => {
+  res.json({
+    success: false,
+    message: "Log in failure",
+  });
+};
+
+const google = passport.authenticate("google", ["profile", "email"]);
+const callback = (req, res, next) => {
+    passport.authenticate("google", (err, user) => {
+      if (err) {
+        return res.redirect("/auth/google/failed");
+      }
+      if (!user) {
+        return res.redirect("/auth/google/failed");
+      }
+  
+      const token = jwt.sign(
+        {
+          _id: user._id,
+          admin: user.admin,
+        },
+        process.env.JWT_SECRET
+      );
+  
+      res.cookie("t", token, {
+        expire: new Date() + 9999,
+      });
+  
+      // Attach the token and user profile to the req object
+      req.token = token;
+      req.profile = user;
+     
+      // Redirect to the appropriate client route after successful authentication
+      return res.redirect(`${process.env.CLIENT_URL_CALLBACK}?token=${token}`);
+    })(req, res, next);
+  };
+  
+
+const logout = (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      console.error("Error while logging out:", err);
+      // Handle any errors that occurred during logout
+      return res.status(500).json({ error: "Error while logging out" });
+    }
+
+    res.json({
+      success: true,
+      message: "User logged Out successfully.",
+    });
+  });
+};
+
+
 
 const signin = async (req, res) => {
     try {
-        let user = await UserSchema.findOne({
+        let user = await User.findOne({
             "email": req.body.email
         })
         if (!user)
@@ -67,7 +164,7 @@ const requireSignin = expressjwt(
 
 const hasAuthorization = async (req, res, next) => {
     let id = req.auth._id
-    const userRequesting = await UserSchema.findById(id)
+    const userRequesting = await User.findById(id)
     const authorized = req.profile && req.auth && req.profile._id.equals(userRequesting._id);
     
     // if the user is an admin, they are authorized
@@ -88,7 +185,7 @@ const isAdmin =  async (req, res, next) => {
     
     try {
         let id = req.auth._id
-        let user = await UserSchema.findById(id)
+        let user = await User.findById(id)
     
         // console.log(user);
         if (user.admin === false) {
@@ -112,5 +209,11 @@ export default {
     signout,
     requireSignin,
     hasAuthorization,
-    isAdmin
+    isAdmin,
+    google,
+    loginSuccess,
+    loginFailed,
+    logout,
+    callback,
+    authenticateToken
 }
