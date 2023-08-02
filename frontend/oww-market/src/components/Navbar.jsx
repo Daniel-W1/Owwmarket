@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import tw from "twin.macro";
 import styled from "styled-components";
-import { css } from "styled-components/macro"; 
+import { css } from "styled-components/macro"; // eslint-disable-line
 import useAnimatedNavToggler from "../helpers/AnimatedNavToggler.jsx";
 import logo from "../assets/images/logo.svg";
 import {ReactComponent as MenuIcon} from "feather-icons/dist/icons/menu.svg";
@@ -43,10 +43,11 @@ export const MobileNavLinksContainer = tw.nav`flex flex-1 items-center justify-b
 export const NavToggle = tw.button`
   lg:hidden z-20 focus:outline-none hocus:text-primary-500 transition duration-300
 `;
+
 export const MobileNavLinks = motion(styled.div`
-  ${tw`lg:hidden z-10 fixed top-0 inset-x-0 m-4 mx-4 my-6 p-8 border text-center rounded-lg text-gray-900 bg-white`}
+${tw`lg:hidden z-10 fixed top-0 inset-x-0 m-4 mx-4 my-6 p-8 border text-center rounded-lg text-gray-900 bg-white`}
   ${NavLinks} {
-    ${tw`flex flex-col items-center`}
+    ${tw`flex flex-col items-center lg:flex-row`}
   }
 `);
 
@@ -81,6 +82,19 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, links, className, colla
     </NavLinks>
   ];
 
+  const constMobilelinks = [
+    <NavLinks key={1}>
+      <NavLink href="/#" tw="block">About</NavLink>
+      <NavLink href="/#" tw="block">Blog</NavLink>
+      <NavLink href="/#" tw="block">Pricing</NavLink>
+      <NavLink href="/#" tw="block">Contact Us</NavLink>
+      <NavLink href="/#" tw="lg:ml-12! block">
+        Login
+      </NavLink>
+      <PrimaryLink css={roundedHeaderButton && tw`rounded-full`}href="/#">Sign Up</PrimaryLink>
+    </NavLinks>
+  ];
+
   const { showNavLinks, animation, toggleNavbar } = useAnimatedNavToggler();
   const collapseBreakpointCss = collapseBreakPointCssMap[collapseBreakpointClass];
 
@@ -104,7 +118,7 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, links, className, colla
       <MobileNavLinksContainer css={collapseBreakpointCss.mobileNavLinksContainer}>
         {logoLink}
         <MobileNavLinks initial={{ x: "150%", display: "none" }} animate={animation} css={collapseBreakpointCss.mobileNavLinks}>
-          {links}
+          {constMobilelinks}
         </MobileNavLinks>
         <NavToggle onClick={toggleNavbar} className={showNavLinks ? "open" : "closed"}>
           {showNavLinks ? <CloseIcon tw="w-6 h-6" /> : <MenuIcon tw="w-6 h-6" />}
@@ -118,7 +132,7 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, links, className, colla
  * Using this you can specify if you want to switch
  * to the toggleable mobile navbar at "sm", "md" or "lg" or "xl" above using the collapseBreakpointClass prop
  * Its written like this because we are using macros and we can not insert dynamic variables in macros
- */
+*/
 
 const collapseBreakPointCssMap = {
   sm: {
