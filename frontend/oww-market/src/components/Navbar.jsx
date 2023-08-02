@@ -1,14 +1,11 @@
-import React from "react";
 import { motion } from "framer-motion";
 import tw from "twin.macro";
 import styled from "styled-components";
-// import { css } from "styled-components/macro"; //eslint-disable-line
-
+import { css } from "styled-components/macro"; 
 import useAnimatedNavToggler from "../helpers/AnimatedNavToggler.jsx";
-
 import logo from "../assets/images/logo.svg";
-import MenuIcon from "feather-icons/dist/icons/menu.svg";
-import CloseIcon from "feather-icons/dist/icons/x.svg";
+import {ReactComponent as MenuIcon} from "feather-icons/dist/icons/menu.svg";
+import {ReactComponent as CloseIcon} from "feather-icons/dist/icons/x.svg";
 
 
 const Header = tw.header`
@@ -42,12 +39,12 @@ export const LogoLink = styled(NavLink)`
   }
 `;
 
-export const MobileNavLinksContainer = tw.nav`flex flex-1 items-center justify-between`;
+export const MobileNavLinksContainer = tw.nav`flex flex-1 items-center justify-between lg:hidden`;
 export const NavToggle = tw.button`
   lg:hidden z-20 focus:outline-none hocus:text-primary-500 transition duration-300
 `;
 export const MobileNavLinks = motion(styled.div`
-  ${tw`lg:hidden z-10 fixed top-0 inset-x-0 mx-4 my-6 p-8 border text-center rounded-lg text-gray-900 bg-white`}
+  ${tw`lg:hidden z-10 fixed top-0 inset-x-0 m-4 mx-4 my-6 p-8 border text-center rounded-lg text-gray-900 bg-white`}
   ${NavLinks} {
     ${tw`flex flex-col items-center`}
   }
@@ -57,7 +54,7 @@ export const DesktopNavLinks = tw.nav`
   hidden lg:flex flex-1 justify-between items-center
 `;
 
-export default Light = ({ roundedHeaderButton = false, logoLink, links, className, collapseBreakpointClass = "lg" }) => {
+const Navbar = ({ roundedHeaderButton = false, logoLink, links, className, collapseBreakpointClass = "lg" }) => {
   /*
    * This header component accepts an optionals "links" prop that specifies the links to render in the navbar.
    * This links props should be an array of "NavLinks" components which is exported from this file.
@@ -98,7 +95,7 @@ export default Light = ({ roundedHeaderButton = false, logoLink, links, classNam
   links = links || defaultLinks;
 
   return (
-    <Header className={className || "header-light"}>
+    <Header className={className || "header-Navbar"}>
       <DesktopNavLinks css={collapseBreakpointCss.desktopNavLinks}>
         {logoLink}
         {links}
@@ -145,3 +142,7 @@ const collapseBreakPointCssMap = {
     mobileNavLinksContainer: tw`lg:hidden`
   }
 };
+
+// console.log(collapseBreakPointCssMap["lg"]);
+
+export default Navbar;

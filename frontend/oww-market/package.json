@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "axios": "^1.4.0",
     "feather-icons": "^4.29.0",
     "framer-motion": "^7.3.2",
@@ -19,7 +21,10 @@
     "react-slick": "^0.29.0",
     "slick-carousel": "^1.8.1",
     "styled-components": "^5.3.5",
-    "twin.macro": "^3.0.0-rc.4"
+    "twin.macro": "^3.0.0-rc.4",
+    "vite-plugin-babel-macros": "^1.0.6",
+    "vite-plugin-env-compatible": "^1.1.1",
+    "vite-plugin-svgr": "^3.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",
@@ -33,6 +38,8 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "postcss": "^8.4.27",
     "tailwindcss": "^3.3.3",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vite-plugin-windicss": "^1.9.0",
+    "windicss": "^3.5.6"
   }
 }

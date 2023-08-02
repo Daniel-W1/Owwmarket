@@ -2,11 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 //eslint-disable-next-line
-// import { css } from "styled-components/macro";
+import { css } from "styled-components/macro";
 
-import Header from "../helpers/Light.jsx";
+import Header from "./Navbar.jsx";
 
-import SvgDecoratorBlob1 from "../assets/images/svg-decorator-blob-1.svg";
+import {ReactComponent as SvgDecoratorBlob1} from "../assets/images/svg-decorator-blob-1.svg";
 import DesignIllustration from "../assets/images/design-illustration-2.svg";
 import CustomersLogoStripImage from "../assets/images/customers-logo-strip.png";
 
@@ -45,7 +45,7 @@ const CustomersLogoStrip = styled.div`
   }
 `;
 
-export default Hero = ({ roundedHeaderButton }) => {
+const Hero = ({ roundedHeaderButton }) => {
   return (
     <>
       <Header roundedHeaderButton={roundedHeaderButton} />
@@ -79,3 +79,5 @@ export default Hero = ({ roundedHeaderButton }) => {
     </>
   );
 };
+
+export default Hero;

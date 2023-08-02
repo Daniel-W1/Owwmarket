@@ -1,11 +1,11 @@
 import React from "react";
 import tw from "twin.macro";
 import styled from "styled-components";
-// import { css } from "styled-components/macro"; //eslint-disable-line
+import { css } from "styled-components/macro"; //eslint-disable-line
 import { SectionHeading, Subheading as SubheadingBase } from "../helpers/Heading.jsx";
 import { PrimaryButton as PrimaryButtonBase } from "../helpers/Buttons.jsx";
-import TeamIllustrationSrc from "../assets/images/team-illustration-2.svg";
-import SvgDotPattern from "../assets/images/dot-pattern.svg"
+import {ReactComponent as TeamIllustrationSrc} from "../assets/images/team-illustration-2.svg";
+import {ReactComponent as SvgDotPattern} from "../assets/images/dot-pattern.svg"
 
 const Container = tw.div`relative`;
 const TwoColumn = tw.div`flex flex-col md:flex-row justify-between max-w-screen-xl mx-auto py-20 md:py-24 items-center`;
@@ -40,7 +40,7 @@ const PrimaryButton = styled(PrimaryButtonBase)(props => [
 ]);
 
 
-export default Features = ({
+const Features = ({
   subheading = "Our Expertise",
   heading = (
     <>
@@ -83,3 +83,5 @@ export default Features = ({
     </Container>
   );
 };
+
+export default Features;

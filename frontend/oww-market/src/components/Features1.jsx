@@ -1,13 +1,13 @@
 import React from "react";
 import tw from "twin.macro";
 import styled from "styled-components";
-// import { css } from "styled-components/macro"; //eslint-disable-line
+import { css } from "styled-components/macro"; //eslint-disable-line
 import { SectionHeading, Subheading as SubheadingBase } from "../helpers/Heading.jsx";
 import { PrimaryButton as PrimaryButtonBase } from "../helpers/Buttons.jsx";
-import TeamIllustrationSrc from "../assets/images/team-illustration-2.svg";
-import SvgDotPattern from "../assets/images/dot-pattern.svg";
-import BriefcaseIcon from "feather-icons/dist/icons/briefcase.svg";
-import MoneyIcon from "feather-icons/dist/icons/dollar-sign.svg";
+import {ReactComponent as TeamIllustrationSrc} from "../assets/images/team-illustration-2.svg";
+import {ReactComponent as SvgDotPattern} from "../assets/images/dot-pattern.svg";
+import {ReactComponent as BriefcaseIcon} from "feather-icons/dist/icons/briefcase.svg";
+import {ReactComponent as MoneyIcon} from "feather-icons/dist/icons/dollar-sign.svg";
 
 const Container = tw.div`relative`;
 const TwoColumn = tw.div`flex flex-col md:flex-row justify-between max-w-screen-xl mx-auto py-20 md:py-24 items-center`;
@@ -59,7 +59,7 @@ const PrimaryButton = styled(PrimaryButtonBase)(props => [
   props.buttonRounded && tw`rounded-full`
 ]);
 
-export default Features1 = ({
+const Features1 = ({
   subheading = "Our Expertise",
   heading = (
     <>
@@ -143,3 +143,5 @@ export default Features1 = ({
     </Container>
   );
 };
+
+export default Features1;

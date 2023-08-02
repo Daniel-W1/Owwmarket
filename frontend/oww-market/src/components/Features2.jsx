@@ -2,13 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 //eslint-disable-next-line
-// import { css } from "styled-components/macro";
+import { css } from "styled-components/macro";
 import { SectionHeading, Subheading as SubheadingBase } from "../helpers/Heading.jsx";
 import { SectionDescription } from "../helpers/Typography.jsx";
 
-import defaultCardImage from "../assets/images/shield-icon.svg";
+import {ReactComponent as defaultCardImage} from "../assets/images/shield-icon.svg";
 
-import SvgDecoratorBlob3 from "../assets/images/svg-decorator-blob-3.svg";
+import {ReactComponent as SvgDecoratorBlob3} from "../assets/images/svg-decorator-blob-3.svg";
 
 import SupportIconImage from "../assets/images/support-icon.svg";
 import ShieldIconImage from "../assets/images/shield-icon.svg";
@@ -58,7 +58,7 @@ const DecoratorBlob = styled(SvgDecoratorBlob3)`
   ${tw`pointer-events-none absolute right-0 bottom-0 w-64 opacity-25 transform translate-x-32 translate-y-48 `}
 `;
 
-export default Features2 = ({ cards = null, heading = "Amazing Features", subheading = "Features", description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." }) => {
+const Features2 = ({ cards = null, heading = "Amazing Features", subheading = "Features", description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." }) => {
   /*
    * This componets has an array of object denoting the cards defined below. Each object in the cards array can have the key (Change it according to your need, you can also add more objects to have more cards in this feature component) or you can directly pass this using the cards prop:
    *  1) imageSrc - the image shown at the top of the card
@@ -109,3 +109,5 @@ export default Features2 = ({ cards = null, heading = "Amazing Features", subhea
     </Container>
   );
 };
+
+export default Features2;

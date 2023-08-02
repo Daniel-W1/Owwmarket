@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
 import tw from "twin.macro";
-// import { css } from "styled-components/macro"; //eslint-disable-line
+import { css } from "styled-components/macro"; //eslint-disable-line
 import { SectionHeading, Subheading as SubheadingBase } from "../helpers/Heading.jsx";
 import { SectionDescription } from "../helpers/Typography.jsx";
 import { Container, ContentWithPaddingXl } from "../helpers/Layout.jsx";
-import ChevronDownIcon from "feather-icons/dist/icons/chevron-down.svg";
-import  SvgDecoratorBlob1  from "../assets/images/svg-decorator-blob-7.svg";
-import SvgDecoratorBlob2  from "../assets/images/svg-decorator-blob-8.svg";
+import {ReactComponent as ChevronDownIcon} from "feather-icons/dist/icons/chevron-down.svg";
+import  {ReactComponent as SvgDecoratorBlob1}  from "../assets/images/svg-decorator-blob-7.svg";
+import {ReactComponent as SvgDecoratorBlob2}  from "../assets/images/svg-decorator-blob-8.svg";
 
 const Subheading = tw(SubheadingBase)`mb-4 text-center`;
 const Heading = tw(SectionHeading)`w-full`;
@@ -38,7 +38,7 @@ const DecoratorBlob2 = styled(SvgDecoratorBlob2)`
 
 
 
-export default FAQcomponent = ({
+const FAQcomponent = ({
   subheading = "FAQS",
   heading = "You have Questions ?",
   description = "And we have got answers to all of them. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
@@ -125,3 +125,5 @@ export default FAQcomponent = ({
     </Container>
   );
 };
+
+export default FAQcomponent;
