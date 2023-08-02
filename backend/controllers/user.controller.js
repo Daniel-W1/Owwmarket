@@ -36,10 +36,10 @@ const create = async (req, res) => {
         })
         await profile.save()
         
-        // return res.status(200).json({
-        //     success: true,
-        //     message: "Successfully Created!"
-        // })
+        return res.status(200).json({
+            success: true,
+            message: "Successfully Created!"
+        })
     } catch (error) {
         return res.status(400).json({
             success: false,

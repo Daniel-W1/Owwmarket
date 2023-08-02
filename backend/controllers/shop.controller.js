@@ -52,6 +52,7 @@ const create = async (req, res) => {
 const shopbyId = async (req, res, next, id) => {
     try {
         // console.log('the id is ', id);
+        // console.log(shop, 'shop found');
         let shop = await Shop.findById(id)
         if (!shop)
             return res.status(400).json({
@@ -59,7 +60,6 @@ const shopbyId = async (req, res, next, id) => {
                 error: "Shop not found"
             })
         
-        // console.log(shop);
         req.shop = shop
         next()
 

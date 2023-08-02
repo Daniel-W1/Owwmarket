@@ -169,6 +169,8 @@ const hasAuthorization = async (req, res, next) => {
     let id = req.auth._id
     const userRequesting = await User.findById(id)
     const authorized = req.profile && req.auth && req.profile._id.equals(userRequesting._id);
+
+    console.log(userRequesting, authorized);
     // if the user is an admin, they are authorized
     if (userRequesting.admin === true) {
         return next()
