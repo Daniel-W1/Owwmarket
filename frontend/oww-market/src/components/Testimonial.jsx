@@ -3,13 +3,13 @@ import React, { useState } from "react";
 import Slider from "react-slick";
 import tw from "twin.macro";
 import styled from "styled-components";
-// import { css } from "styled-components/macro"; //eslint-disable-line
+import { css } from "styled-components/macro"; //eslint-disable-line
 import { SectionHeading, Subheading as SubheadingBase } from "../helpers/Heading.jsx";
 import { Container, ContentWithPaddingXl } from "../helpers/Layout.jsx";
-import loveIllustrationImageSrc from "../assets/images/love-illustration.svg";
-import StarIconBase  from "../assets/images/star-icon.svg";
-import  ArrowLeftIcon  from "../assets/images/arrow-left-3-icon.svg";
-import ArrowRightIcon from "../assets/images/arrow-right-3-icon.svg";
+import  loveIllustrationImageSrc from "../assets/images/love-illustration.svg";
+import {ReactComponent as StarIconBase}  from "../assets/images/star-icon.svg";
+import  {ReactComponent as ArrowLeftIcon}  from "../assets/images/arrow-left-3-icon.svg";
+import {ReactComponent as ArrowRightIcon} from "../assets/images/arrow-right-3-icon.svg";
 
 const Row = tw.div`flex flex-col md:flex-row justify-between items-center`;
 const Column = tw.div`w-full max-w-md mx-auto md:max-w-none md:mx-0`;
@@ -69,7 +69,7 @@ const ControlButton = styled.button`
 `;
 
 
-export default Testimonial = ({
+const TestimonialComponent = ({
   imageSrc = loveIllustrationImageSrc,
   imageRounded = true,
   imageBorder = false,
@@ -151,3 +151,5 @@ export default Testimonial = ({
     </Container>
   );
 };
+
+export default TestimonialComponent;

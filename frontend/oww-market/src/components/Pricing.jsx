@@ -1,12 +1,12 @@
 import React from "react";
 import tw from "twin.macro";
 import styled from "styled-components";
-// import { css } from "styled-components/macro"; //eslint-disable-line
+import { css } from "styled-components/macro"; //eslint-disable-line
 import { SectionHeading, Subheading as SubheadingBase } from "../helpers/Heading.jsx";
 import { SectionDescription } from "../helpers/Typography.jsx";
 import { PrimaryButton as PrimaryButtonBase } from "../helpers/Buttons.jsx";
 import { Container, ContentWithPaddingXl } from "../helpers/Layout.jsx";
-import  SvgDecoratorBlob  from "../assets/images/svg-decorator-blob-7.svg";
+import  {ReactComponent as SvgDecoratorBlob}  from "../assets/images/svg-decorator-blob-7.svg";
 
 const HeaderContainer = tw.div`mt-10 w-full flex flex-col items-center`;
 const Subheading = tw(SubheadingBase)`mb-4`;
@@ -82,7 +82,7 @@ const DecoratorBlob = styled(SvgDecoratorBlob)`
 `;
 
 
-export default Pricing = ({
+const Pricing = ({
   subheading = "Pricing",
   heading = "Flexible Plans.",
   description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
@@ -167,3 +167,5 @@ export default Pricing = ({
     </Container>
   );
 };
+
+export default Pricing;

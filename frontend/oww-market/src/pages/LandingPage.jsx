@@ -1,4 +1,4 @@
-import React from "react";
+// import React from "react";
 import tw from "twin.macro";
 // import { css } from "styled-components/macro"; //eslint-disable-line
 import AnimationRevealPage from "../helpers/AnimationRevealPage";
@@ -15,10 +15,10 @@ import Footer from "../components/Footer";
 import heroScreenshotImageSrc from "../assets/images/hero-screenshot-1.png";
 import macHeroScreenshotImageSrc from "../assets/images/hero-screenshot-2.png";
 import prototypeIllustrationImageSrc from "../assets/images/prototype-illustration.svg";
-import BriefcaseIcon  from "feather-icons/dist/icons/briefcase.svg";
-import MoneyIcon from "feather-icons/dist/icons/dollar-sign.svg";
+import {ReactComponent as BriefcaseIcon}  from "feather-icons/dist/icons/briefcase.svg";
+import {ReactComponent as MoneyIcon} from "feather-icons/dist/icons/dollar-sign.svg";
 
-export default LandingPage = () => {
+const LandingPage = () => {
   const Subheading = tw.span`uppercase tracking-widest font-bold text-primary-500`;
   const HighlightedText = tw.span`text-primary-500`;
 
@@ -182,3 +182,5 @@ export default LandingPage = () => {
     </AnimationRevealPage>
   );
 }
+
+export default LandingPage;
