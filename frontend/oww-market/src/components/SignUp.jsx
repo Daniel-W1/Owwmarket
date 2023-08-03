@@ -52,6 +52,10 @@ const IllustrationImage = styled.div`
   ${tw`m-12 xl:m-16 w-full max-w-lg bg-contain bg-center bg-no-repeat`}
 `;
 
+const googleAuth = () => {
+  window.open(`http://localhost:3000/auth/google/`, "_self");
+};
+
 const SignUpComponent = ({
   logoLinkUrl = "#",
   illustrationImageSrc = illustration,
@@ -60,7 +64,7 @@ const SignUpComponent = ({
     {
       iconImageSrc: googleIconImageSrc,
       text: "Sign Up With Google",
-      url: "https://google.com"
+      callbackFunc: googleAuth
     }
   ],
   submitButtonText = "Sign Up",
@@ -81,7 +85,7 @@ const SignUpComponent = ({
             <FormContainer>
               <SocialButtonsContainer>
                 {socialButtons.map((socialButton, index) => (
-                  <SocialButton key={index} href={socialButton.url}>
+                  <SocialButton key={index} onClick={socialButton.callbackFunc} tw="cursor-pointer">
                     <span className="iconContainer">
                       <img src={socialButton.iconImageSrc} className="icon" alt="" />
                     </span>

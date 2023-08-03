@@ -4,8 +4,9 @@ import styled from "styled-components";
 import { css } from "styled-components/macro"; // eslint-disable-line
 import useAnimatedNavToggler from "../helpers/AnimatedNavToggler.jsx";
 import logo from "../assets/images/logo.svg";
-import {ReactComponent as MenuIcon} from "feather-icons/dist/icons/menu.svg";
-import {ReactComponent as CloseIcon} from "feather-icons/dist/icons/x.svg";
+import { ReactComponent as MenuIcon } from "feather-icons/dist/icons/menu.svg";
+import { ReactComponent as CloseIcon } from "feather-icons/dist/icons/x.svg";
+import Logout from "../functions/logout.jsx";
 
 
 const Header = tw.header`
@@ -27,7 +28,7 @@ export const NavLink = tw.a`
 export const PrimaryLink = tw(NavLink)`
   lg:mx-0
   px-8 py-3 rounded bg-primary-500 text-gray-100
-  hocus:bg-primary-700 hocus:text-gray-200 focus:shadow-outline
+  hocus:bg-primary-700 hocus:text-gray-200 focus:shadow-outline cursor-pointer
   border-b-0
 `;
 
@@ -55,32 +56,75 @@ export const DesktopNavLinks = tw.nav`
   hidden lg:flex flex-1 justify-between items-center
 `;
 
+
 const Navbar = ({ roundedHeaderButton = false, logoLink, className, collapseBreakpointClass = "lg" }) => {
-  const DesktopLinks = [
+
+  const userdata = localStorage.getItem("user");
+  let user = null;
+  if (userdata) {
+    user = JSON.parse(userdata);
+  }
+
+  let DesktopLinks = [
     <NavLinks key={1}>
       <NavLink href="/#">Shops</NavLink>
       <NavLink href="/#">Products</NavLink>
       <NavLink href="/#">Become a Seller</NavLink>
       <NavLink href="/#">About Us</NavLink>
-      <NavLink href="/#" tw="lg:ml-12!">
+    </NavLinks>
+    ,
+    <NavLinks key={2}>
+      <NavLink href="/login" tw="lg:ml-12!">
         Login
       </NavLink>
-      <PrimaryLink css={roundedHeaderButton && tw`rounded-full`}href="/#">Sign Up</PrimaryLink>
+      <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} href="/signup">Sign Up</PrimaryLink>
     </NavLinks>
   ];
 
-  const Mobilelinks = [
+  let Mobilelinks = [
     <NavLinks key={1}>
       <NavLink href="/#" tw="block">Shops</NavLink>
       <NavLink href="/#" tw="block">Products</NavLink>
       <NavLink href="/#" tw="block">Become a Seller</NavLink>
       <NavLink href="/#" tw="block">About Us</NavLink>
-      <NavLink href="/#" tw="lg:ml-12! mb-2 block">
+      <NavLink href="/login" tw="lg:ml-12! mb-2 block">
         Login
       </NavLink>
-      <PrimaryLink css={roundedHeaderButton && tw`rounded-full`}href="/#">Sign Up</PrimaryLink>
+      <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} href="/signup">Sign Up</PrimaryLink>
     </NavLinks>
   ];
+
+  if (user) {
+    DesktopLinks = [
+      <NavLinks key={1}>
+        <NavLink href="/#">Shops</NavLink>
+        <NavLink href="/#">Products</NavLink>
+        <NavLink href="/#">Become a Seller</NavLink>
+        <NavLink href="/#">About Us</NavLink>
+      </NavLinks>
+      ,
+      <NavLinks key={2}>
+        <NavLink href="/profile" tw="lg:ml-12!" >
+          {user.name}
+        </NavLink>
+        <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} href="/logout">Logout</PrimaryLink>
+      </NavLinks>
+    ];
+
+    Mobilelinks = [
+      <NavLinks key={1}>
+        <NavLink href="/#" tw="block">Shops</NavLink>
+        <NavLink href="/#" tw="block">Products</NavLink>
+        <NavLink href="/#" tw="block">Become a Seller</NavLink>
+        <NavLink href="/#" tw="block">About Us</NavLink>
+        <NavLink href="/profile" tw="lg:ml-12! block" css={roundedHeaderButton && tw`rounded-full`}>
+          {user.name}
+        </NavLink>
+        <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} tw="block" href="/logout">Logout</PrimaryLink>
+      </NavLinks>
+    ]
+  }
+  // console.log(DesktopLinks, Mobilelinks);
 
   const { showNavLinks, animation, toggleNavbar } = useAnimatedNavToggler();
   const collapseBreakpointCss = collapseBreakPointCssMap[collapseBreakpointClass];
