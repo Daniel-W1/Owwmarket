@@ -1,6 +1,6 @@
 // import React from "react";
 import tw from "twin.macro";
-// import { css } from "styled-components/macro"; //eslint-disable-line
+import { css } from "styled-components/macro"; //eslint-disable-line
 import AnimationRevealPage from "../helpers/AnimationRevealPage";
 import Hero from "../components/Hero";
 import Features from "../components/Features2";
@@ -17,6 +17,8 @@ import macHeroScreenshotImageSrc from "../assets/images/hero-screenshot-2.png";
 import prototypeIllustrationImageSrc from "../assets/images/prototype-illustration.svg";
 import {ReactComponent as BriefcaseIcon}  from "feather-icons/dist/icons/briefcase.svg";
 import {ReactComponent as MoneyIcon} from "feather-icons/dist/icons/dollar-sign.svg";
+import ContactUsComponent from "../components/ContactUs";
+
 
 const LandingPage = () => {
   const Subheading = tw.span`uppercase tracking-widest font-bold text-primary-500`;
@@ -121,7 +123,7 @@ const LandingPage = () => {
               "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3.25&w=512&h=512&q=80",
             heading: "Amazing User Experience",
             quote:
-              "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+              "OwwMarket has revolutionized the way I shop! It's like having my own personal shopper, finding unique products tailored just for me. The experience is incredibly smooth and intuitive, making it a joy to explore new items. ",
             customerName: "Charlotte Hale",
             customerTitle: "Director, Delos Inc."
           },
@@ -177,7 +179,8 @@ const LandingPage = () => {
           }
         ]}
       />
-      <GetStarted/>
+      {/* <GetStarted/> */}
+      <ContactUsComponent/>
       <Footer />
     </AnimationRevealPage>
   );

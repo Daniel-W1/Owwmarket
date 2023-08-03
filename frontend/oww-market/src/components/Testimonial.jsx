@@ -12,11 +12,11 @@ import  {ReactComponent as ArrowLeftIcon}  from "../assets/images/arrow-left-3-i
 import {ReactComponent as ArrowRightIcon} from "../assets/images/arrow-right-3-icon.svg";
 
 const Row = tw.div`flex flex-col md:flex-row justify-between items-center`;
-const Column = tw.div`w-full max-w-md mx-auto md:max-w-none md:mx-0`;
+const Column = tw.div`w-full max-w-lg mx-auto md:max-w-none md:mx-0`;
 const ImageColumn = tw(Column)`md:w-5/12 xl:w-6/12 flex-shrink-0 relative`;
 const TextColumn = styled(Column)(props => [
   tw`md:w-7/12 xl:w-6/12 mt-16 md:mt-0`,
-  props.textOnLeft ? tw`md:pr-12 lg:pr-16 md:order-first` : tw`md:pl-12 lg:pl-16 md:order-last`
+  props.textOnLeft ? tw`md:pr-12 lg:pr-16 md:order-first` : tw`md:pl-12 lg:pl-16 md:order-last `
 ]);
 
 const Image = styled.img(props => [
@@ -29,10 +29,10 @@ const Subheading = tw(SubheadingBase)`text-center md:text-left`;
 const Heading = tw(
   SectionHeading
 )`mt-4 font-black text-left text-3xl sm:text-4xl lg:text-5xl text-center md:text-left leading-tight`;
-const Description = tw.p`mt-6 text-center md:text-left text-sm md:text-base lg:text-lg font-medium leading-relaxed text-secondary-100`;
+const Description = tw.p`mt-6 text-center max-w-lg md:text-left text-sm md:text-base lg:text-lg font-medium leading-relaxed text-secondary-100`;
 
 const TestimonialSlider = styled(Slider)`
-  ${tw`w-full mt-10 text-center md:text-left`}
+  ${tw`w-full max-w-lg mt-10 text-center md:text-left`}
   .slick-track {
     ${tw`flex`}
   }
@@ -45,7 +45,7 @@ const Testimonial = tw.div`outline-none h-full flex! flex-col`;
 const StarsContainer = styled.div``;
 const StarIcon = tw(StarIconBase)`inline-block w-5 h-5 text-orange-400 fill-current mr-1 last:mr-0`;
 const TestimonialHeading = tw.div`mt-4 text-xl font-bold`;
-const Quote = tw.blockquote`mt-4 mb-8 sm:mb-10 leading-relaxed font-medium text-gray-700`;
+const Quote = tw.blockquote`mt-4 mb-8 sm:mb-10 leading-relaxed font-medium text-gray-700 max-w-lg`;
 
 const CustomerInfoAndControlsContainer = tw.div`mt-auto flex justify-between items-center flex-col sm:flex-row`;
 
