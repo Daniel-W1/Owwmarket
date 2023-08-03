@@ -8,6 +8,7 @@ import illustration from "../assets/images/login-illustration.svg";
 import logo from "../assets/images/logo.svg";
 import googleIconImageSrc from "../assets/images/google-icon.png";
 import { ReactComponent as LoginIcon } from "feather-icons/dist/icons/log-in.svg";
+import { Link } from "react-router-dom";
 
 const Container = tw(ContainerBase)`min-h-screen text-white font-medium flex justify-center -m-8`;
 const Content = tw.div`max-w-screen-xl m-0 sm:mx-20 sm:my-16 bg-white text-gray-900 shadow sm:rounded-lg flex justify-center flex-1`;
@@ -52,6 +53,10 @@ const IllustrationImage = styled.div`
   ${tw`m-12 xl:m-16 w-full max-w-sm bg-contain bg-center bg-no-repeat`}
 `;
 
+const googleAuth = () => {
+  window.open(`http://localhost:3000/auth/google/`, "_self");
+};
+
 const LoginComponent = ({
   logoLinkUrl = "#",
   illustrationImageSrc = illustration,
@@ -60,13 +65,13 @@ const LoginComponent = ({
     {
       iconImageSrc: googleIconImageSrc,
       text: "Sign In With Google",
-      url: "https://google.com"
+      callbackFunc: googleAuth
     }
   ],
   submitButtonText = "Sign In",
   SubmitButtonIcon = LoginIcon,
   forgotPasswordUrl = "#",
-  signupUrl = "#",
+  signupUrl = "/signup",
 
 }) => (
   <AnimationRevealPage>
@@ -81,7 +86,7 @@ const LoginComponent = ({
             <FormContainer>
               <SocialButtonsContainer>
                 {socialButtons.map((socialButton, index) => (
-                  <SocialButton key={index} href={socialButton.url}>
+                  <SocialButton key={index} onClick={socialButton.callbackFunc} tw="cursor-pointer">
                     <span className="iconContainer">
                       <img src={socialButton.iconImageSrc} className="icon" alt=""/>
                     </span>
@@ -101,15 +106,15 @@ const LoginComponent = ({
                 </SubmitButton>
               </Form>
               <p tw="mt-6 text-xs text-gray-600 text-center">
-                <a href={forgotPasswordUrl} tw="border-b border-gray-500 border-dotted">
+                <Link to={forgotPasswordUrl} tw="border-b border-gray-500 border-dotted">
                   Forgot Password ?
-                </a>
+                </Link>
               </p>
               <p tw="mt-8 text-sm text-gray-600 text-center">
                 Dont have an account?{" "}
-                <a href={signupUrl} tw="border-b border-gray-500 border-dotted">
+                <Link to={signupUrl} tw="border-b border-gray-500 border-dotted">
                   Sign Up
-                </a>
+                </Link>
               </p>
             </FormContainer>
           </MainContent>
