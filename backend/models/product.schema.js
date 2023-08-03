@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const ProductSchema = new mongoose.Schema(
   {
-    shopid: { type: mongoose.Schema.ObjectId, ref: "Shop", required: "ShopID is required" },
+    shopId: { type: mongoose.Schema.ObjectId, ref: "Shop", required: "ShopID is required" },
     productname: {
       type: String,
       required: "Name is required",
@@ -36,6 +36,7 @@ const ProductSchema = new mongoose.Schema(
       default: false,
     },
     location: Object,
+    productImages : [{ data: Buffer, contentType: String }],
   },
   { timestamps: true }
 );
@@ -55,7 +56,7 @@ const ProductAuctionSchema = new mongoose.Schema({
       },
       biddingAt: {
         type: Date,
-        defualt: Date.now()
+        default: Date.now()
       }
     }
   ]
