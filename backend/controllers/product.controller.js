@@ -96,9 +96,9 @@ const create = async (req, res) => {
         }
         // console.log('product', product, product.shopId, 'shopid', product.productname, 'productname', product.auction, 'auction');
         // process images
-        if(files.productimages) {
+        if(files.productImages) {
             let arrayOfImages = [];
-            files.productimages.forEach(image => {
+            files.productImages.forEach(image => {
                 arrayOfImages.push({
                     data: fs.readFileSync(image.filepath),
                     contentType: image.mimetype
@@ -109,7 +109,6 @@ const create = async (req, res) => {
         }
 
         try {
-            // console.log(product.shopid, 'shopid', product.productname, 'productname', product.auction, 'auction');
             await product.save()
             return res.status(200).json({
                 success: true,
@@ -144,6 +143,8 @@ const update = async (req, res) => {
     //     })
     // }
 
+    console.log('we are here');
+
     let form = formidable();
     form.keepExtensions = true
     form.maxFileSize = 100 * 1024 * 1024;
@@ -170,9 +171,8 @@ const update = async (req, res) => {
                 strict: true,
               });
         }
-        
+
         product = _.extend(product, {
-            shopid: req.product.shopid,
             productname,
             productdescription,
             quantity,
@@ -181,9 +181,9 @@ const update = async (req, res) => {
         })
         // console.log('product', product, product.shopId, 'shopid', product.productname, 'productname', product.auction, 'auction');
         // process images
-        if(files.productimages) {
+        if(files.productImages) {
             let arrayOfImages = [];
-            files.productimages.forEach(image => {
+            files.productImages.forEach(image => {
                 arrayOfImages.push({
                     data: fs.readFileSync(image.filepath),
                     contentType: image.mimetype
@@ -192,9 +192,10 @@ const update = async (req, res) => {
             product.productImages = arrayOfImages;
             // console.log(arrayOfImages, 'array of images');
         }
-        console.log(product);
+        // console.log(product);
         try {
             // console.log(product.shopid, 'shopid', product.productname, 'productname', product.auction, 'auction');
+            // console.log(product);
             await product.save()
             return res.status(200).json({
                 success: true,
