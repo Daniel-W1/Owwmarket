@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
+import { DotLoader } from 'react-spinners';
 
 function Logout() {
   useEffect(() => {
@@ -22,7 +23,14 @@ function Logout() {
     logoutUser();
   }, []);
 
-  return <div>Logging out...</div>;
+  return <div className='flex justify-center items-center w-full h-screen'>
+    <DotLoader
+      css={{display: 'block', margin: '0 auto'}}
+      size={150}
+      color={"#123abc"}
+      loading={true}
+    />
+  </div>;
 }
 
 export default Logout;

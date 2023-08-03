@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import apiRequest from '../utils/api';
+import {DotLoader} from 'react-spinners';
+
 function Login() {
   useEffect(() => {
     // Function to extract token from query parameters
@@ -34,9 +36,14 @@ function Login() {
 
   // Your login component UI goes here
   return (
-  <> 
-    <h1>Until Login...</h1>
-   </>
+  <div className='w-full h-screen flex justify-center items-center'> 
+    <DotLoader
+      css={{display: 'block', margin: '0 auto'}}
+      size={150}
+      color={"#123abc"}
+      loading={true}
+    />
+   </div>
   );
 }
 
