@@ -127,23 +127,8 @@ const create = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    // try {
-    //     let product = req.product
-    //     product = _.extend(product, req.body)
-    //     product.updated = Date.now()
-    //     await product.save()
-    //     return res.json({
-    //         success: true,
-    //         product: product
-    //     })
-    // } catch (error) {
-    //     return res.status(400).json({
-    //         success: false,
-    //         error: errorHandler.getErrorMessage(error)
-    //     })
-    // }
 
-    console.log('we are here');
+    // console.log('we are here');
 
     let form = formidable();
     form.keepExtensions = true
