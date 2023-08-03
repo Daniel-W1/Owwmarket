@@ -1,9 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import tw from "twin.macro";
-//eslint-disable-next-line
-import { css } from "styled-components/macro";
-
+import tw from "twin.macro"; 
+import { css } from "styled-components/macro"; //eslint-disable-next-line
 import Header from "./Navbar.jsx";
 
 import {ReactComponent as SvgDecoratorBlob1} from "../assets/images/svg-decorator-blob-1.svg";
@@ -53,15 +51,14 @@ const Hero = ({ roundedHeaderButton }) => {
         <TwoColumn>
           <LeftColumn>
             <Heading>
-              Beautiful React Templates <span tw="text-primary-500">for you.</span>
+              A MarketPlace designed <span tw="text-primary-500">for the Future.</span>
             </Heading>
             <Paragraph>
-              Our templates are easy to setup, understand and customize. Fully modular components with a variety of
-              pages and components.
+            Welcome to the marketplace of the future. Innovative, seamless, and redefining shopping. Experience OwwMarket today!
             </Paragraph>
             <Actions>
-              <input type="text" placeholder="Your E-mail Address" />
-              <button>Get Started</button>
+              <input type="text" placeholder="Search an Item" />
+              <button>Search</button>
             </Actions>
             <CustomersLogoStrip>
               <p>Our TRUSTED Customers</p>
