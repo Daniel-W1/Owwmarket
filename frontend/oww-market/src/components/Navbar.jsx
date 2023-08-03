@@ -7,7 +7,7 @@ import logo from "../assets/images/logo.svg";
 import { ReactComponent as MenuIcon } from "feather-icons/dist/icons/menu.svg";
 import { ReactComponent as CloseIcon } from "feather-icons/dist/icons/x.svg";
 import Logout from "../functions/logout.jsx";
-
+import { Link } from 'react-router-dom';
 
 const Header = tw.header`
   flex justify-between items-center
@@ -74,10 +74,12 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, className, collapseBrea
     </NavLinks>
     ,
     <NavLinks key={2}>
-      <NavLink href="/login" tw="lg:ml-12!">
+      <Link to="/login">
+      <NavLink  tw="lg:ml-12!">
         Login
       </NavLink>
-      <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} href="/signup">Sign Up</PrimaryLink>
+      </Link>
+      <Link to="/signup"><PrimaryLink css={roundedHeaderButton && tw`rounded-full`}>Sign Up</PrimaryLink></Link>
     </NavLinks>
   ];
 
@@ -87,10 +89,12 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, className, collapseBrea
       <NavLink href="/#" tw="block">Products</NavLink>
       <NavLink href="/#" tw="block">Become a Seller</NavLink>
       <NavLink href="/#" tw="block">About Us</NavLink>
-      <NavLink href="/login" tw="lg:ml-12! mb-2 block">
+      <Link to="/login">
+        <NavLink tw="lg:ml-12! mb-2 block">
         Login
-      </NavLink>
-      <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} href="/signup">Sign Up</PrimaryLink>
+        </NavLink>
+      </Link>
+      <Link to="/signup"><PrimaryLink css={roundedHeaderButton && tw`rounded-full`}>Sign Up</PrimaryLink></Link>
     </NavLinks>
   ];
 
