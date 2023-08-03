@@ -10,6 +10,7 @@ import  user_router from './routes/user.routes.js';
 import shop_router from './routes/shop.routes.js';
 import profile_router from './routes/profile.routes.js';
 import product_router from './routes/product.routes.js';
+import admin_router from './routes/admin.routes.js';
 import passport from './config/passport.js';
 import session from 'express-session';
 import path from 'path';
@@ -49,6 +50,7 @@ app.use("/", auth_router)
 app.use("/", shop_router)
 app.use("/", profile_router)
 app.use('/', product_router)
+app.use("/", admin_router)
 
 app.use((err, req, res, next) => {
     if (err.name === 'UnauthorizedError') {

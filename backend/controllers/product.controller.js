@@ -2,6 +2,7 @@ import { User, GoogleUser } from '../models/user.schema.js'
 import _ from 'lodash'
 import errorHandler from '../helpers/dbhelper.js';
 import {Product, ProductAuction} from '../models/product.schema.js';
+import Log from '../models/log.schema.js';
 import slugify from "slugify";
 import formidable from 'formidable';
 import fs from 'fs';
@@ -169,8 +170,9 @@ const update = async (req, res) => {
                 strict: true,
               });
         }
-
+        
         product = _.extend(product, {
+            shopid: req.product.shopid,
             productname,
             productdescription,
             quantity,
@@ -190,7 +192,7 @@ const update = async (req, res) => {
             product.productImages = arrayOfImages;
             // console.log(arrayOfImages, 'array of images');
         }
-
+        console.log(product);
         try {
             // console.log(product.shopid, 'shopid', product.productname, 'productname', product.auction, 'auction');
             await product.save()
@@ -199,6 +201,7 @@ const update = async (req, res) => {
                 product: product,
             })
         } catch (error) {
+            console.log(error);
             return res.status(400).json({
                 success: false,
                 error: errorHandler.getErrorMessage(error)
