@@ -7,6 +7,7 @@ import logo from "../assets/images/logo.svg";
 import { ReactComponent as MenuIcon } from "feather-icons/dist/icons/menu.svg";
 import { ReactComponent as CloseIcon } from "feather-icons/dist/icons/x.svg";
 import Logout from "../functions/logout.jsx";
+import { Link } from "react-router-dom";
 
 
 const Header = tw.header`
@@ -19,7 +20,7 @@ export const NavLinks = tw.div`inline-block`;
 /* hocus: stands for "on hover or focus"
  * hocus:bg-primary-700 will apply the bg-primary-700 class on hover or focus
  */
-export const NavLink = tw.a`
+export const NavLink = tw.span`
   text-lg my-2 lg:text-sm lg:mx-6 lg:my-0
   font-semibold tracking-wide transition duration-300
   pb-1 border-b-2 border-transparent hover:border-primary-500 hocus:text-primary-500
@@ -67,26 +68,38 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, className, collapseBrea
 
   let DesktopLinks = [
     <NavLinks key={1}>
-      <NavLink href="/#">Shops</NavLink>
-      <NavLink href="/#">Products</NavLink>
-      <NavLink href="/#">Become a Seller</NavLink>
-      <NavLink href="/#">About Us</NavLink>
+      <Link to={'/shops'} >
+        <NavLink>Shops</NavLink>
+      </Link>
+      <Link to={'/products'}>
+        <NavLink>Products</NavLink>
+      </Link>
+      <Link>
+      <NavLink>Become a Seller</NavLink>
+      </Link>
+      <Link>
+      <NavLink>About Us</NavLink>
+      </Link>
     </NavLinks>
     ,
     <NavLinks key={2}>
-      <NavLink href="/login" tw="lg:ml-12!">
+      <Link to={'/login'}>
+      <NavLink tw="lg:ml-12!">
         Login
       </NavLink>
-      <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} href="/signup">Sign Up</PrimaryLink>
+      </Link>
+      <Link to={'/signup'}>
+        <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} href="/signup">Sign Up</PrimaryLink>
+      </Link>
     </NavLinks>
   ];
 
   let Mobilelinks = [
     <NavLinks key={1}>
-      <NavLink href="/#" tw="block">Shops</NavLink>
-      <NavLink href="/#" tw="block">Products</NavLink>
-      <NavLink href="/#" tw="block">Become a Seller</NavLink>
-      <NavLink href="/#" tw="block">About Us</NavLink>
+      <NavLink tw="block">Shops</NavLink>
+      <NavLink tw="block">Products</NavLink>
+      <NavLink tw="block">Become a Seller</NavLink>
+      <NavLink tw="block">About Us</NavLink>
       <NavLink href="/login" tw="lg:ml-12! mb-2 block">
         Login
       </NavLink>
@@ -97,10 +110,10 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, className, collapseBrea
   if (user) {
     DesktopLinks = [
       <NavLinks key={1}>
-        <NavLink href="/#">Shops</NavLink>
-        <NavLink href="/#">Products</NavLink>
-        <NavLink href="/#">Become a Seller</NavLink>
-        <NavLink href="/#">About Us</NavLink>
+        <NavLink>Shops</NavLink>
+        <NavLink>Products</NavLink>
+        <NavLink>Become a Seller</NavLink>
+        <NavLink>About Us</NavLink>
       </NavLinks>
       ,
       <NavLinks key={2}>
@@ -113,10 +126,10 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, className, collapseBrea
 
     Mobilelinks = [
       <NavLinks key={1}>
-        <NavLink href="/#" tw="block">Shops</NavLink>
-        <NavLink href="/#" tw="block">Products</NavLink>
-        <NavLink href="/#" tw="block">Become a Seller</NavLink>
-        <NavLink href="/#" tw="block">About Us</NavLink>
+        <NavLink tw="block">Shops</NavLink>
+        <NavLink tw="block">Products</NavLink>
+        <NavLink tw="block">Become a Seller</NavLink>
+        <NavLink tw="block">About Us</NavLink>
         <NavLink href="/profile" tw="lg:ml-12! block" css={roundedHeaderButton && tw`rounded-full`}>
           {user.name}
         </NavLink>

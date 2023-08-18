@@ -24,7 +24,7 @@ function Login() {
             console.log(response.data);
             if (response.data.success === true) {
               localStorage.setItem("user", JSON.stringify(response.data.user));
-              window.location.href = "/";
+              window.location.href = "/dashboard";
             }
           })
           .catch((error) => {

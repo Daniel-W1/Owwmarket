@@ -6,9 +6,11 @@ import Home from "./pages/home";
 import LandingPage from "./pages/LandingPage";
 import LoginComponent from "./components/Login";
 import SignUpComponent from "./components/SignUp";
-// import ProfileTop from "./components/ProfileTop";
 import profileImage from '../src/assets/images/twitter-icon.png'
 import Dashboard from "./components/Dashboard";
+import Analytics from "./pages/analytics";
+import Shops from "./pages/shops";
+import Profile from "./components/ProfileTop";
 
 
 const fakeProfile = {
@@ -27,8 +29,11 @@ const App = () => {
         <Route path="/login" element={<LoginComponent/>} />
         <Route path="/login/callback" element={<Login/>} />
         <Route path="/logout" element={<Logout/>} />
-        {/* <Route path = "/profile" element={<ProfileTop profile={fakeProfile}/>} /> */}
-        <Route path="/home" element={<Dashboard/>} />
+        <Route path = "/profile" element={<Profile/>} />
+        <Route path="/dashboard" element={<Dashboard/>} />
+        <Route path = '/anaytics' element={<Analytics/>} />
+        <Route path="/shops" element = {<Shops/>} />
+
       </Routes>
     </>
   )
