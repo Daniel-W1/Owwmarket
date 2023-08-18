@@ -11,12 +11,68 @@ import Shops from '../pages/shops';
 import Settings from '../pages/settings';
 import Profile from './ProfileTop';
 import Logout from '../functions/logout';
+import profileImage from '../assets/images/food.png'
 
+
+const fakeProfile = {
+  name: "John Doe",
+  email: "john@gmail.com", 
+  bio: "I am a software engineer and I love to code and build things. Oh and I love to play video games too!",
+  image: profileImage,
+  location: "Lagos, Nigeria",
+  shops: [
+    {
+      name: "John's Shop",
+      products: [
+        {
+          name: "Shoe",
+          price: 1000,
+          description: "This is a very nice shoe",
+          image: "https://images.unsplash.com/photo-1612837017391-0e3b5a5b0b0b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
+        },
+        {
+          name: "Shirt",
+          price: 500,
+          description: "This is a very nice shirt",
+          image: "https://images.unsplash.com/photo-1612837017391-0e3b5a5b0b0b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
+        },
+      ]
+    }
+  ]
+  ,
+  followers: [
+    {
+      name: "Jane Doe",
+      image: "https://images.unsplash.com/photo-1612837017391-0e3b5a5b0b0b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
+    },
+    {
+      name: "Jane Doe",
+      image: "https://images.unsplash.com/photo-1612837017391-0e3b5a5b0b0b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
+    },]
+    ,
+  following: [
+    {
+      name: "Jane Doe",
+      image: "https://images.unsplash.com/photo-1612837017391-0e3b5a5b0b0b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
+    },
+    {
+      name: "Jane Doe",
+      image: "https://images.unsplash.com/photo-1612837017391-0e3b5a5b0b0b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
+    },],
+  products: [
+    {
+      name: "Shoe",
+      price: 1000,
+      description: "This is a very nice shoe",
+      image: "https://images.unsplash.com/photo-1612837017391-0e3b5a5b0b0b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
+    },
+  ]
+}
 
 const Dashboard = () => {
   const [open, setopen] = useState(true)
   const [active, setactive] = useState(0)
-  const [activePage, setactivePage] = useState(<Profile/>)
+  const [activePage, setactivePage] = useState(<Profile profile={fakeProfile}/>)
   const screenSize = useScreenSize();
   
   const userdata = localStorage.getItem("user");
@@ -33,7 +89,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if(active === 0){
-      setactivePage(<Profile/>)
+      setactivePage(<Profile profile={fakeProfile}/>)
     }
     else if(active === 1){
       setactivePage(<Analytics/>)
@@ -59,8 +115,8 @@ const Dashboard = () => {
 
 
   return (
-    <div className='flex'>
-        <div className={` ${open ? 'w-72' :' w-20'} h-screen duration-300 bg-primary-200 relative border-r-2 border-r-gray-400`}>
+    <div className='flex overflow-hidden w-full'>
+        <div className={` ${open ? 'w-72' :' w-20'} duration-300 bg-primary-200 relative border-r-2 border-r-gray-400 float-left`}>
             <div className = {`absolute cursor-pointer rounded-full bg-white w-5 h-5 border-2 border-primary-200 ${!open && 'rotate-180'} ${screenSize.width < 600 && 'hidden'}`}  style = {{
                         top:'20px',
                         right: '-8px',
@@ -89,7 +145,7 @@ const Dashboard = () => {
             </ul>
         </div>
 
-        <div className='p-10 text-2xl font-semibold h-screen flex-1'>
+        <div className='p-10 text-2xl font-semibold h-screen flex-1 overflow-x-hidden overflow-y-scroll float-right'>
             {activePage}
         </div>
     </div>
