@@ -117,10 +117,14 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, className, collapseBrea
       </NavLinks>
       ,
       <NavLinks key={2}>
-        <NavLink href="/profile" tw="lg:ml-12!" >
-          {user.name}
-        </NavLink>
-        <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} href="/logout">Logout</PrimaryLink>
+        <Link to={"/profile" }>
+          <NavLink tw="lg:ml-12!" >
+            {user.name}
+          </NavLink>
+        </Link>
+        <Link to={"/logout"}>
+          <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} >Logout</PrimaryLink>
+        </Link>
       </NavLinks>
     ];
 

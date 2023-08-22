@@ -18,6 +18,10 @@ const ProfileSchema = new mongoose.Schema({
         data: Buffer,
         contentType: String
     },
+    location: {
+        type: String,
+        trim: true,
+    },
     owner: {type: mongoose.Schema.ObjectId, ref: 'User'},
     following: [{type: mongoose.Schema.ObjectId, ref: 'User', unique: true}],
     followers: [{type: mongoose.Schema.ObjectId, ref: 'User', unique: true}],

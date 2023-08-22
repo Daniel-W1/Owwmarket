@@ -32,8 +32,14 @@ const create = async (req, res) => {
         const profile = Profile({
             name: user.name,
             email: user.email,
-            owner: user._id
+            owner: user._id,
+            following: [],
+            followers: [],
+            location: '',
+            bio: '',
+            image: { data: '', contentType: ''}
         })
+        
         await profile.save()
         
         return res.status(200).json({

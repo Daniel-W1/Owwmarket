@@ -134,6 +134,7 @@ const signin = async (req, res) => {
         })
 
         return res.json({
+            success: true,
             token,
             user: { _id: user._id, name: user.name, email: user.email, admin: user.admin, seller: user.seller }
         })
