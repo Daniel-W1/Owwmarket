@@ -12,6 +12,7 @@ import Settings from '../pages/settings';
 import Profile from './ProfileTop';
 import Logout from '../functions/logout';
 import profileImage from '../assets/images/food.png'
+import LoadingScreen from './loading';
 
 
 const fakeProfile = {
@@ -72,12 +73,14 @@ const fakeProfile = {
 const Dashboard = () => {
   const [open, setopen] = useState(true)
   const [active, setactive] = useState(0)
-  const [activePage, setactivePage] = useState(<Profile profile={fakeProfile}/>)
+  const [loading, setloading] = useState(false);
+  const [activePage, setactivePage] = useState(<Profile profile={fakeProfile} callback={setloading}/>)
   const screenSize = useScreenSize();
+
   
   const userdata = localStorage.getItem("user");
   let user = null;
-  if (userdata) {
+  if (userdata && userdata !== 'undefined') {
     user = JSON.parse(userdata);
   }
 
@@ -89,7 +92,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if(active === 0){
-      setactivePage(<Profile profile={fakeProfile}/>)
+      setactivePage(<Profile profile={fakeProfile} callback={setloading}/>)
     }
     else if(active === 1){
       setactivePage(<Analytics/>)
@@ -123,7 +126,7 @@ const Dashboard = () => {
                     }}
 
                     onClick = {() => setopen(!open)}>
-                <AiOutlineDoubleLeft >
+                <AiOutlineDoubleLeft>
                 </AiOutlineDoubleLeft>
             </div>
 
@@ -137,7 +140,7 @@ const Dashboard = () => {
                     {item.bottom && <hr className='border-gray-500'/>}
                     <li key = {index} onClick={() => setactive(index)} className={`flex items-center p-4 cursor-pointer gap-x-4 hover:bg-primary-100  ${index === active && 'bg-primary-100'} ${!open && 'justify-center'}`}>
                           <item.src className={`w-5 h-5 mr-4 ${!open && 'mx-auto'}`}></item.src>
-                          <span className={`${!open && 'hidden'} duration-300`}>{item.title}</span>
+                          <span className={`${!open && 'hidden'} duration-300 font-semibold`}>{item.title}</span>
                     </li>
                   </>
                 ))}
@@ -146,7 +149,7 @@ const Dashboard = () => {
         </div>
 
         <div className='p-10 text-2xl font-semibold h-screen flex-1 overflow-x-hidden overflow-y-scroll float-right'>
-            {activePage}
+            {loading ? <LoadingScreen/> : activePage}
         </div>
     </div>
   )

@@ -4,6 +4,7 @@ import _ from 'lodash';
 import Profile from '../models/profile.schema.js';
 import { User } from '../models/user.schema.js';
 import errorHandler from '../helpers/dbhelper.js';
+import Shop from '../models/shop.schema.js';
 
 const defaultImage = '/public/files/default.png';
 
@@ -14,16 +15,18 @@ const updateProfile = async (req, res) => {
 
     form.parse(req, async (err, fields, files) => {
         if (err) return res.status(400).json({ success: false, error: 'Image could not be uploaded' });
-        let profile = await Profile.findOne({owner: req.profile._id}).exec().then((profile) => {
-            return profile;
+        // console.log(req.profile._id, 'req.profile._id');
+        let profile = await Profile.findOne({owner: req.profile._id}).exec().then((pro) => {
+            return pro;
         }
         ).catch((err) => {
             return res.status(400).json({ success: false,error: 'Could not find profile'});
         });
 
         const updates = {
-            name: fields.name.join(' '),
-            bio: fields.bio.join(' '),
+            name: fields.name ? fields.name.join(' ') : profile.name,
+            bio: fields.bio ? fields.bio.join(' ') : profile.bio,
+            location: fields.location ? fields.location.join(' ') : profile.location,
         }
 
         profile = _.extend(profile, updates);
@@ -124,7 +127,10 @@ const profileByUserId = async (req, res) => {
         let profile = await Profile.findOne({owner: id});
         if (!profile) return res.status(400).json({ success: false, error: "Profile not found" });
         req.user_profile = profile;
-        return res.json(profile);
+
+        // also get the shops of this user
+        let shops = await Shop.find({ owner: id }).populate('owner', '_id name').select('_id name description created');
+        return res.json({ profile, shops });
     } catch (error) {
         return res.status(400).json({ success: false, error: "Could not retrieve profile" });
     }

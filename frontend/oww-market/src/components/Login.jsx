@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import AnimationRevealPage from "../helpers/AnimationRevealPage";
 import { Container as ContainerBase } from "../helpers/Layout.jsx";
 import tw from "twin.macro";
 import styled from "styled-components";
-import {css} from "styled-components/macro"; //eslint-disable-line
+import { css } from "styled-components/macro"; //eslint-disable-line
 import illustration from "../assets/images/login-illustration.svg";
 import logo from "../assets/images/logo.svg";
 import googleIconImageSrc from "../assets/images/google-icon.png";
 import { ReactComponent as LoginIcon } from "feather-icons/dist/icons/log-in.svg";
 import { Link } from "react-router-dom";
+import EmailPasswordLogin from "../functions/emailpasslogin";
 
 const Container = tw(ContainerBase)`min-h-screen text-white font-medium flex justify-center -m-8`;
 const Content = tw.div`max-w-screen-xl m-0 sm:mx-20 sm:my-16 bg-white text-gray-900 shadow sm:rounded-lg flex justify-center flex-1`;
@@ -73,58 +74,80 @@ const LoginComponent = ({
   forgotPasswordUrl = "#",
   signupUrl = "/signup",
 
-}) => (
-  <AnimationRevealPage>
-    <Container>
-      <Content>
-        <MainContainer>
-          <LogoLink href={logoLinkUrl}>
-            <LogoImage src={logo} />
-          </LogoLink>
-          <MainContent>
-            <Heading>{headingText}</Heading>
-            <FormContainer>
-              <SocialButtonsContainer>
-                {socialButtons.map((socialButton, index) => (
-                  <SocialButton key={index} onClick={socialButton.callbackFunc} tw="cursor-pointer">
-                    <span className="iconContainer">
-                      <img src={socialButton.iconImageSrc} className="icon" alt=""/>
-                    </span>
-                    <span className="text">{socialButton.text}</span>
-                  </SocialButton>
-                ))}
-              </SocialButtonsContainer>
-              <DividerTextContainer>
-                <DividerText>Or Sign in with your e-mail</DividerText>
-              </DividerTextContainer>
-              <Form>
-                <Input type="email" placeholder="Email" />
-                <Input type="password" placeholder="Password" />
-                <SubmitButton type="submit">
-                  <SubmitButtonIcon className="icon" />
-                  <span className="text">{submitButtonText}</span>
-                </SubmitButton>
-              </Form>
-              <p tw="mt-6 text-xs text-gray-600 text-center">
-                <Link to={forgotPasswordUrl} tw="border-b border-gray-500 border-dotted">
-                  Forgot Password ?
-                </Link>
-              </p>
-              <p tw="mt-8 text-sm text-gray-600 text-center">
-                Dont have an account?{" "}
-                <Link to={signupUrl} tw="border-b border-gray-500 border-dotted">
-                  Sign Up
-                </Link>
-              </p>
-            </FormContainer>
-          </MainContent>
-        </MainContainer>
-        <IllustrationContainer>
-          <IllustrationImage imageSrc={illustrationImageSrc} />
-        </IllustrationContainer>
-      </Content>
-    </Container>
-  </AnimationRevealPage>
-);
+}) => {
+
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
+
+  const submit = async (e) => {
+    e.preventDefault();
+    const res = await EmailPasswordLogin(email, password);
+    console.log(res);
+  }
+
+  const handleEmailUpdate = (e) => {
+    setemail(e.target.value);
+    console.log(email);
+  }
+
+  const handlePasswordUpdate = (e) => {
+    setpassword(e.target.value);
+    console.log(password);
+  } 
+
+  return <>
+    <AnimationRevealPage>
+      <Container>
+        <Content>
+          <MainContainer>
+            <LogoLink href={logoLinkUrl}>
+              <LogoImage src={logo} />
+            </LogoLink>
+            <MainContent>
+              <Heading>{headingText}</Heading>
+              <FormContainer>
+                <SocialButtonsContainer>
+                  {socialButtons.map((socialButton, index) => (
+                    <SocialButton key={index} onClick={socialButton.callbackFunc} tw="cursor-pointer">
+                      <span className="iconContainer">
+                        <img src={socialButton.iconImageSrc} className="icon" alt="" />
+                      </span>
+                      <span className="text">{socialButton.text}</span>
+                    </SocialButton>
+                  ))}
+                </SocialButtonsContainer>
+                <DividerTextContainer>
+                  <DividerText>Or Sign in with your e-mail</DividerText>
+                </DividerTextContainer>
+                <Form>
+                  <Input type="email" placeholder="Email" onChange={handleEmailUpdate}/>
+                  <Input type="password" placeholder="Password" onChange={handlePasswordUpdate} />
+                  <SubmitButton type="submit" onClick={submit}>
+                    <SubmitButtonIcon className="icon" />
+                    <span className="text">{submitButtonText}</span>
+                  </SubmitButton>
+                </Form>
+                <p tw="mt-6 text-xs text-gray-600 text-center">
+                  <Link to={forgotPasswordUrl} tw="border-b border-gray-500 border-dotted">
+                    Forgot Password ?
+                  </Link>
+                </p>
+                <p tw="mt-8 text-sm text-gray-600 text-center">
+                  Dont have an account?{" "}
+                  <Link to={signupUrl} tw="border-b border-gray-500 border-dotted">
+                    Sign Up
+                  </Link>
+                </p>
+              </FormContainer>
+            </MainContent>
+          </MainContainer>
+          <IllustrationContainer>
+            <IllustrationImage imageSrc={illustrationImageSrc} />
+          </IllustrationContainer>
+        </Content>
+      </Container>
+    </AnimationRevealPage>
+  </>
+};
 
 export default LoginComponent;
