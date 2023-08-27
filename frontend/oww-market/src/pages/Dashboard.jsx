@@ -19,7 +19,6 @@ const Dashboard = () => {
   const [open, setopen] = useState(true)
   const [active, setactive] = useState(0)
   const [loading, setloading] = useState(false);
-  const [activePage, setactivePage] = useState(<Profile  callback={setloading}/>)
   const screenSize = useScreenSize();
 
   
@@ -43,30 +42,13 @@ const Dashboard = () => {
     }
     }, [screenSize])
 
-  useEffect(() => {
-    if(active === 0){
-      setactivePage(<Profile callback={setloading}/>)
-    }
-    else if(active === 1){
-      setactivePage(<Analytics/>)
-    }
-    else if(active === 2){
-      setactivePage(<Shops/>)
-    }
-    else if(active === 3){
-      setactivePage(<Settings/>)
-    }
-    else if(active === 4){
-      setactivePage(<Logout/>)
-    }
-  }, [active])
 
   const menu = [
-    {title : 'Profile', src: ProfileIcon, link: '/profile'},
-    {title : 'Analytics', src: DiGoogleAnalytics, link: '/analytics', bottom: true},
-    {title : 'Shops', src: AiFillShopping, link: '/shops'},
-    {title : 'Settings', src: AiFillSetting, link: '/settings', bottom: true},
-    {title : 'Logout', src: BiLogOutCircle, link: '/logout'}
+    {title : 'Profile', src: ProfileIcon, link: <Profile/>},
+    {title : 'Analytics', src: DiGoogleAnalytics, link: <Analytics/>, bottom: true},
+    {title : 'Shops', src: AiFillShopping, link: <Shops/>},
+    {title : 'Settings', src: AiFillSetting, link: <Settings/>, bottom: true},
+    {title : 'Logout', src: BiLogOutCircle, link: <Logout/>}
   ]
 
 
@@ -109,7 +91,7 @@ const Dashboard = () => {
         </div>
 
         <div className='p-10 text-2xl font-semibold h-screen flex-1 overflow-x-hidden overflow-y-scroll float-right'>
-            {loading ? <LoadingScreen/> : activePage}
+            {loading ? <LoadingScreen/> : menu[active].link}
         </div>
     </div>
   )
