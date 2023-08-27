@@ -1,16 +1,17 @@
 import React from 'react'
 import { DotLoader } from 'react-spinners';
 
-const LoadingScreen = () => {
+const LoadingScreen = ({text}) => {
     return (
-        <div className='w-full h-screen flex justify-center items-center'> 
+      <div className='w-full h-screen flex flex-col justify-center items-center'>
           <DotLoader
             css={{display: 'block', margin: '0 auto'}}
-            size={150}
+            size={70}
             color={"#123abc"}
             loading={true}
-          />
-         </div>
+            />
+          <h1 className='text-2xl font-semibold'>{text}</h1>
+      </div>
         );
 
 }

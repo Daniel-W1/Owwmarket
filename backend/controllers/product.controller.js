@@ -5,6 +5,7 @@ import {Product, ProductAuction} from '../models/product.schema.js';
 import slugify from "slugify";
 import formidable from 'formidable';
 import fs from 'fs';
+import { myCache } from '../index.js';
 
 const defaultImage = '/public/files/default.png'
 
@@ -31,7 +32,6 @@ const productByID = async (req, res, next, id) => {
 }
 
 const create = async (req, res) => {
-    console.log('we are here');
     let form = formidable();
     form.keepExtensions = true
     form.maxFileSize = 100 * 1024 * 1024;
@@ -46,7 +46,7 @@ const create = async (req, res) => {
             })
         }
         
-        let { productname, productdescription, category, quantity, price, auction, startedprice, location } = fields;
+        let { productname, productdescription, category, quantity, price, auction, startedprice, location, itemsLeft, intialItemCount } = fields;
         
 
         // console.log(shopid, 'shopid');
@@ -79,7 +79,9 @@ const create = async (req, res) => {
                 startedprice: startedprice ? +startedprice.join(' ') : 0,
                 slug,
                 auction: true,
-                location
+                location: location.join(' '),
+                intialItemCount: +intialItemCount.join(' '),
+                itemsLeft: +itemsLeft.join(' ')
               });
         } else {
              product = new Product({
@@ -90,14 +92,16 @@ const create = async (req, res) => {
                 quantity: +quantity.join(' '), 
                 price: +price.join(' '),
                 slug,
-                location
+                location: location.join(' '),
+                intialItemCount: +intialItemCount.join(' '),
+                itemsLeft: +itemsLeft.join(' ')
             })     
         }
         // console.log('product', product, product.shopId, 'shopid', product.productname, 'productname', product.auction, 'auction');
         // process images
-        if(files.productimages) {
+        if(files.productImages) {
             let arrayOfImages = [];
-            files.productimages.forEach(image => {
+            files.productImages.forEach(image => {
                 arrayOfImages.push({
                     data: fs.readFileSync(image.filepath),
                     contentType: image.mimetype
@@ -155,7 +159,7 @@ const update = async (req, res) => {
             })
         }
         
-        let { productname, productdescription, category, quantity, price, startedprice, location } = fields;
+        let { productname, productdescription, category, quantity, price, startedprice, location, itemsLeft, intialItemCount } = fields;
         let product = req.product;
         productname = productname ? productname.join(' ') : product.productname;
         productdescription = productdescription ? productdescription.join(' ') : product.productdescription;
@@ -179,9 +183,9 @@ const update = async (req, res) => {
         })
         // console.log('product', product, product.shopId, 'shopid', product.productname, 'productname', product.auction, 'auction');
         // process images
-        if(files.productimages) {
+        if(files.productImages) {
             let arrayOfImages = [];
-            files.productimages.forEach(image => {
+            files.productImages.forEach(image => {
                 arrayOfImages.push({
                     data: fs.readFileSync(image.filepath),
                     contentType: image.mimetype
@@ -211,6 +215,35 @@ const update = async (req, res) => {
 
 }
 
+const listByShop = async (req, res) => {
+    const shopid = JSON.stringify(req.shop._id);
+    
+    if (myCache.get(shopid)) {
+        // console.log(myCache.get(shopid), 'myCache.get(shopid)');
+        return res.status(200).json({
+            success: true,
+            products: myCache.get(shopid)
+        })
+    }
+
+    try {
+        let products = await Product.find({shopId: req.shop._id}).populate('shopId', '_id name').select('shopId productname productdescription slug auction updated created price location intialItemCount itemsLeft')
+        console.log('fetched!!');
+        myCache.set(shopid, products, 0.5*60*60);
+
+        res.status(200).json({
+            success: true,
+            products: products
+        })
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            error: errorHandler.getErrorMessage(error)
+        })
+    }
+}
+
+
 const remove = async (req, res, next) => {
     try {
         let product = req.product
@@ -229,7 +262,7 @@ const remove = async (req, res, next) => {
 
 const list = async (req, res) => {
     try {
-        let products = await Product.find().select('shopid productname productdescription slug auction updated created')
+        let products = await Product.find().select('shopid productname productdescription slug auction updated created price location intialItemCount itemsLeft')
         res.status(200).json({
             success: true,
             products: products
@@ -267,4 +300,4 @@ const defaultPhoto = (req, res) => {
     return res.sendFile(process.cwd() + defaultImage)
 }
 
- export default { productByID, read, update, remove, create, list, photo, defaultPhoto }
+ export default { productByID, read, update, remove, create, list, photo, defaultPhoto, listByShop }

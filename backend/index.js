@@ -13,6 +13,10 @@ import product_router from './routes/product.routes.js';
 import passport from './config/passport.js';
 import session from 'express-session';
 import path from 'path';
+import NodeCache from 'node-cache';
+
+export const myCache = new NodeCache();
+
 // configure necessary modules
 dotenv.config();
 const app = express();

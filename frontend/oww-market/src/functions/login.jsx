@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import apiRequest from '../utils/api';
 import {DotLoader} from 'react-spinners';
+import LoadingScreen from '../components/loading';
 
-function Login() {
+const Login = () => {
+  const [loading, setloading] = useState(true);
   useEffect(() => {
     // Function to extract token from query parameters
     const getTokenFromQueryParams = () => {
@@ -24,6 +26,7 @@ function Login() {
             console.log(response.data);
             if (response.data.success === true) {
               localStorage.setItem("user", JSON.stringify(response.data.user));
+              setloading(false)
               window.location.href = "/dashboard";
             }
           })
@@ -35,16 +38,9 @@ function Login() {
   }, []);
 
   // Your login component UI goes here
-  return (
-  <div className='w-full h-screen flex justify-center items-center'> 
-    <DotLoader
-      css={{display: 'block', margin: '0 auto'}}
-      size={150}
-      color={"#123abc"}
-      loading={true}
-    />
-   </div>
-  );
+  return <>
+    {loading && <LoadingScreen text={'loading'}/>}
+  </>
 }
 
 export default Login;
