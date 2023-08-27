@@ -2,15 +2,14 @@ import { Routes, Route } from "react-router-dom";
 import "./App.css";
 import Login from "./functions/login";
 import Logout from "./functions/logout";
-import Home from "./pages/home";
 import LandingPage from "./pages/LandingPage";
-import LoginComponent from "./components/Login";
-import SignUpComponent from "./components/SignUp";
 import profileImage from '../src/assets/images/twitter-icon.png'
-import Dashboard from "./components/Dashboard";
 import Analytics from "./pages/analytics";
 import Shops from "./pages/shops";
 import Profile from "./components/ProfileTop";
+import Dashboard from "./pages/Dashboard";
+import SignUpComponent from "./pages/SignUp";
+import LoginComponent from "./pages/Login";
 
 
 const fakeProfile = {
