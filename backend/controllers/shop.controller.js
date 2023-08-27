@@ -3,6 +3,7 @@ import Shop from '../models/shop.schema.js'
 import formidable from 'formidable'
 import fs from 'fs'
 import _ from 'lodash'
+import { myCache } from '../index.js'
 
 const defaultImage = '/public/files/default.png'
 
@@ -81,7 +82,7 @@ const photo = (req, res, next) => {
 }
 
 const defaultPhoto = (req, res) => {
-    console.log('here');
+    // console.log('here');
     return res.sendFile(process.cwd() + defaultImage)
 }
 
@@ -155,8 +156,19 @@ const list = async (req, res) => {
 }
 
 const listByOwner = async (req, res) => {
+    const userId = JSON.stringify(req.profile._id)
+
+    if (myCache.get(userId) !== undefined) {
+        // console.log(myCache.get(userId), 'myCache.get(userId)');
+        return res.status(200).json(
+            myCache.get(userId)
+        )
+    }
+
     try {
         let shops = await Shop.find({ owner: req.profile._id }).sort('-created')
+        console.log('fetched!!!');
+        myCache.set(userId, shops, 0.5*60*60);
         res.json(shops)
     } catch (error) {
         return res.status(400).json({
@@ -168,7 +180,7 @@ const listByOwner = async (req, res) => {
 
 const isOwner = (req, res, next) => {
     const isOwner = req.shop && req.auth && req.shop.owner._id == req.auth._id
-    console.log('owner is ', isOwner);
+    // console.log('owner is ', isOwner);
     if (!isOwner) {
         return res.status(403).json({
             success: false,

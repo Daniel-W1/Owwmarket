@@ -13,11 +13,11 @@ async function EmailPasswordLogin (email, password)  {
             headers: Headers
             });
         
-        console.log(res.data, 'the data');
-        
         if (res.data.success === true) {
+            const profile = await axios.get(`http://localhost:3000/profile/of/${res.data.user._id}`);
             localStorage.setItem("user", JSON.stringify(res.data.user));
             localStorage.setItem("token", res.data.token);
+            localStorage.setItem("profile", JSON.stringify(profile.data.profile));
             window.location.href = "/dashboard";
         }
     } catch (error) {

@@ -10,6 +10,7 @@ import googleIconImageSrc from "../assets/images/google-icon.png";
 import { ReactComponent as LoginIcon } from "feather-icons/dist/icons/log-in.svg";
 import { Link } from "react-router-dom";
 import EmailPasswordLogin from "../functions/emailpasslogin";
+import LoadingScreen from "../components/loading";
 
 const Container = tw(ContainerBase)`min-h-screen text-white font-medium flex justify-center -m-8`;
 const Content = tw.div`max-w-screen-xl m-0 sm:mx-20 sm:my-16 bg-white text-gray-900 shadow sm:rounded-lg flex justify-center flex-1`;
@@ -78,10 +79,13 @@ const LoginComponent = ({
 
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
+  const [loading, setloading] = useState(false);
 
   const submit = async (e) => {
+    setloading(true);
     e.preventDefault();
     const res = await EmailPasswordLogin(email, password);
+    setloading(false);
     console.log(res);
   }
 
@@ -95,7 +99,7 @@ const LoginComponent = ({
     console.log(password);
   } 
 
-  return <>
+  return loading ? <LoadingScreen text={'loading..'}/> :
     <AnimationRevealPage>
       <Container>
         <Content>
@@ -147,7 +151,6 @@ const LoginComponent = ({
         </Content>
       </Container>
     </AnimationRevealPage>
-  </>
 };
 
 export default LoginComponent;

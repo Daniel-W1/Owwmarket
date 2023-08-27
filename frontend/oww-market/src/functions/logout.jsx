@@ -1,10 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { DotLoader } from 'react-spinners';
+import LoadingScreen from '../components/loading';
 
 function Logout() {
+  const [loading, setloading] = useState(false);
   useEffect(() => {
     const logoutUser = async () => {
+      setloading(true)
       const url = 'http://localhost:3000/auth/google/logout';
 
       try {
@@ -13,6 +16,7 @@ function Logout() {
         if (response.data.success === true) {
           localStorage.removeItem('user');
           localStorage.removeItem('token');
+          setloading(false);
           window.location.href = '/';
         }
       } catch (error) {
@@ -23,14 +27,7 @@ function Logout() {
     logoutUser();
   }, []);
 
-  return <div className='flex justify-center items-center w-full h-screen'>
-    <DotLoader
-      css={{display: 'block', margin: '0 auto'}}
-      size={150}
-      color={"#123abc"}
-      loading={true}
-    />
-  </div>;
+  return loading ? <LoadingScreen text={'loading..'}/>: <></>;
 }
 
 export default Logout;

@@ -35,7 +35,15 @@ const ProductSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    location: Object,
+    intialItemCount: {
+      type: Number,
+      required: true
+    },
+    itemsLeft: {
+      type: Number,
+      required: true
+    },
+    location: String,
     productImages : [{ data: Buffer, contentType: String }],
   },
   { timestamps: true }
