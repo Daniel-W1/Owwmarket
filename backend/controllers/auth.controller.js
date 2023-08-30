@@ -47,10 +47,18 @@ const loginSuccess = (req, res) => {
 };
 
 const loginFailed = (req, res) => {
-  res.json({
-    success: false,
-    message: "Log in failure",
-  });
+  const message = req.query.message;
+  if(message) {
+    res.json({
+      success: false,
+      message: message,
+    });
+  } else {
+    res.json({
+      success: false,
+      message: "Log in failure",
+    });
+  }
 };
 
 const google = passport.authenticate("google", ["profile", "email"]);
@@ -60,7 +68,7 @@ const callback = (req, res, next) => {
       // checking how things work
       console.log(user);
       if (err) {
-        return res.redirect("/auth/google/failed");
+        return res.redirect(`/auth/google/failed?message=${err.message}`);
       }
       if (!user) {
         return res.redirect("/auth/google/failed");
