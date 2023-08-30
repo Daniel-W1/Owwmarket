@@ -5,10 +5,11 @@ import Profile from '../models/profile.schema.js';
 import { User } from '../models/user.schema.js';
 import errorHandler from '../helpers/dbhelper.js';
 import Shop from '../models/shop.schema.js';
-
+import Log from '../models/log.schema.js'
 const defaultImage = '/public/files/default.png';
 
 const updateProfile = async (req, res) => {
+    const og = _.cloneDeep(req.profile);
     let form = formidable({ multiples: false })
     form.keepExtensions = true;
     form.maxFileSize = 50 * 1024 * 1024; // 5MB
@@ -40,6 +41,61 @@ const updateProfile = async (req, res) => {
         try {
             await profile.save();
             res.json(profile);
+            const updatedFields = [];
+            const changedValues = {};
+            const productKeys = Object.keys(profile._doc);
+      
+            for (const key of productKeys) {
+              if (
+                key === "_id" ||
+                key === "createdAt" ||
+                key === "updatedAt" ||
+                key === "owner" ||
+                key === "email" ||
+                key === "followers" ||
+                key === "followig"
+              ) {
+                continue;
+              }
+      
+              if (Array.isArray(profile._doc[key])) {
+                if (!arraysEqual(og._doc[key], profile._doc[key])) {
+                  updatedFields.push(key);
+                  changedValues[key] = { old: og._doc[key], new: profile._doc[key] };
+                }
+              } else if (og._doc[key] !== profile._doc[key]) {
+                updatedFields.push(key);
+                changedValues[key] = { old: og._doc[key], new: profile._doc[key] };
+              }
+            }
+      
+            const updatedFieldsString = updatedFields.join(", ");
+      
+            function arraysEqual(a, b) {
+              if (a === b) return true;
+              if (a == null || b == null) return false;
+              if (a.length !== b.length) return false;
+      
+              for (let i = 0; i < a.length; i++) {
+                if (a[i] !== b[i]) return false;
+              }
+      
+              return true;
+            }
+      
+            if (changedValues !== {}) {
+              
+              const log = new Log({
+                user: req.profile._id,
+                resource: "user",
+                resourceid: profile._id,
+                action: "profileupdate",
+                description: `${updatedFieldsString} was updated`,
+                details: changedValues,
+              });
+      
+              await log.save();
+            }
         } catch (error) {
             return res.status(400).json({ success: false,
                 error: errorHandler.getErrorMessage(error)
@@ -67,7 +123,19 @@ const addFollowing = async (req, res, next) => {
         }).populate('following', '_id name')
             .populate('followers', '_id name')
             .exec();
-        next()
+
+            next()
+
+            var followed = await User.findById(req.body.theFollowedId)
+            const log = new Log({
+                user: req.body.followerId,
+                resource: "user",
+                action: "addfollow",
+                resourceid: req.body.theFollowedId,
+                description: `${userProfile.name} start following ${followed.name}`,
+                details: followed
+            })
+            await log.save();
     } catch (error) {
         return res.status(400).json({ success: false, error: errorHandler.getErrorMessage(error) });
     }
@@ -100,6 +168,17 @@ const removeFollowing = async (req, res, next) => {
             .exec();
         
         next();
+
+        var removed = await User.findById(req.body.theRemovedId)
+        const log = new Log({
+            user: req.body.removerId,
+            resource: "user",
+            action: "removefollow",
+            resourceid: req.body.theFollowedId,
+            description: `${userProfile.name} unfollow ${removed.name}`,
+            details: removed
+        })
+        await log.save();
     } catch (error) {
         return res.status(400).json({ success: false, error: errorHandler.getErrorMessage(error) });
     }
@@ -146,6 +225,15 @@ const remove = async (req, res) => {
         let profile = req.user_profile;
         let deletedProfile = await profile.remove();
         res.json(deletedProfile);
+        const log = new Log({
+            user: deletedProfile.owner,
+            resource: "user",
+            resourceid: deletedProfile._id,
+            action: "profileremove",
+            description: `${deletedProfile.name} profile has been removed!`,
+            details: deletedProfile
+        })
+        await log.save();
     } catch (error) {
         return res.status(400).json({ success: false, error: errorHandler.getErrorMessage(error) });
     }
