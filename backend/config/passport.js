@@ -17,7 +17,18 @@ passport.use(
         let user = await User.findOne({
           email: profile._json.email,
         });
-        if (!user) {
+          // if we have user already registred 
+        if(user) {
+          if(!user.googleID) { // if he is registred with email and pass
+            return callback(
+              new Error(
+                'This email is already registered with a different method. Please log in using your existing method.'
+              )
+            );
+          } else { // if he is already registed with google
+            callback(null, user);
+          }
+        } else if (!user) { // if never registred, first time
             user = new GoogleUser({
                 name: profile.displayName,
                 email: profile._json.email,
@@ -25,9 +36,9 @@ passport.use(
                 gmaildata: profile
               });
               await user.save()
-        }
+              callback(null, user);
+        } 
 
-        callback(null, user);
       }
     )
   );
