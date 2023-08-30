@@ -121,10 +121,9 @@ const create = async (req, res) => {
                 product: product,
             })
             // logs
-            let id = req.auth._id;
-            const user = await User.findById(id);
+           
             const log = new Log({
-                user: { id: user._id, name: user.name },
+                user: req.auth._id,
                 resource: "product",
                 resourceid: product._id,
                 action: "productcreate",
@@ -256,14 +255,13 @@ const update = async (req, res) => {
       }
 
       if (changedValues !== {}) {
-        let id = req.auth._id;
-      const user = await User.findById(id);
+        
         const log = new Log({
-          user: { id: user._id, name: user.name },
+          user: req.auth._id,
           resource: "product",
           resourceid: product._id,
           action: "productupdate",
-          description: `${updatedFieldsString} was updated Successfully`,
+          description: `${updatedFieldsString} was updated`,
           details: changedValues,
         });
 
@@ -315,14 +313,12 @@ const remove = async (req, res, next) => {
     try {
         let product = req.product
         let deletedProduct = await Product.findByIdAndDelete(product._id)
-        let id = req.auth._id;
-        const user = await User.findById(id);
          res.status(200).json({
             success: true,
             product: deletedProduct
         })
         const log = new Log({
-            user: { id: user._id, name: user.name },
+            user: req.auth._id,
             resource: "product",
             resourceid: product._id,
             action: "productdelete",
