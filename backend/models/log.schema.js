@@ -1,10 +1,7 @@
 import mongoose from "mongoose";
 
 const logSchema = new mongoose.Schema({
-  user: {
-    id: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Reference to user document
-    name: String
-  },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   resource: String, // Optional, to indicate the affected resource ("user", "product")
   action: String, //  indicate the action ("userupdated","productupdated")
   resourceid: { type: mongoose.Schema.Types.ObjectId, required: false }, // Reference to affected resource document
