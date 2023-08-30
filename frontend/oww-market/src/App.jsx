@@ -10,66 +10,42 @@ import Profile from "./components/ProfileTop";
 import Dashboard from "./pages/Dashboard";
 import SignUpComponent from "./pages/SignUp";
 import LoginComponent from "./pages/Login";
+import ShopCard from "./components/ShopCard";
 
 
-const fakeProfile = {
-  name: "John Doe",
-  email: "john@gmail.com", 
-  bio: "I am a software engineer and I love to code and build things. Oh and I love to play video games too!",
-  image: profileImage,
-  location: "Lagos, Nigeria",
-  shops: [
-    {
-      name: "John's Shop",
-      products: [
-        {
-          name: "Shoe",
-          price: 1000,
-          description: "This is a very nice shoe",
-          image: "https://images.unsplash.com/photo-1612837017391-0e3b5a5b0b0b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
-        },
-        {
-          name: "Shirt",
-          price: 500,
-          description: "This is a very nice shirt",
-          image: "https://images.unsplash.com/photo-1612837017391-0e3b5a5b0b0b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
-        },
-      ]
-    }
-  ]
-  ,
-  followers: [
-    {
-      name: "Jane Doe",
-      image: "https://images.unsplash.com/photo-1612837017391-0e3b5a5b0b0b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
-    },
-    {
-      name: "Jane Doe",
-      image: "https://images.unsplash.com/photo-1612837017391-0e3b5a5b0b0b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
-    },]
-    ,
-  following: [
-    {
-      name: "Jane Doe",
-      image: "https://images.unsplash.com/photo-1612837017391-0e3b5a5b0b0b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
-    },
-    {
-      name: "Jane Doe",
-      image: "https://images.unsplash.com/photo-1612837017391-0e3b5a5b0b0b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
-    },],
+const fakeShop = {
+  name: "Shop 1",
+  description: "This is a shop",
+  image: profileImage,  
   products: [
     {
-      name: "Shoe",
-      price: 1000,
-      description: "This is a very nice shoe",
-      image: "https://images.unsplash.com/photo-1612837017391-0e3b5a5b0b0b?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80"
+      name: "Product 1",
+      description: "This is a product",
+      price: 100,
+      image: profileImage,
+      initialItemCount: 100,
+      itemsLeft: 50,
+    },
+    {
+      name: "Product 2",
+      description: "This is a product",
+      price: 100,
+      image: profileImage,
+      initialItemCount: 100,
+      itemsLeft: 50,
+    },
+    {
+      name: "Product 3",
+      description: "This is a product",
+      price: 100,
+      image: profileImage,
+      initialItemCount: 100,
+      itemsLeft: 0,
     },
   ]
-
-
-          
-
 }
+
+const name = "John Doe"
 
 const App = () => {
   return (
@@ -80,10 +56,11 @@ const App = () => {
         <Route path="/login" element={<LoginComponent/>} />
         <Route path="/login/callback" element={<Login/>} />
         <Route path="/logout" element={<Logout/>} />
-        <Route path = "/profile" element={<Profile profile={fakeProfile}/>} />
+        <Route path = "/profile" element={<Profile/>} />
         <Route path="/dashboard" element={<Dashboard/>} />
         <Route path = '/anaytics' element={<Analytics/>} />
         <Route path="/shops" element = {<Shops/>} />
+        <Route path="/shops/single" element = {<ShopCard name={name} shop={fakeShop}/>} />
 
       </Routes>
     </>

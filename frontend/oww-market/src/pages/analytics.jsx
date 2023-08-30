@@ -108,10 +108,12 @@ const Analytics = () => {
         let productRevenue = 0;
         
         for (let j = 0; j < real_products.length; j++) {
-          shopRevenue += real_products[j].price * (real_products[j].intialItemCount - real_products[j].itemsLeft);
+          let res = real_products[j].price * (real_products[j].intialItemCount - real_products[j].itemsLeft);
+          shopRevenue += res >= 0 ? res : 0;
           productNames.push(real_products[j].productname);
-          productRevenue = real_products[j].price * (real_products[j].intialItemCount - real_products[j].itemsLeft);
+          productRevenue = res >= 0 ? res : 0;
           // console.log(productRevenue, 'product revenue', real_products[j].price, real_products[j].intialItemCount, real_products[j].itemsLeft);
+          console.log(productRevenue, 'this is product revenue');
           productRevenues.push(productRevenue >= 0 ? productRevenue : 0);
         }
         
@@ -124,7 +126,7 @@ const Analytics = () => {
       setproductNames(productNames);
       setproductRevenues(productRevenues);
 
-      // console.log(productNames, productRevenues);
+      console.log(totalRevenue, 'the revenues', shops);
 
       
       if (shops.length > 0) {
@@ -177,7 +179,7 @@ const Analytics = () => {
 
   }, [shops])
 
-  
+  console.log(revenue);
   // console.log(loading, shops, products, revenue, productNames, productRevenues, productsChartData, shopChartData);
   return (loading ? <LoadingScreen text={'loading..'} /> :
   <>

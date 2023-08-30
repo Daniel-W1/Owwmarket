@@ -1,63 +1,73 @@
-import React, { useState } from 'react'
-import tw from 'twin.macro'
-import styled from 'styled-components'
-import Slider from 'react-slick';
-import  {ReactComponent as ArrowLeftIcon}  from "../assets/images/arrow-left-3-icon.svg";
-import {ReactComponent as ArrowRightIcon} from "../assets/images/arrow-right-3-icon.svg";
+import React, { useEffect, useState } from 'react'
+import {MdOutlineProductionQuantityLimits} from 'react-icons/md'
+import { imagefrombuffer } from "imagefrombuffer"; //first import 
+import axios from 'axios';
+import LoadingScreen from './loading';
+import { GetProductsForShop } from '../functions/helpers';
 
-const ContentCard = tw.div`outline-none h-full flex! flex-col`;
-const NameHeading = tw.div`mt-4 text-xl font-bold`;
-const RowContainer =  tw.div`mt-auto flex justify-between items-center flex-col sm:flex-row`;
-const ShopInfo = tw.blockquote`mt-4 mb-8 sm:mb-10 leading-relaxed font-medium text-gray-700 max-w-lg`;
-
-const Controls = styled.div`
-  ${tw`flex mt-8 sm:mt-0`}
-  .divider {
-    ${tw`my-3 border-r`}
-  }
-`;
-const ControlButton = styled.button`
-  ${tw`mx-3 p-4 rounded-full transition duration-300 bg-gray-200 hover:bg-gray-300 text-primary-500 hover:text-primary-700 focus:outline-none focus:shadow-outline`}
-  svg {
-    ${tw`w-4 h-4 stroke-3`}
-  }
-`;
-
-const ShopPicture = tw.img`rounded-full w-24 h-24 sm:w-20 sm:h-20`;
-const TextInfo = tw.div`text-center md:text-left sm:ml-6 mt-2 sm:mt-0`;
-const ShopName = tw.h5`font-bold text-xl`;
+const user = JSON.parse(localStorage.getItem("user"));
+const profile = JSON.parse(localStorage.getItem("profile"));
+const userId = user._id;
+const followers = profile.followers.length;
 
 
-const ShopCard = ({controls, Shop, SlideState}) => {
+const ShopCard = ({ shop, name }) => {
+  const [loading, setloading] = useState(true)
+  const [productsLength , setproductsLength] = useState(0)
 
-  return (
-    <>
-        <ContentCard>
-            <RowContainer>
-                <ShopInfo>
-                    <ShopPicture src={Shop.image} alt={`${Shop.name} image`} />
-                    <TextInfo>
-                        <ShopName>{Shop.name}</ShopName>
-                    </TextInfo>
-                </ShopInfo>
-                <Controls>
-                      <ControlButton onClick={SlideState?.slickPrev}>
-                        <ArrowLeftIcon />
-                      </ControlButton>
-                      <div className="divider" />
-                      <ControlButton onClick={SlideState?.slickNext}>
-                        <ArrowRightIcon />
-                      </ControlButton>
-                </Controls>
+  useEffect(() => {
+    (
+      async () => {
+        const response = await GetProductsForShop(shop._id, userId).then((res) => {
+          return res;
+        }
+        );
+        setproductsLength(response.products.length)
+        setloading(false)
+      }) ();
+  }, [])
 
-            </RowContainer>
-            
-            <NameHeading>{Shop.name}</NameHeading>
-            <ShopInfo>{Shop.info}</ShopInfo>
+  return ( loading ? <LoadingScreen text={'loading..'} /> :
+    <div className='my-4 pt-4 w-full lg:w-full mx-auto rounded-xl  flex flex-wrap justify-center lg:justify-around  items-center md:items-stretch md:flex-row md:justify-center shadow-lg'>
+      <div className='flex-col justify-center items-center'>
+        <div className='p-4 mb-2 mx-auto w-32 h-32 lg:w-56 lg:h-56 md:mx-3 lg:mx-6  md:w-56 flex items-center  max-w-xs md:max-w-none border-4 '>
+          <img src= {`http://localhost:3000/shops/logo/${shop._id}`} className='w-full h-full' alt="" />
+        </div>
+
+        <div className='text-center mt-4 md:mt-0'>
+          <div className='font-bold text-lg lg:text-xl xl:text-2xl text-primary-500'>{shop.name}</div>
+          <div className='font-medium text-sm'>by {name}</div>
+        </div>
+      </div>
 
 
-        </ContentCard>
-    </>
+      <div className='md:mx-3 lg:mx-8 md:w-6/12 py-4 flex flex-col justify-between'>
+
+        <div className='text-center text-sm md:text-left lg:text-xl xl:text-2xl px-4'>
+          {shop.description + '. ' }
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Possimus quas
+           consequatur quia culpa maxime.
+        </div>
+
+        <div className='flex justify-around my-4'>
+        <div className='text-center mt-4 md:mt-0'>
+          <div className='font-bold text-sm lg:text-xl xl:text-2xl text-primary-500'>{followers}</div>
+          <div className='font-medium text-sm'>Customers</div>
+        </div>
+        <div className='text-center mt-4 md:mt-0'>
+          <div className='font-bold text-sm lg:text-xl xl:text-2xl text-primary-500'>{productsLength}</div>
+          <div className='font-medium text-sm'>Products</div>
+        </div>
+        </div>
+
+        <div className='px-2 lg:px-4 mt-2 mb-6 flex justify-center items-center'>
+          <button className='border-none text-sm lg:text-xl  px-4 py-1 w-2/3 lg:w-full flex-col items-center justify-center bg-gray-300 hover:bg-gray-400 duration-300'>
+            <MdOutlineProductionQuantityLimits className='hidden lg:inline-block mr-2' />
+            <span className='font-semibold'>Products</span>
+          </button>
+        </div>
+      </div>
+    </div>
   )
 }
 

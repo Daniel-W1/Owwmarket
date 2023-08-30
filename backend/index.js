@@ -26,7 +26,11 @@ const uri = process.env.ATLAS_URI || "";
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(helmet())
+app.use(helmet(
+  {
+    crossOriginResourcePolicy: false,
+  }
+))
 app.use(
     cors({
       origin: "http://localhost:5173",
@@ -47,7 +51,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-
+app.use(express.static('public'));
 app.use("/", user_router)
 app.use("/", auth_router)
 app.use("/", shop_router)
