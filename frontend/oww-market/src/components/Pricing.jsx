@@ -33,7 +33,7 @@ background: linear-gradient(135deg, rgba(76,81,191,1) 0%, rgba(102,126,234,1) 10
       .planHighlight {
         ${tw`hidden`}
       }
-      .duration {
+      .duration { 
         ${tw`text-gray-200!`}
       }
       ${PlanFeatures} {

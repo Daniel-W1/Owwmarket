@@ -4,8 +4,10 @@ import formidable from 'formidable'
 import fs from 'fs'
 import _ from 'lodash'
 import { myCache } from '../index.js'
+import { imagefrombuffer } from "imagefrombuffer"; //first import 
 
-const defaultImage = '/public/files/default.png'
+
+const defaultImage = '/public/default.png'
 
 const create = async (req, res) => {
     let form = formidable({multiples:false});
@@ -73,17 +75,28 @@ const shopbyId = async (req, res, next, id) => {
 }
 
 const photo = (req, res, next) => {
-    // console.log('here', req.shop.image.data);
-    if (req.shop.image.data !== undefined) {
-        res.set("Content-Type", req.shop.image.contentType)
+    if (req.shop.image.data) {
+        console.log('image found');
+        res.set('Content-Type', req.shop.image.contentType)
         return res.send(req.shop.image.data)
     }
     next()
 }
 
 const defaultPhoto = (req, res) => {
-    // console.log('here');
-    return res.sendFile(process.cwd() + defaultImage)
+    const defaultImagePath = process.cwd() + defaultImage;
+    try {
+        console.log('default');
+        const defaultImageBuffer = fs.readFileSync(defaultImagePath);
+        if (defaultImageBuffer) {
+            res.set('Content-Type', 'image/png'); 
+            return res.send(defaultImageBuffer);
+        }
+    } catch (error) {
+        console.error('Error reading default image:', error);
+    }
+
+    res.status(404).send('Default image not available');
 }
 
 const read = (req, res) => {
