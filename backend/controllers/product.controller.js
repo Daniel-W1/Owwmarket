@@ -2,6 +2,7 @@ import { User, GoogleUser } from '../models/user.schema.js'
 import _ from 'lodash'
 import errorHandler from '../helpers/dbhelper.js';
 import {Product, ProductAuction} from '../models/product.schema.js';
+import Log from "../models/log.schema.js";
 import slugify from "slugify";
 import formidable from 'formidable';
 import fs from 'fs';
@@ -17,6 +18,7 @@ const productByID = async (req, res, next, id) => {
                 success: false,
                 error: "Product not found"
             })
+        req.originalproduct = { ...product };
         req.product = product;
         next()
     } catch (error) {
@@ -114,10 +116,21 @@ const create = async (req, res) => {
         try {
             // console.log(product.shopid, 'shopid', product.productname, 'productname', product.auction, 'auction');
             await product.save()
-            return res.status(200).json({
+             res.status(200).json({
                 success: true,
                 product: product,
             })
+            // logs
+           
+            const log = new Log({
+                user: req.auth._id,
+                resource: "product",
+                resourceid: product._id,
+                action: "productcreate",
+                description: `${product.productname} was created`,
+                details: product,
+              });
+              await log.save();
         } catch (error) {
             return res.status(400).json({
                 success: false,
@@ -146,7 +159,7 @@ const update = async (req, res) => {
     //         error: errorHandler.getErrorMessage(error)
     //     })
     // }
-
+    const og = _.cloneDeep(req.originalproduct);
     let form = formidable();
     form.keepExtensions = true
     form.maxFileSize = 100 * 1024 * 1024;
@@ -198,10 +211,62 @@ const update = async (req, res) => {
         try {
             // console.log(product.shopid, 'shopid', product.productname, 'productname', product.auction, 'auction');
             await product.save()
-            return res.status(200).json({
+             res.status(200).json({
                 success: true,
                 product: product,
             })
+      const updatedFields = [];
+      const changedValues = {};
+      const productKeys = Object.keys(product._doc);
+
+      for (const key of productKeys) {
+        if (
+          key === "_id" ||
+          key === "createdAt" ||
+          key === "updatedAt" ||
+          key === "shopId"
+        ) {
+          continue;
+        }
+
+        if (Array.isArray(product._doc[key])) {
+          if (!arraysEqual(og._doc[key], product._doc[key])) {
+            updatedFields.push(key);
+            changedValues[key] = { old: og._doc[key], new: product._doc[key] };
+          }
+        } else if (og._doc[key] !== product._doc[key]) {
+          updatedFields.push(key);
+          changedValues[key] = { old: og._doc[key], new: product._doc[key] };
+        }
+      }
+
+      const updatedFieldsString = updatedFields.join(", ");
+
+      function arraysEqual(a, b) {
+        if (a === b) return true;
+        if (a == null || b == null) return false;
+        if (a.length !== b.length) return false;
+
+        for (let i = 0; i < a.length; i++) {
+          if (a[i] !== b[i]) return false;
+        }
+
+        return true;
+      }
+
+      if (changedValues !== {}) {
+        
+        const log = new Log({
+          user: req.auth._id,
+          resource: "product",
+          resourceid: product._id,
+          action: "productupdate",
+          description: `${updatedFieldsString} was updated`,
+          details: changedValues,
+        });
+
+        await log.save();
+      }
         } catch (error) {
             return res.status(400).json({
                 success: false,
@@ -248,10 +313,20 @@ const remove = async (req, res, next) => {
     try {
         let product = req.product
         let deletedProduct = await Product.findByIdAndDelete(product._id)
-        return res.status(200).json({
+         res.status(200).json({
             success: true,
             product: deletedProduct
         })
+        const log = new Log({
+            user: req.auth._id,
+            resource: "product",
+            resourceid: product._id,
+            action: "productdelete",
+            description: `${product.productname} was deleted`,
+            details: deletedProduct,
+          });
+    
+          await log.save();
     } catch (error) {
         return res.status(400).json({
             success: false,

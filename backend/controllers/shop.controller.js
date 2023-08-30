@@ -1,10 +1,12 @@
 import errorHandler from '../helpers/dbhelper.js'
 import Shop from '../models/shop.schema.js'
+import Log from '../models/log.schema.js'
 import formidable from 'formidable'
 import fs from 'fs'
 import _ from 'lodash'
 import { myCache } from '../index.js'
 import { imagefrombuffer } from "imagefrombuffer"; //first import 
+import { User } from '../models/user.schema.js'
 
 
 const defaultImage = '/public/default.png'
@@ -41,7 +43,22 @@ const create = async (req, res) => {
 
         try {
             let result = await shop.save()
-            res.json(result)
+            res.status(200).json({
+                success: true,
+                shop: result,
+            })
+            // logs
+           
+            const log = new Log({
+                user: shop.owner,
+                resource: "shop",
+                resourceid: result._id,
+                action: "shopcreate",
+                description: `${result.name} was created`,
+                details: result,
+              });
+              await log.save();
+             
         } catch (error) {
             return res.status(400).json({
                 success: false,
@@ -105,6 +122,7 @@ const read = (req, res) => {
 }
 
 const update = async (req, res) => {
+    const og = _.cloneDeep(req.shop);
     let form = formidable({multiples:false})
     form.keepExtensions = true
 
@@ -133,7 +151,62 @@ const update = async (req, res) => {
             
             // console.log('we are here', shop);
             let result = await shop.save()
-            res.json(result)
+            res.status(200).json({
+                success: true,
+                shop: result,
+            })
+            const updatedFields = [];
+            const changedValues = {};
+            const productKeys = Object.keys(shop._doc);
+      
+            for (const key of productKeys) {
+              if (
+                key === "_id" ||
+                key === "createdAt" ||
+                key === "updatedAt" ||
+                key === "owner"
+              ) {
+                continue;
+              }
+      
+              if (Array.isArray(shop._doc[key])) {
+                if (!arraysEqual(og._doc[key], shop._doc[key])) {
+                  updatedFields.push(key);
+                  changedValues[key] = { old: og._doc[key], new: shop._doc[key] };
+                }
+              } else if (og._doc[key] !== shop._doc[key]) {
+                updatedFields.push(key);
+                changedValues[key] = { old: og._doc[key], new: shop._doc[key] };
+              }
+            }
+      
+            const updatedFieldsString = updatedFields.join(", ");
+      
+            function arraysEqual(a, b) {
+              if (a === b) return true;
+              if (a == null || b == null) return false;
+              if (a.length !== b.length) return false;
+      
+              for (let i = 0; i < a.length; i++) {
+                if (a[i] !== b[i]) return false;
+              }
+      
+              return true;
+            }
+      
+            if (changedValues !== {}) {
+              
+              const log = new Log({
+                user: req.auth._id,
+                resource: "shop",
+                resourceid: shop._id,
+                action: "shopupdate",
+                description: `${updatedFieldsString} was updated`,
+                details: changedValues,
+              });
+      
+              await log.save();
+            }
         } catch (error) {
             return res.status(400).json({
                 success: false,
@@ -147,7 +220,20 @@ const remove = async (req, res) => {
     try {
         let shop = req.shop
         let deletedShop = await Shop.findByIdAndDelete(shop._id)
-        res.json(deletedShop)
+        res.status(200).json({
+            success: true,
+            shop: deletedShop,
+        })
+        // logs       
+        const log = new Log({
+            user: deletedShop.owner,
+            resource: "shop",
+            resourceid: deletedShop._id,
+            action: "shopdelete",
+            description: `${deletedShop.name} was deleted`,
+            details: deletedShop,
+          });
+          await log.save();
     } catch (error) {
         return res.status(400).json({
             success: false,
