@@ -10,7 +10,10 @@ const Headers = {
 const GetProfileForUser = async (userId) => {
     const url = `http://localhost:3000/profile/of/${userId}`;
     try {
-        const response = await axios.get(url, { withCredentials: true }, Headers);
+        const response = await axios.get(url, { withCredentials: true }, Headers).then((res) => {
+            return res;
+        });
+        // console.log('this is the response', response.data);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -23,7 +26,6 @@ const GetShopForUser = async (userId) => {
         const response = await axios.get(url, { withCredentials: true }, Headers).then((res) => {
             return res;
         });
-        console.log('this are the shops', response.data);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -48,5 +50,16 @@ const GetProductsForShop = async (shopId, userId) => {
     }
 }
 
+const GetUserById = async (userId) => {
+    const url = `http://localhost:3000/users/${userId}`;
+    try {
+        const response = await axios.get(url, { withCredentials: true }, Headers).then((res) => {
+            return res;
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
 
-export { GetProfileForUser, GetShopForUser, GetProductsForShop};
+export { GetProfileForUser, GetShopForUser, GetProductsForShop, GetUserById};

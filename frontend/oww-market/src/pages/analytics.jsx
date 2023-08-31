@@ -3,19 +3,14 @@ import { GetProductsForShop, GetShopForUser } from '../functions/helpers';
 import { Pie, Bar } from 'react-chartjs-2';
 import LoadingScreen from '../components/loading';
 import { Chart, registerables } from 'chart.js'
+import { useParams } from 'react-router-dom';
 
 Chart.register(...registerables)
 
 const Analytics = () => {
-  const userdata = localStorage.getItem("user");
-  let user = null;
-
-
-  if (userdata && userdata !== 'undefined') {
-    user = JSON.parse(userdata);
-  }
-
-  // const [lastFetchTime, setlastFetchTime] = useState(Date("2022-03-25"));
+  const params = useParams();
+  
+  const the_userId = params.userId ? params.userId: JSON.parse(localStorage.getItem("user"))._id;
   const [shops, setshops] = useState([]);
   const [products, setproducts] = useState([]);
   const [revenue, setrevenue] = useState([]);
@@ -64,16 +59,13 @@ const Analytics = () => {
 
 
   const Shops = async () => {
-    const shops = await GetShopForUser(user._id).then((res)=> {
+    const shops = await GetShopForUser(the_userId).then((res)=> {
       return res;
     })
     return shops
   }
 
   useEffect(() => {
-    // if (Date.now() - lastFetchTime < 1000 * 60 * 60 * 0.5) {
-    //   return;
-    // }
     (async () =>{
       const res = await Shops().then((res)=>{
         return res;
@@ -94,16 +86,14 @@ const Analytics = () => {
 
       for (let i = 0; i < shops.length; i++) {
         
-        const fetched_products = await GetProductsForShop(shops[i]._id, user._id).then((res) => {
+        const fetched_products = await GetProductsForShop(shops[i]._id, the_userId).then((res) => {
           if (i === shops.length - 1){
-            // setlastFetchTime(Date.now());
             setloading(false);
           }
           return res;
           });
         const real_products = fetched_products.products
         
-        // console.log(real_products, 'real products');
         let shopRevenue = 0;
         let productRevenue = 0;
         
@@ -112,8 +102,6 @@ const Analytics = () => {
           shopRevenue += res >= 0 ? res : 0;
           productNames.push(real_products[j].productname);
           productRevenue = res >= 0 ? res : 0;
-          // console.log(productRevenue, 'product revenue', real_products[j].price, real_products[j].intialItemCount, real_products[j].itemsLeft);
-          console.log(productRevenue, 'this is product revenue');
           productRevenues.push(productRevenue >= 0 ? productRevenue : 0);
         }
         
@@ -126,7 +114,7 @@ const Analytics = () => {
       setproductNames(productNames);
       setproductRevenues(productRevenues);
 
-      console.log(totalRevenue, 'the revenues', shops);
+      // console.log(totalRevenue, 'the revenues', shops);
 
       
       if (shops.length > 0) {
@@ -179,7 +167,7 @@ const Analytics = () => {
 
   }, [shops])
 
-  console.log(revenue);
+  // console.log(revenue);
   // console.log(loading, shops, products, revenue, productNames, productRevenues, productsChartData, shopChartData);
   return (loading ? <LoadingScreen text={'loading..'} /> :
   <>
