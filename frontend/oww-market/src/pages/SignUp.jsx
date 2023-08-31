@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import AnimationRevealPage from "../helpers/AnimationRevealPage";
 import { Container as ContainerBase } from "../helpers/Layout.jsx";
 import tw from "twin.macro";
@@ -8,6 +9,8 @@ import logo from "../assets/images/logo.svg";
 import googleIconImageSrc from "../assets/images/google-icon.png";
 import { ReactComponent as SignUpIcon } from "feather-icons/dist/icons/user-plus.svg";
 import { Link } from "react-router-dom";
+import LoadingScreen from "../components/loading";
+import EmailPasswordSignup from "../hooks/emailpasssignup";
 
 const Container = tw(ContainerBase)`min-h-screen text-white font-medium flex justify-center -m-8`;
 const Content = tw.div`max-w-screen-xl m-0 sm:mx-20 sm:my-16 bg-white text-gray-900 shadow sm:rounded-lg flex justify-center flex-1`;
@@ -36,7 +39,7 @@ const DividerTextContainer = tw.div`my-12 border-b text-center relative`;
 const DividerText = tw.div`leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform -translate-y-1/2 absolute inset-x-0 top-1/2 bg-transparent`;
 
 const Form = tw.form`mx-auto max-w-xs`;
-const Input = tw.input`w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5 first:mt-0`;
+var Input = tw.input`w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5 first:mt-0`;
 const SubmitButton = styled.button`
   ${tw`mt-5 tracking-wide font-semibold bg-primary-500 text-gray-100 w-full py-4 rounded-lg hover:bg-primary-900 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none`}
   .icon {
@@ -45,16 +48,16 @@ const SubmitButton = styled.button`
   .text {
     ${tw`ml-3`}
   }
-`;
-const IllustrationContainer = tw.div`sm:rounded-r-lg flex-1 bg-purple-100 text-center hidden lg:flex justify-center`;
-const IllustrationImage = styled.div`
+  `;
+  const IllustrationContainer = tw.div`sm:rounded-r-lg flex-1 bg-purple-100 text-center hidden lg:flex justify-center`;
+  const IllustrationImage = styled.div`
   ${props => `background-image: url("${props.imageSrc}");`}
   ${tw`m-12 xl:m-16 w-full max-w-lg bg-contain bg-center bg-no-repeat`}
-`;
-
-const googleAuth = () => {
-  window.open(`http://localhost:3000/auth/google/`, "_self");
-};
+  `;
+  
+  const googleAuth = () => {
+    window.open(`http://localhost:3000/auth/google/`, "_self");
+  };
 
 const SignUpComponent = ({
   logoLinkUrl = "#",
@@ -72,7 +75,59 @@ const SignUpComponent = ({
   tosUrl = "#",
   privacyPolicyUrl = "#",
   signInUrl = "/login"
-}) => (
+}) => {
+  const [loading, setloading] = useState(false);
+  const [errormessage, seterrormessage] = useState("");
+
+  const [name, setname] = useState("");
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
+  const [password2, setpassword2] = useState("");
+  const passwordsMatch = password === password2;
+
+  // useEffect(() => {
+  //   !passwordsMatch ? seterrormessage("Passwords do not match.") : null;
+  // }, [password, password2])
+  
+
+const submit = async (e) => {
+  e.preventDefault();
+
+if(!name || !email) {
+  seterrormessage("Please Provide All credentials!.")
+} else if(!passwordsMatch) {
+  return seterrormessage("Passwords do not match.")
+} else {
+  setloading(true);
+  console.log({ name, email, password, password2 })
+  console.log("here");
+  const res = await EmailPasswordSignup(name, email, password);
+  if(res?.success === false) {
+    seterrormessage(res.error)
+    setloading(false);
+  }
+}
+  
+}
+
+
+const handleNameUpdate = (e) => {
+  setname(e.target.value);
+  console.log(name);
+}
+const handleEmailUpdate = (e) => {
+  setemail(e.target.value);
+  console.log(email);
+}
+const handlePasswordUpdate = (e) => {
+  setpassword(e.target.value);
+  console.log(password);
+} 
+const handlePasswordVerificationUpdate = (e) => {
+  setpassword2(e.target.value);
+  console.log(password2);
+}
+return loading ? <LoadingScreen text={'loading..'}/> : (
   <AnimationRevealPage>
     <Container>
       <Content>
@@ -96,10 +151,17 @@ const SignUpComponent = ({
               <DividerTextContainer>
                 <DividerText>Or Sign up with your e-mail</DividerText>
               </DividerTextContainer>
-              <Form>
-                <Input type="email" placeholder="Email" />
-                <Input type="password" placeholder="Password" />
-                <SubmitButton type="submit">
+              { errormessage && (
+                  <p className="text-center text-red-600 text-base font-semibold mb-2">{errormessage}</p>
+                )}
+              <Form onSubmit={submit}>
+                <Input type="text" placeholder="Name" onChange={handleNameUpdate} value={name} required/>
+                <Input type="email" placeholder="Email" onChange={handleEmailUpdate} value={email} required/>
+                <Input type="password" placeholder="Password" onChange={handlePasswordUpdate} value={password} required/>
+                <Input type="password" placeholder="Password Verificaton" onChange={handlePasswordVerificationUpdate}/>
+                <SubmitButton type="submit" className={`py-2 px-4 text-white rounded ${
+            !passwordsMatch || password2 === '' ? 'cursor-not-allowed' : null
+          }`} disabled={!passwordsMatch || password2 === ''} >
                   <SubmitButtonIcon className="icon" />
                   <span className="text">{submitButtonText}</span>
                 </SubmitButton>
@@ -130,6 +192,6 @@ const SignUpComponent = ({
       </Content>
     </Container>
   </AnimationRevealPage>
-);
+);}
 
 export default SignUpComponent;

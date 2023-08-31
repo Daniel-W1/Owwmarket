@@ -40,6 +40,8 @@ const Login = () => {
             console.error(error);
           });
       
+    } else {
+        window.location.href = "/login?error=gmailerror"
     }
   }, []);
 
