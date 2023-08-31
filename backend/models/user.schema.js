@@ -79,13 +79,13 @@ UserSchema.methods = {
 };
 
 UserSchema.path("hashed_password").validate(function (v) {
-  // console.log('here', this._password);
+  // console.log('here', this._password, this.password);
 
   if (!this.googleID) {
     if (this._password && this._password.length < 8) {
       this.invalidate("password", "Password must be at least 8 characters.");
     }
-    if (this.isNew && !this._password) {
+    if (this.isNew && !this.password) {
       this.invalidate("password", "Password is required");
     }
     if (this._password && !/[A-Z]/.test(this._password)) {
