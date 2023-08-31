@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import SignUpComponent from "./pages/SignUp";
 import LoginComponent from "./pages/Login";
 import ShopCard from "./components/ShopCard";
+import Settings from "./pages/settings";
 
 
 const fakeShop = {
@@ -56,11 +57,12 @@ const App = () => {
         <Route path="/login" element={<LoginComponent/>} />
         <Route path="/login/callback" element={<Login/>} />
         <Route path="/logout" element={<Logout/>} />
-        <Route path = "/profile" element={<Profile/>} />
-        <Route path="/dashboard" element={<Dashboard/>} />
-        <Route path = '/anaytics' element={<Analytics/>} />
-        <Route path="/shops" element = {<Shops/>} />
-        <Route path="/shops/single" element = {<ShopCard name={name} shop={fakeShop}/>} />
+        <Route path = "/profile/of/:userId" element={<Profile/>} />
+        <Route path="/user/dashboard" element={<Dashboard/>} />
+        <Route path = '/user/:userId/anaytics' element={<Analytics/>} />
+        <Route path="/shops/by/:userId" element = {<Shops/>} />
+        <Route path="/user/:userId/shops/:shopId" element = {<ShopCard/>} />
+        <Route path="/user/:userId/settings" element={<Settings/>} />
 
       </Routes>
     </>
