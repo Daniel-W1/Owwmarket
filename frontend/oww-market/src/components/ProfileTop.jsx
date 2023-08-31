@@ -10,9 +10,11 @@ import LoadingScreen from './loading';
 import { imagefrombuffer } from "imagefrombuffer"; //first import 
 import { MdDownloadDone } from 'react-icons/md'
 import { GiCancel } from 'react-icons/gi'
+import { useParams } from 'react-router-dom';
 
 
 const Profile = () => {
+    const params = useParams();
     const [theProfile, settheProfile] = useState(null)
     const [loading, setloading] = useState({
         loading_bool: true,
@@ -26,35 +28,52 @@ const Profile = () => {
         location: '',
         bio: ''
     })
+    const inputref = useRef(null)
+    const [selectedImage, setselectedImage] = useState(null)
+    const [imageHovered, setimageHovered] = useState(false);
+    const the_userId = params.userId ? params.userId : JSON.parse(localStorage.getItem('user'))._id;
+
+
+    useEffect(()=> {
+        (
+            async () => {
+                const response = await GetShopForUser(the_userId);
+                const shopdata = await GetShopForUser(the_userId);
+
+                let theProfile = response.profile;
+                theProfile.shops = shopdata;
+
+                settheProfile(response.profile);
+            }
+        )();
+    }, [])
 
     useEffect(() => {
-        const the_userdata = localStorage.getItem('user');
-        let the_user = null;
+        (async ()=>{
+            const data = await GetProfileForUser(the_userId)
+            const shopdata = await GetShopForUser(the_userId);
 
-        if (the_userdata) {
-            the_user = JSON.parse(the_userdata);
-        }
-
-        const the_userId = the_user._id;
-        GetProfileForUser(the_userId).then((data) => {
             let theProfile = data.profile;
-            theProfile.shops = data.shops;
+            theProfile.shops = shopdata;
 
             newForm.name = theProfile.name;
             newForm.location = theProfile.location ? theProfile.location : 'No Location';
             newForm.bio = theProfile.bio ? theProfile.bio : 'Add a bio and tell your buyers about yourself!';
 
             settheProfile(theProfile);
-            setloading({
-                loading_bool: false,
-                loading_text: 'Loading...'
-            })
-        })
-            .catch((err) => {
-                console.log(err);
-            })
+        }
+        )();
 
     }, [changed])
+
+    useEffect(()=>{
+        if (theProfile) {
+        setloading({
+            loading_bool: false,
+            loading_text: 'Loading...'
+        })
+        }
+    }, [theProfile])
 
     const nameRef = useRef(null)
     const locationRef = useRef(null)
@@ -67,17 +86,6 @@ const Profile = () => {
     }, [formMode])
 
 
-    const inputref = useRef(null)
-    const [selectedImage, setselectedImage] = useState(null)
-    const [imageHovered, setimageHovered] = useState(false);
-
-    const userdata = localStorage.getItem("user");
-    let user = null;
-    if (userdata) {
-        user = JSON.parse(userdata);
-    }
-
-    const userId = user._id;
 
     const handleButtonClick = () => {
         inputref.current?.click();
@@ -94,7 +102,7 @@ const Profile = () => {
     };
 
     let profile = theProfile;
-    // console.log(profile?.image.data.data);
+    // console.log(profile, loadin
 
     return (loading.loading_bool ? <LoadingScreen text={loading.loading_text} /> :
         <div class="relative flex flex-col min-w-0 break-words shadow-2xl w-full mx-auto md:w-2/3 xl:w-1/2 2xl:w-1/3 px-4 ">
@@ -107,7 +115,7 @@ const Profile = () => {
                                 loading_bool: true,
                                 loading_text: 'Updating Profile...'
                             })
-                            await handleUpdate(`/profile/of/${userId}`, selectedImage, newForm, setselectedImage)
+                            await handleUpdate(`/profile/of/${the_userId}`, selectedImage, newForm, setselectedImage)
                             setselectedImage(null)
                             setchanged(!changed)
                         }} />
@@ -151,7 +159,7 @@ const Profile = () => {
                             loading_bool: true,
                             loading_text: 'Updating Profile...'
                         })
-                        await handleUpdate(`/profile/of/${userId}`, selectedImage, newForm, setselectedImage)
+                        await handleUpdate(`/profile/of/${the_userId}`, selectedImage, newForm, setselectedImage)
                         setchanged(!changed)
                         setformMode(!formMode)
                     }} />}

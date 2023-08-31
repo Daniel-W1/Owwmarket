@@ -13,28 +13,40 @@ import Profile from '../components/ProfileTop';
 import Logout from '../functions/logout';
 import LoadingScreen from '../components/loading';
 import { imagefrombuffer } from "imagefrombuffer"; //first import 
+import { Link, useParams } from 'react-router-dom';
+import { GetProfileForUser } from '../functions/helpers';
 
 
 const Dashboard = () => {
   const [open, setopen] = useState(true)
   const [active, setactive] = useState(0)
-  const [loading, setloading] = useState(false);
+  const [loading, setloading] = useState(true);
+  const [profile, setprofile] = useState(null);
+
   const screenSize = useScreenSize();
-
   
-  const userdata = localStorage.getItem("user");
-  const profiledata = localStorage.getItem("profile");
-
+  const userdata = localStorage.getItem('user');
   let user = null;
-  let profile = null;
-
   if (userdata && userdata !== 'undefined') {
     user = JSON.parse(userdata);
   }
-  
-  if (profiledata && profiledata !== 'undefined') {
-    profile = JSON.parse(profiledata);
-  }
+
+  useEffect(() => { 
+    (
+      async () => {
+        const fetched_profile = await GetProfileForUser(user._id)
+        setprofile(fetched_profile.profile)
+      }
+      )();
+    }
+  , [])
+
+  useEffect(() => {
+    if (profile !== null) {
+      setloading(false)
+    }
+  }, [profile])
+
 
   useEffect(() => {
     if(screenSize.width < 768){
@@ -47,12 +59,13 @@ const Dashboard = () => {
     {title : 'Profile', src: ProfileIcon, link: <Profile/>},
     {title : 'Analytics', src: DiGoogleAnalytics, link: <Analytics/>, bottom: true},
     {title : 'Shops', src: AiFillShopping, link: <Shops/>},
-    {title : 'Settings', src: AiFillSetting, link: <Settings/>, bottom: true},
+    {title : 'Settings', src: AiFillSetting, link: <Settings/> , bottom: true},
     {title : 'Logout', src: BiLogOutCircle, link: <Logout/>}
   ]
 
 
-  return (
+  console.log(loading, profile);
+  return ( loading ? <LoadingScreen text={'loading..'}/> :
     <div className='flex overflow-hidden w-full'>
         <div className={` ${open ? 'w-72' :' w-20'} duration-300 bg-primary-200 relative border-r-2 border-r-gray-400 float-left`}>
             <div className = {`absolute cursor-pointer rounded-full bg-white w-5 h-5 border-2 border-primary-200 ${!open && 'rotate-180'} ${screenSize.width < 600 && 'hidden'}`}  style = {{
