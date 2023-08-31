@@ -68,7 +68,8 @@ const callback = (req, res, next) => {
       // checking how things work
       console.log(user);
       if (err) {
-        return res.redirect(`/auth/google/failed?message=${err.message}`);
+        return res.redirect(`${process.env.CLIENT_URL_CALLBACK}?error=gmailerror`);
+        // return res.redirect(`/auth/google/failed?message=${err.message}`);
       }
       if (!user) {
         return res.redirect("/auth/google/failed");

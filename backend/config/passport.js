@@ -22,7 +22,7 @@ passport.use(
           if(!user.googleID) { // if he is registred with email and pass
             return callback(
               new Error(
-                'This email is already registered with a different method. Please log in using your existing method.'
+                'gmailerror'
               )
             );
           } else { // if he is already registed with google

@@ -21,8 +21,8 @@ async function EmailPasswordLogin (email, password)  {
             window.location.href = "/dashboard";
         }
     } catch (error) {
-        console.log(error);
-        return error;
+        console.log(error.response.data);
+        return error.response.data;
     }
 }
 
