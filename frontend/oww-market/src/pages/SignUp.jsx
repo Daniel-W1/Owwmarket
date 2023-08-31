@@ -10,7 +10,7 @@ import googleIconImageSrc from "../assets/images/google-icon.png";
 import { ReactComponent as SignUpIcon } from "feather-icons/dist/icons/user-plus.svg";
 import { Link } from "react-router-dom";
 import LoadingScreen from "../components/loading";
-import EmailPasswordSignup from "../functions/emailpasssignup";
+import EmailPasswordSignup from "../hooks/emailpasssignup";
 
 const Container = tw(ContainerBase)`min-h-screen text-white font-medium flex justify-center -m-8`;
 const Content = tw.div`max-w-screen-xl m-0 sm:mx-20 sm:my-16 bg-white text-gray-900 shadow sm:rounded-lg flex justify-center flex-1`;
