@@ -18,7 +18,7 @@ async function EmailPasswordLogin (email, password)  {
             localStorage.setItem("user", JSON.stringify(res.data.user));
             localStorage.setItem("token", res.data.token);
             localStorage.setItem("profile", JSON.stringify(profile.data.profile));
-            window.location.href = "/dashboard";
+            window.location.href = "/user/dashboard";
         }
     } catch (error) {
         console.log(error.response.data);
