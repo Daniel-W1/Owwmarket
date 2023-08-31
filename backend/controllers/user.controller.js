@@ -20,12 +20,12 @@ const create = async (req, res) => {
                 googleID: gmaildata.id,
                 gmaildata: gmaildata
               });
-        } else {
+        } else { 
              user = new User({
-                name,
-                email,
-                password 
-            })     
+                name: name,
+                email: email,
+                password: password
+            })   
         }
         await user.save()
         // let's create the skeleton for the user's profile
@@ -44,7 +44,7 @@ const create = async (req, res) => {
         
         return res.status(200).json({
             success: true,
-            message: "Successfully Created!"
+            message: "Successfully Signing up, please signin!"
         })
     } catch (error) {
         return res.status(400).json({
