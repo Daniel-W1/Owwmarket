@@ -16,6 +16,7 @@ function Logout() {
         if (response.data.success === true) {
           localStorage.removeItem('user');
           localStorage.removeItem('token');
+          localStorage.removeItem('profile');
           setloading(false);
           window.location.href = '/';
         }

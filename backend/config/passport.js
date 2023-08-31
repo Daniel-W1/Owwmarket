@@ -1,7 +1,7 @@
 import passport from "passport"
 import Google from "passport-google-oauth20";
 import { User, GoogleUser } from "../models/user.schema.js";
-
+import Profile from "../models/profile.schema.js";
 const GoogleStrategy = Google.Strategy; 
 
 passport.use(
@@ -36,7 +36,21 @@ passport.use(
                 gmaildata: profile
               });
               await user.save()
+
               callback(null, user);
+              
+              const userprofile = new Profile({
+                name: user.name,
+                email: user.email,
+                owner: user._id,
+                following: [],
+                followers: [],
+                location: '',
+                bio: '',
+                image: { data: '', contentType: ''}
+            })
+            
+            await userprofile.save()
         } 
 
       }
