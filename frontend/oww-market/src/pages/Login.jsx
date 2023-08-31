@@ -9,7 +9,7 @@ import logo from "../assets/images/logo.svg";
 import googleIconImageSrc from "../assets/images/google-icon.png";
 import { ReactComponent as LoginIcon } from "feather-icons/dist/icons/log-in.svg";
 import { Link } from "react-router-dom";
-import EmailPasswordLogin from "../functions/emailpasslogin";
+import EmailPasswordLogin from "../hooks/emailpasslogin";
 import LoadingScreen from "../components/loading";
 
 const Container = tw(ContainerBase)`min-h-screen text-white font-medium flex justify-center -m-8`;

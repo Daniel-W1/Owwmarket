@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { GetShopForUser, GetUserById } from '../functions/helpers';
+import { GetShopForUser, GetUserById } from '../hooks/helpers';
 import LoadingScreen from '../components/loading';
 import ShopCard from '../components/ShopCard';
 import { useParams } from 'react-router-dom';
