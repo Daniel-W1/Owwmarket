@@ -7,8 +7,8 @@ import { GetProductsForShop } from '../functions/helpers';
 
 const user = JSON.parse(localStorage.getItem("user"));
 const profile = JSON.parse(localStorage.getItem("profile"));
-const userId = user._id;
-const followers = profile.followers.length;
+// const userId = user._id;
+// const followers = profile.followers.length;
 
 
 const ShopCard = ({ shop, name }) => {

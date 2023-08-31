@@ -209,7 +209,7 @@ const profileByUserId = async (req, res) => {
 
         // also get the shops of this user
         let shops = await Shop.find({ owner: id }).populate('owner', '_id name').select('_id name description created');
-        return res.json({ profile, shops });
+        return res.json({ success: true, profile, shops });
     } catch (error) {
         return res.status(400).json({ success: false, error: "Could not retrieve profile" });
     }

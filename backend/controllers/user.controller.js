@@ -29,7 +29,7 @@ const create = async (req, res) => {
         }
         await user.save()
         // let's create the skeleton for the user's profile
-        const profile = Profile({
+        const profile = new Profile({
             name: user.name,
             email: user.email,
             owner: user._id,
