@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
-import Login from "./functions/login";
-import Logout from "./functions/logout";
+import Login from "./hooks/login";
+import Logout from "./hooks/logout";
 import LandingPage from "./pages/LandingPage";
 import profileImage from '../src/assets/images/twitter-icon.png'
 import Analytics from "./pages/analytics";

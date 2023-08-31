@@ -3,7 +3,7 @@ import {MdOutlineProductionQuantityLimits} from 'react-icons/md'
 import { imagefrombuffer } from "imagefrombuffer"; //first import 
 import axios from 'axios';
 import LoadingScreen from './loading';
-import { GetProductsForShop, GetProfileForUser } from '../functions/helpers';
+import { GetProductsForShop, GetProfileForUser } from '../hooks/helpers';
 import { useParams } from 'react-router-dom';
 
 
