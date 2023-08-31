@@ -10,11 +10,11 @@ import Analytics from './analytics';
 import Shops from './shops';
 import Settings from './settings';
 import Profile from '../components/ProfileTop';
-import Logout from '../functions/logout';
+import Logout from '../hooks/logout';
 import LoadingScreen from '../components/loading';
 import { imagefrombuffer } from "imagefrombuffer"; //first import 
 import { Link, useParams } from 'react-router-dom';
-import { GetProfileForUser } from '../functions/helpers';
+import { GetProfileForUser } from '../hooks/helpers';
 
 
 const Dashboard = () => {

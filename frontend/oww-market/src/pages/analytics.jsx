@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { GetProductsForShop, GetShopForUser } from '../functions/helpers';
+import { GetProductsForShop, GetShopForUser } from '../hooks/helpers';
 import { Pie, Bar } from 'react-chartjs-2';
 import LoadingScreen from '../components/loading';
 import { Chart, registerables } from 'chart.js'
@@ -113,9 +113,6 @@ const Analytics = () => {
       setproducts(productLengths);
       setproductNames(productNames);
       setproductRevenues(productRevenues);
-
-      // console.log(totalRevenue, 'the revenues', shops);
-
       
       if (shops.length > 0) {
         setshopChartData({
@@ -167,9 +164,7 @@ const Analytics = () => {
 
   }, [shops])
 
-  // console.log(revenue);
-  // console.log(loading, shops, products, revenue, productNames, productRevenues, productsChartData, shopChartData);
-  return (loading ? <LoadingScreen text={'loading..'} /> :
+return (loading ? <LoadingScreen text={'loading..'} /> :
   <>
   <div className='flex justify-center sm:justify-around items-center flex-wrap'>
       <div className='w-96 lg:w-1/2'>
