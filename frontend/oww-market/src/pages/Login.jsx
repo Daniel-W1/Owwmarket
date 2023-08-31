@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AnimationRevealPage from "../helpers/AnimationRevealPage";
 import { Container as ContainerBase } from "../helpers/Layout.jsx";
 import tw from "twin.macro";
@@ -80,13 +80,29 @@ const LoginComponent = ({
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const [loading, setloading] = useState(false);
+  const [errormessage, seterrormessage] = useState("");
 
+  const getErrorFromQueryParams = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get('error');
+    return error;
+  };
+
+  useEffect(() => {
+    const error = getErrorFromQueryParams();
+    if(error === "gmailerror") {
+      seterrormessage("This email is already registered with a different method. Please log in using your existing method.")
+    }
+  }, [])
+ 
   const submit = async (e) => {
     setloading(true);
     e.preventDefault();
     const res = await EmailPasswordLogin(email, password);
     setloading(false);
-    console.log(res);
+    if(res.success === false) {
+      seterrormessage(res.error)
+    }
   }
 
   const handleEmailUpdate = (e) => {
@@ -123,6 +139,9 @@ const LoginComponent = ({
                 <DividerTextContainer>
                   <DividerText>Or Sign in with your e-mail</DividerText>
                 </DividerTextContainer>
+                { errormessage && (
+                  <p className="text-center text-red-600 text-base font-semibold mb-2">{errormessage}</p>
+                )}
                 <Form>
                   <Input type="email" placeholder="Email" onChange={handleEmailUpdate}/>
                   <Input type="password" placeholder="Password" onChange={handlePasswordUpdate} />

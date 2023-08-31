@@ -68,18 +68,10 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, className, collapseBrea
 
   let DesktopLinks = [
     <NavLinks key={1}>
-      <Link to={'/shops'} >
-        <NavLink>Shops</NavLink>
-      </Link>
-      <Link to={'/products'}>
-        <NavLink>Products</NavLink>
-      </Link>
-      <Link>
+       <NavLink>Shops</NavLink>
+      <NavLink>Products</NavLink>
       <NavLink>Become a Seller</NavLink>
-      </Link>
-      <Link>
       <NavLink>About Us</NavLink>
-      </Link>
     </NavLinks>
     ,
     <NavLinks key={2}>
@@ -100,9 +92,11 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, className, collapseBrea
       <NavLink tw="block">Products</NavLink>
       <NavLink tw="block">Become a Seller</NavLink>
       <NavLink tw="block">About Us</NavLink>
-      <NavLink href="/login" tw="lg:ml-12! mb-2 block">
+      <Link to={'/login'}>
+      <NavLink tw="lg:ml-12! mb-2 block">
         Login
       </NavLink>
+      </Link>
       <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} href="/signup">Sign Up</PrimaryLink>
     </NavLinks>
   ];
@@ -110,10 +104,18 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, className, collapseBrea
   if (user) {
     DesktopLinks = [
       <NavLinks key={1}>
+        <Link to={'/shops'} >
         <NavLink>Shops</NavLink>
+      </Link>
+      <Link to={'/products'}>
         <NavLink>Products</NavLink>
-        <NavLink>Become a Seller</NavLink>
-        <NavLink>About Us</NavLink>
+      </Link>
+      <Link>
+      <NavLink>Become a Seller</NavLink>
+      </Link>
+      <Link>
+      <NavLink>About Us</NavLink>
+      </Link>
       </NavLinks>
       ,
       <NavLinks key={2}>
@@ -130,13 +132,23 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, className, collapseBrea
 
     Mobilelinks = [
       <NavLinks key={1}>
+         <Link to={'/shops'} >
         <NavLink tw="block">Shops</NavLink>
+      </Link>
+      <Link to={'/products'}>
         <NavLink tw="block">Products</NavLink>
-        <NavLink tw="block">Become a Seller</NavLink>
-        <NavLink tw="block">About Us</NavLink>
-        <NavLink href="/profile" tw="lg:ml-12! block" css={roundedHeaderButton && tw`rounded-full`}>
+      </Link>
+      <Link>
+      <NavLink tw="block">Become a Seller</NavLink>
+      </Link>
+      <Link>
+      <NavLink tw="block">About Us</NavLink>
+      </Link>
+      <Link to={'/profile'}>
+        <NavLink tw="lg:ml-12! block" css={roundedHeaderButton && tw`rounded-full`}>
           {user.name}
         </NavLink>
+      </Link>
         <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} tw="block" href="/logout">Logout</PrimaryLink>
       </NavLinks>
     ]
