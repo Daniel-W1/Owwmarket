@@ -3,29 +3,42 @@ import {MdOutlineProductionQuantityLimits} from 'react-icons/md'
 import { imagefrombuffer } from "imagefrombuffer"; //first import 
 import axios from 'axios';
 import LoadingScreen from './loading';
-import { GetProductsForShop } from '../functions/helpers';
-
-const user = JSON.parse(localStorage.getItem("user"));
-const profile = JSON.parse(localStorage.getItem("profile"));
-// const userId = user._id;
-// const followers = profile.followers.length;
+import { GetProductsForShop, GetProfileForUser } from '../functions/helpers';
+import { useParams } from 'react-router-dom';
 
 
-const ShopCard = ({ shop, name }) => {
+
+const ShopCard = ({shop}) => {
+
+  const params = useParams();
   const [loading, setloading] = useState(true)
   const [productsLength , setproductsLength] = useState(0)
+  const [followers , setfollowers] = useState(0)
+  const the_userId = params.userId ? params.userId : JSON.parse(localStorage.getItem("user"))._id;
 
   useEffect(() => {
     (
       async () => {
-        const response = await GetProductsForShop(shop._id, userId).then((res) => {
+        const response = await GetProductsForShop(shop._id, the_userId).then((res) => {
           return res;
         }
         );
+
+        let profile = await GetProfileForUser(the_userId).then((res) => {
+          return res;
+        }
+        );
+
+        profile = profile.profile;  
         setproductsLength(response.products.length)
-        setloading(false)
+        setfollowers(profile.followers.length)
       }) ();
   }, [])
+
+  useEffect(() => {
+    setloading(false)
+    
+  }, [productsLength, followers])
 
   return ( loading ? <LoadingScreen text={'loading..'} /> :
     <div className='my-4 pt-4 w-full lg:w-full mx-auto rounded-xl  flex flex-wrap justify-center lg:justify-around  items-center md:items-stretch md:flex-row md:justify-center shadow-lg'>
