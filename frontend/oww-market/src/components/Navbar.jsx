@@ -6,7 +6,6 @@ import useAnimatedNavToggler from "../helpers/AnimatedNavToggler.jsx";
 import logo from "../assets/images/logo.svg";
 import { ReactComponent as MenuIcon } from "feather-icons/dist/icons/menu.svg";
 import { ReactComponent as CloseIcon } from "feather-icons/dist/icons/x.svg";
-import Logout from "../functions/logout.jsx";
 import { Link } from "react-router-dom";
 
 

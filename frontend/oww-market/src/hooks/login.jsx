@@ -33,7 +33,7 @@ const Login = () => {
               localStorage.setItem("user", JSON.stringify(response.data.user));
               localStorage.setItem("profile", JSON.stringify(profile.data.profile));
               setloading(false)
-              window.location.href = "/dashboard";
+              window.location.href = "/user/dashboard";
             }
           })
           .catch((error) => {

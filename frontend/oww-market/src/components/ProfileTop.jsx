@@ -4,15 +4,18 @@ import { AiOutlineMail } from 'react-icons/ai';
 import { BiShoppingBag } from 'react-icons/bi';
 import { MdOutlineProductionQuantityLimits } from 'react-icons/md';
 import { AiFillCamera, AiFillEdit } from 'react-icons/ai';
-import {handleUpdate} from '../functions/update';
-import { GetProfileForUser, GetShopForUser } from '../functions/helpers';
+import {handleUpdate} from '../hooks/update';
+import { GetProfileForUser, GetShopForUser } from '../hooks/helpers';
 import LoadingScreen from './loading';
 import { imagefrombuffer } from "imagefrombuffer"; //first import 
 import { MdDownloadDone } from 'react-icons/md'
 import { GiCancel } from 'react-icons/gi'
+import { useParams } from 'react-router-dom';
+import useScreenSize from '../hooks/useScreenSize';
 
 
 const Profile = () => {
+    const params = useParams();
     const [theProfile, settheProfile] = useState(null)
     const [loading, setloading] = useState({
         loading_bool: true,
@@ -26,35 +29,52 @@ const Profile = () => {
         location: '',
         bio: ''
     })
+    const inputref = useRef(null)
+    const [selectedImage, setselectedImage] = useState(null)
+    const [imageHovered, setimageHovered] = useState(false);
+    const the_userId = params.userId ? params.userId : JSON.parse(localStorage.getItem('user'))._id;
+    const screenSize = useScreenSize();
+
+    useEffect(()=> {
+        (
+            async () => {
+                const response = await GetShopForUser(the_userId);
+                const shopdata = await GetShopForUser(the_userId);
+
+                let theProfile = response.profile;
+                theProfile.shops = shopdata;
+
+                settheProfile(response.profile);
+            }
+        )();
+    }, [])
 
     useEffect(() => {
-        const the_userdata = localStorage.getItem('user');
-        let the_user = null;
+        (async ()=>{
+            const data = await GetProfileForUser(the_userId)
+            const shopdata = await GetShopForUser(the_userId);
 
-        if (the_userdata) {
-            the_user = JSON.parse(the_userdata);
-        }
-
-        const the_userId = the_user._id;
-        GetProfileForUser(the_userId).then((data) => {
             let theProfile = data.profile;
-            theProfile.shops = data.shops;
+            theProfile.shops = shopdata;
 
             newForm.name = theProfile.name;
             newForm.location = theProfile.location ? theProfile.location : 'No Location';
             newForm.bio = theProfile.bio ? theProfile.bio : 'Add a bio and tell your buyers about yourself!';
 
             settheProfile(theProfile);
-            setloading({
-                loading_bool: false,
-                loading_text: 'Loading...'
-            })
-        })
-            .catch((err) => {
-                console.log(err);
-            })
+        }
+        )();
 
     }, [changed])
+
+    useEffect(()=>{
+        if (theProfile) {
+        setloading({
+            loading_bool: false,
+            loading_text: 'Loading...'
+        })
+        }
+    }, [theProfile])
 
     const nameRef = useRef(null)
     const locationRef = useRef(null)
@@ -67,17 +87,6 @@ const Profile = () => {
     }, [formMode])
 
 
-    const inputref = useRef(null)
-    const [selectedImage, setselectedImage] = useState(null)
-    const [imageHovered, setimageHovered] = useState(false);
-
-    const userdata = localStorage.getItem("user");
-    let user = null;
-    if (userdata) {
-        user = JSON.parse(userdata);
-    }
-
-    const userId = user._id;
 
     const handleButtonClick = () => {
         inputref.current?.click();
@@ -94,11 +103,10 @@ const Profile = () => {
     };
 
     let profile = theProfile;
-    // console.log(profile?.image.data.data);
+    // console.log(profile, loadin
 
     return (loading.loading_bool ? <LoadingScreen text={loading.loading_text} /> :
         <div class="relative flex flex-col min-w-0 break-words shadow-2xl w-full mx-auto md:w-2/3 xl:w-1/2 2xl:w-1/3 px-4 ">
-            <div class="px-6">
                 <div class="flex flex-wrap justify-center">
                     <div class="w-full px-4 flex justify-center relative">
                         {!formMode && selectedImage && <GiCancel className='absolute top-1/2 left-0  cursor-pointer' onClick={() => setselectedImage(null)} />}
@@ -107,13 +115,13 @@ const Profile = () => {
                                 loading_bool: true,
                                 loading_text: 'Updating Profile...'
                             })
-                            await handleUpdate(`/profile/of/${userId}`, selectedImage, newForm, setselectedImage)
+                            await handleUpdate(`/profile/of/${the_userId}`, selectedImage, newForm, setselectedImage)
                             setselectedImage(null)
                             setchanged(!changed)
                         }} />
                         }
 
-                        <div className={"relative w-32 h-32 sm:w-40 sm:h-40 cursor-pointer border-2 border-gray-600 rounded-full "} onMouseEnter={() => setimageHovered(true)} onMouseLeave={() => setimageHovered(false)}>
+                        <div className={"relative w-24 h-24 lg:w-40 lg:h-40 cursor-pointer border-2 border-gray-600 rounded-full "} onMouseEnter={() => setimageHovered(true)} onMouseLeave={() => setimageHovered(false)}>
                             <img alt="..." src={selectedImage ? URL.createObjectURL(selectedImage) : imagefrombuffer(
                                 { data: profile?.image.data.data }
                             )} className={`w-full h-full mx-auto rounded-full`} />
@@ -121,24 +129,24 @@ const Profile = () => {
                             {!formMode && <AiFillCamera className={`duration-200 absolute m-auto left-0 right-0 top-0 bottom-0 text-3xl shadow-2xl shadow-white text-black ${imageHovered ? 'opacity-100' : 'opacity-0'}`} onClick={handleButtonClick} />}                        </div>
                     </div>
                     <div class="w-full flex justify-around py-4 lg:pt-4 pt-8 flex-wrap items-center ">
-                        <div class="p-3 text-center w-24">
+                        <div class=" text-center w-16 lg:w-24">
                             <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
                                 {profile.shops.length}
                             </span>
                             <span class="text-sm text-blueGray-400">Shops</span>
                         </div>
 
-                        <div class="p-3 text-center w-24">
+                        <div class=" text-center w-16 lg:w-24">
                             <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
                                 {profile.followers.length}
                             </span>
-                            <span class="text-sm text-blueGray-400">Followers</span>
+                            <span class="text-sm text-blueGray-400">{screenSize.width < 600 ? `F..ers` : 'Followers' }</span>
                         </div>
-                        <div class="p-3 text-center w-24">
+                        <div class="text-center w-16 lg:w-24">
                             <span class="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
                                 {profile.following.length}
                             </span>
-                            <span class="text-sm text-blueGray-400">Following</span>
+                            <span class="text-sm text-blueGray-400">{screenSize.width < 600 ? 'F..ing': 'Following'}</span>
                         </div>
                     </div>
                 </div>
@@ -151,13 +159,13 @@ const Profile = () => {
                             loading_bool: true,
                             loading_text: 'Updating Profile...'
                         })
-                        await handleUpdate(`/profile/of/${userId}`, selectedImage, newForm, setselectedImage)
+                        await handleUpdate(`/profile/of/${the_userId}`, selectedImage, newForm, setselectedImage)
                         setchanged(!changed)
                         setformMode(!formMode)
                     }} />}
 
                     <div class="text-center flex justify-center items-center mb-2">
-                        <h3 className={`text-2xl font-semibold leading-normal text-blueGray-700 ${formMode ? 'hidden' : 'block'}`}>
+                        <h3 className={`text-xl lg:text-2xl font-semibold leading-normal text-blueGray-700 ${formMode ? 'hidden' : 'block'}`}>
                             {newForm.name}
                         </h3>
                         <input ref={nameRef} value={newForm.name} type="text" className={`border-none text-2xl font-semibold leading-normal text-blueGray-700  ${formMode ? 'block' : 'hidden'}`} onChange={(e) => {
@@ -166,15 +174,15 @@ const Profile = () => {
 
                     </div>
                     <div class="py-2 text-blueGray-600  flex justify-around items-center flex-wrap ">
-                        <span class="text-sm leading-normal flex items-center  text-blueGray-400 font-bold uppercase">
+                        <span class="leading-normal flex items-center  text-blueGray-400 text-sm  lg:text-lg">
                             <GrLocation className='inline-block mr-2' />
                             {!formMode && newForm.location}
-                            <input value={newForm.location} ref={locationRef} type="text" className={`border-none text-sm leading-normal flex items-center text-blueGray-400 font-bold uppercase ${formMode ? 'block' : 'hidden'}`} onChange={(e) => {
+                            <input value={newForm.location} ref={locationRef} type="text" className={`border-none text-sm  lg:text-lg leading-normal flex items-center text-blueGray-400 ${formMode ? 'block' : 'hidden'}`} onChange={(e) => {
                                 setnewForm({ ...newForm, location: e.target.value })
 
                             }} />
                         </span>
-                        <div class="text-sm leading-normal flex items-center text-blueGray-400 font-bold uppercase">
+                        <div class="text-sm  lg:text-lg leading-normal flex items-center text-blueGray-400">
                             <AiOutlineMail className='inline-block mr-2' />
                             {profile.email}
                         </div>
@@ -184,8 +192,8 @@ const Profile = () => {
 
                 <div class="mt-5 py-10 border-t border-blueGray-200 text-center">
                     <div class="flex flex-wrap justify-center">
-                        <div class="w-full lg:w-9/12">
-                            {!formMode && <p class="mb-4 text-lg leading-relaxed text-blueGray-700">
+                        <div class="w-full lg:w-3/4">
+                            {!formMode && <p class="mb-4 text-sm  lg:text-lg leading-relaxed text-blueGray-700">
                                 {newForm.bio}
                             </p>}
                             <textarea value={newForm.bio} ref={bioRef} type="text" className={`border-none text-lg leading-relaxed text-blueGray-700 w-full h-32 ${formMode ? 'block' : 'hidden'}`} onChange={(e) => {
@@ -197,16 +205,15 @@ const Profile = () => {
 
                 <div className='border-t border-blueGray-200 mb-2'></div>
                 <div class="text-blueGray-600">
-                    <button className='border-none px-6 py-2 w-full flex items-center justify-center text-center  hover:bg-gray-400 duration-300'>
+                    <button className='border-none px-6 py-2 w-full flex items-center justify-center text-center text-xl  lg:text-lg hover:bg-gray-400 duration-300'>
                         <BiShoppingBag className='inline-block mr-2' />
                     </button>
                 </div>
                 <div class="mb-2 text-blueGray-600">
-                    <button className='border-none px-6 py-2 w-full text-center hover:bg-gray-400 duration-300'>
+                    <button className='border-none px-6 py-2 w-full text-center hover:bg-gray-400 text-xl  lg:text-lg duration-300'>
                         <MdOutlineProductionQuantityLimits className='inline-block mr-2' />
                     </button>
                 </div>
-            </div>
         </div>
     )
 }
