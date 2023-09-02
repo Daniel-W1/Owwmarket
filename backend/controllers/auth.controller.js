@@ -33,6 +33,24 @@ const authenticateToken = (req, res, next) => {
     });
   };
 
+const verifyaccount = async (req, res) => {
+  try {
+      const user = await User.findOne({ verificationToken: req.params.token });
+
+      if (!user) {
+          return res.status(404).json({ success: false, error: 'Invalid or expired verification token' });
+      }
+
+      user.isVerified = true;
+      user.verificationToken = '';
+      await user.save();
+
+      res.status(200).json({ success: true, message: `${user.name}, your email verified successfully` });
+  } catch (error) {
+      res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+}
+
 const loginSuccess = (req, res) => {
   if (req.profile) {
     res.json({
@@ -229,5 +247,6 @@ export default {
     loginFailed,
     logout,
     callback,
-    authenticateToken
+    authenticateToken,
+    verifyaccount
 }
