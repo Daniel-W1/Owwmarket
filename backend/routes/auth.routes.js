@@ -7,6 +7,7 @@ const router = express.Router();
 router.route('/auth/signin').post(authController.signin);
 router.route('/auth/signout').get(authController.signout);
 router.route('/auth/signup').post(userController.create)
+router.route('/auth/verify/:token').get(authController.verifyaccount)
 // Google OAuth2
 router.route('/auth/google').get(authController.google)
 router.route('/auth/google/success').post(authController.authenticateToken, authController.loginSuccess)
