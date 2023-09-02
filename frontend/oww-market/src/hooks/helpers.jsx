@@ -26,6 +26,7 @@ const GetShopForUser = async (userId) => {
         const response = await axios.get(url, { withCredentials: true }, Headers).then((res) => {
             return res;
         });
+        // console.log('this is the response', response.data);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -39,7 +40,7 @@ const GetProductsForShop = async (shopId, userId) => {
         const response = await axios.get(url, { withCredentials: true }, {
             headers: Headers
         }).then((res) => {
-            console.log(res.data, 'this is the response');
+            // console.log(res.data, 'this is the response');
 
             return res;
         });
