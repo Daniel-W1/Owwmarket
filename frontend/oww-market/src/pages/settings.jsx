@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import "react-toggle/style.css" // for ES6 modules
 import Toggle from 'react-toggle'
+import shortid from 'shortid';
+
 
 const Settings = () => {
   const [currentIndex, setcurrentIndex] = useState(0)
@@ -20,7 +22,7 @@ const Settings = () => {
   const profileSettings = [
     {
       text: 'Show my profile to Everyone',
-    }, 
+    },
     {
       text: 'Show my email to my Followers only',
     },
@@ -41,6 +43,7 @@ const Settings = () => {
     },
   ]
 
+  console.log('we are here');
 
   return (
     <div>
@@ -48,7 +51,7 @@ const Settings = () => {
         {
           menu.map((item, index) => {
             return (
-              <div className={`${currentIndex === index ? 'border-b-2 border-primary-500' : ''} cursor-pointer mx-4 text-sm lg:text-xl`} onClick={() => setcurrentIndex(index)}>
+              <div key={item.name} className={`${currentIndex === index ? 'border-b-2 border-primary-500' : ''} cursor-pointer mx-4 text-sm lg:text-xl`} onClick={() => setcurrentIndex(index)}>
                 {item.name}
               </div>
             )
@@ -59,32 +62,32 @@ const Settings = () => {
       <div className='mx-auto lg:px-10 py-4'>
         {
           currentIndex === 0 ? (
-            profileSettings.map((item) => {
+            profileSettings.map((item, index) => {
               return (
-                <>
-                <div className='flex justify-between items-center lg:text-xl lg:justify-between text-sm'>
-                  <div>{item.text}</div>
-                  <div className='py-4'>
-                    <Toggle />
+                <div key={index}>
+                  <div className='flex justify-between items-center lg:text-xl lg:justify-between text-sm'>
+                    <div>{item.text}</div>
+                    <div className='py-4'>
+                      <Toggle />
+                    </div>
                   </div>
+                  <hr className='border-gray-300' />
                 </div>
-                <hr className='border-gray-300' />
-                </>
               )
             }
             )
           ) : (
-            feedSettings.map((item) => {
+            feedSettings.map((item, index) => {
               return (
-                <>
-                <div className='flex justify-between items-center lg:text-xl lg:justify-between text-sm'>
-                  <div>{item.text}</div>
-                  <div className='py-4'>
-                    <Toggle />
+                <div key={index}>
+                  <div className='flex justify-between items-center lg:text-xl lg:justify-between text-sm'>
+                    <div>{item.text}</div>
+                    <div className='py-4'>
+                      <Toggle />
+                    </div>
                   </div>
+                  <hr className='border-gray-300' />
                 </div>
-                <hr className='border-gray-300' />
-                </>
               )
             }
             )
