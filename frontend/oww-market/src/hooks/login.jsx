@@ -23,17 +23,15 @@ const Login = () => {
         // Example API request
         apiRequest('http://localhost:3000/auth/google/success')
           .then(async (response) => {
-            console.log(response.data);
             if (response.data.success === true) {
               const profile = await axios.get(`http://localhost:3000/profile/of/${response.data.user._id}`);
-              console.log(profile.data.profile)
               if(profile.data.success === false) {
                 window.location.href = "/";
               }
               localStorage.setItem("user", JSON.stringify(response.data.user));
               localStorage.setItem("profile", JSON.stringify(profile.data.profile));
               setloading(false)
-              window.location.href = "/user/dashboard";
+              window.location.href = "/profile/of/" + response.data.user._id;
             }
           })
           .catch((error) => {
