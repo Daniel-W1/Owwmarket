@@ -28,6 +28,14 @@ const UserSchema = new mongoose.Schema(
         return !this.googleID;
       },
     },
+    verificationToken: {
+      type: String,
+      default: ''
+  },
+  isVerified: {
+      type: Boolean,
+      default: false
+  },
     googleID: String,
     salt: String,
     admin: {
