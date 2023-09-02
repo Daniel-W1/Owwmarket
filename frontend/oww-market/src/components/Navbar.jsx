@@ -67,7 +67,7 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, className, collapseBrea
 
   let DesktopLinks = [
     <NavLinks key={1}>
-       <NavLink>Shops</NavLink>
+      <NavLink>Shops</NavLink>
       <NavLink>Products</NavLink>
       <NavLink>Become a Seller</NavLink>
       <NavLink>About Us</NavLink>
@@ -75,9 +75,9 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, className, collapseBrea
     ,
     <NavLinks key={2}>
       <Link to={'/login'}>
-      <NavLink tw="lg:ml-12!">
-        Login
-      </NavLink>
+        <NavLink tw="lg:ml-12!">
+          Login
+        </NavLink>
       </Link>
       <Link to={'/signup'}>
         <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} href="/signup">Sign Up</PrimaryLink>
@@ -92,9 +92,9 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, className, collapseBrea
       <NavLink tw="block">Become a Seller</NavLink>
       <NavLink tw="block">About Us</NavLink>
       <Link to={'/login'}>
-      <NavLink tw="lg:ml-12! mb-2 block">
-        Login
-      </NavLink>
+        <NavLink tw="lg:ml-12! mb-2 block">
+          Login
+        </NavLink>
       </Link>
       <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} href="/signup">Sign Up</PrimaryLink>
     </NavLinks>
@@ -104,21 +104,21 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, className, collapseBrea
     DesktopLinks = [
       <NavLinks key={1}>
         <Link to={'/shops'} >
-        <NavLink>Shops</NavLink>
-      </Link>
-      <Link to={'/products'}>
-        <NavLink>Products</NavLink>
-      </Link>
-      <Link>
-      <NavLink>Become a Seller</NavLink>
-      </Link>
-      <Link>
-      <NavLink>About Us</NavLink>
-      </Link>
+          <NavLink>Shops</NavLink>
+        </Link>
+        <Link to={'/products'}>
+          <NavLink>Products</NavLink>
+        </Link>
+        <Link>
+          <NavLink>Become a Seller</NavLink>
+        </Link>
+        <Link>
+          <NavLink>About Us</NavLink>
+        </Link>
       </NavLinks>
       ,
       <NavLinks key={2}>
-        <Link to={"/profile" }>
+        <Link to={`profile/of/${user._id}`}>
           <NavLink tw="lg:ml-12!" >
             {user.name}
           </NavLink>
@@ -131,23 +131,23 @@ const Navbar = ({ roundedHeaderButton = false, logoLink, className, collapseBrea
 
     Mobilelinks = [
       <NavLinks key={1}>
-         <Link to={'/shops'} >
-        <NavLink tw="block">Shops</NavLink>
-      </Link>
-      <Link to={'/products'}>
-        <NavLink tw="block">Products</NavLink>
-      </Link>
-      <Link>
-      <NavLink tw="block">Become a Seller</NavLink>
-      </Link>
-      <Link>
-      <NavLink tw="block">About Us</NavLink>
-      </Link>
-      <Link to={'/profile'}>
-        <NavLink tw="lg:ml-12! block" css={roundedHeaderButton && tw`rounded-full`}>
-          {user.name}
-        </NavLink>
-      </Link>
+        <Link to={'/shops'} >
+          <NavLink tw="block">Shops</NavLink>
+        </Link>
+        <Link to={'/products'}>
+          <NavLink tw="block">Products</NavLink>
+        </Link>
+        <Link>
+          <NavLink tw="block">Become a Seller</NavLink>
+        </Link>
+        <Link>
+          <NavLink tw="block">About Us</NavLink>
+        </Link>
+        <Link to={'/profile'}>
+          <NavLink tw="lg:ml-12! block" css={roundedHeaderButton && tw`rounded-full`}>
+            {user.name}
+          </NavLink>
+        </Link>
         <PrimaryLink css={roundedHeaderButton && tw`rounded-full`} tw="block" href="/logout">Logout</PrimaryLink>
       </NavLinks>
     ]

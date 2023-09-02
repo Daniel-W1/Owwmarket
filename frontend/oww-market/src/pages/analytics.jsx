@@ -210,7 +210,7 @@ return (loading ? <LoadingScreen text={'loading..'} /> :
 
       <hr className='w-full my-10' />
 
-      <div className='inline-block relative w-full h-96 py-20 sm:py-0'>
+      <div className='inline-block relative w-full h-96 py-20 pl-10 sm:py-0'>
           <Bar data={productsChartData} options={{
             plugins: {
               title: {
