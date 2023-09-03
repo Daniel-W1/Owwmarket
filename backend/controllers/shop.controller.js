@@ -17,9 +17,7 @@ const create = async (req, res) => {
     form.keepExtensions = true
     form.maxFileSize = 50 * 1024 * 1024; // 5MB
 
-    // console.log(form);
     form.parse(req, async (err, fields, files) => {
-         console.log(fields);
         if (err) {
             return res.status(400).json({
                 success: false,

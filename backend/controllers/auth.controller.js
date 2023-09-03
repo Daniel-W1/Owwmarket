@@ -3,6 +3,7 @@ import { User } from "../models/user.schema.js"
 import jwt from "jsonwebtoken"
 import passport from "passport";
 import dotenv from "dotenv"
+import mongoose from "mongoose";
 dotenv.config()
 
 const authenticateToken = (req, res, next) => {
@@ -152,6 +153,7 @@ const signin = async (req, res) => {
         const token = jwt.sign({
             _id: user._id,
             admin: user.admin,
+            seller: user.seller
         }, process.env.JWT_SECRET)
 
         // console.log(process.env.JWT_SECRET);
@@ -196,9 +198,7 @@ const requireSignin = expressjwt(
 const hasAuthorization = async (req, res, next) => {
     let id = req.auth._id
     const userRequesting = await User.findById(id)
-    const authorized = req.profile && req.auth && req.profile._id.equals(userRequesting._id);
-
-    console.log(userRequesting, authorized);
+    const authorized = (req.profile && req.auth) && (JSON.stringify(req.profile._id) === JSON.stringify(req.auth._id));
     // if the user is an admin, they are authorized
     if (userRequesting.admin === true) {
         return next()
