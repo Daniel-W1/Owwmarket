@@ -47,6 +47,16 @@ const App = () => {
             </div>
           </div>
         } />
+        <Route path="/shops/by/:userId/create" element={
+          <div className="flex">
+            <div className="float-left h-screen">
+              <Sidebar />
+            </div>
+            <div className="overflow-x-hidden overflow-y-scroll py-8 px-2 float-right flex-1 h-screen">
+              <Shops type="create"/>
+            </div>
+          </div>
+        } />
         <Route path="/user/:userId/shops/:shopId" element={<ShopCard />} />
         <Route path="/user/:userId/settings" element={
           <div className="flex">

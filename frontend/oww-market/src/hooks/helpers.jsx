@@ -63,4 +63,25 @@ const GetUserById = async (userId) => {
     }
 }
 
-export { GetProfileForUser, GetShopForUser, GetProductsForShop, GetUserById};
+const CreateNewShop = async (userId, name, description, image) => {
+    const url = `http://localhost:3000/shops/by/${userId}`;
+    const formData = new FormData();
+  formData.append('name', name);
+  formData.append('description', description);
+  if (image) {
+    formData.append('image', image);
+  }
+  console.log(formData)
+    try {
+        const response = await axios.post(url, formData, { withCredentials: true }, Headers).then((res) => {
+            return res;
+        });
+        console.log(response.data)
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+
+}
+
+export { GetProfileForUser, GetShopForUser, GetProductsForShop, GetUserById, CreateNewShop};
