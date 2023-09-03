@@ -106,7 +106,7 @@ const Profile = () => {
     // console.log(profile, loadin
 
     return (loading.loading_bool ? <LoadingScreen text={loading.loading_text} /> :
-        <div class="relative flex flex-col min-w-0 break-words shadow-2xl w-full mx-auto md:w-2/3 xl:w-1/2 2xl:w-1/3 px-4 ">
+        <div class="relative flex flex-col min-w-0 break-words shadow-2xl rounded-lg w-full mx-auto md:w-2/3 xl:w-1/2 2xl:w-1/3 px-4 ">
                 <div class="flex flex-wrap justify-center">
                     <div class="w-full px-4 flex justify-center relative">
                         {!formMode && selectedImage && <GiCancel className='absolute top-1/2 left-0  cursor-pointer' onClick={() => setselectedImage(null)} />}
