@@ -12,6 +12,7 @@ import LoginComponent from "./pages/Login";
 import ShopCard from "./components/ShopCard";
 import Settings from "./pages/settings";
 import Sidebar from "./components/Sidebar";
+import PostCard from "./components/PostCard";
 
 const App = () => {
   return (
@@ -63,6 +64,7 @@ const App = () => {
         <Route path="/login" element={<LoginComponent />} />
         <Route path="/login/callback" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
+        <Route path = '/postcard' element = {<PostCard/>}/>
       </Routes>
     </BrowserRouter>
   )
