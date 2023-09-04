@@ -37,8 +37,8 @@ const create = async (req, res) => {
     let form = formidable();
     form.keepExtensions = true
     form.maxFileSize = 100 * 1024 * 1024;
-    // console.log('shop', req.shop);
     const shopid = req.shop._id;
+    const userId = req.auth._id;
     
     form.parse(req, async (err, fields, files) => {
         if (err) {
@@ -50,8 +50,6 @@ const create = async (req, res) => {
         
         let { productname, productdescription, category, quantity, price, auction, startedprice, location, itemsLeft, intialItemCount } = fields;
         
-
-        // console.log(shopid, 'shopid');
         
         let productExists = await Product.findOne({ "shopId": shopid,"productname": productname.join(' ') })
         if (productExists)
@@ -73,6 +71,7 @@ const create = async (req, res) => {
         let product;
         if(auction) {
              product = new ProductAuction({
+                owner: userId,
                 shopId: shopid,
                 productname: productname.join(' '),
                 productdescription: productdescription.join(' '),
@@ -87,6 +86,7 @@ const create = async (req, res) => {
               });
         } else {
              product = new Product({
+                owner: userId,
                 shopId: shopid,
                 productname: productname.join(' '),
                 productdescription: productdescription.join(' '),
@@ -99,7 +99,7 @@ const create = async (req, res) => {
                 itemsLeft: +itemsLeft.join(' ')
             })     
         }
-        // console.log('product', product, product.shopId, 'shopid', product.productname, 'productname', product.auction, 'auction');
+
         // process images
         if(files.productImages) {
             let arrayOfImages = [];
@@ -110,11 +110,9 @@ const create = async (req, res) => {
                 })
             })
             product.productImages = arrayOfImages;
-            // console.log(arrayOfImages, 'array of images');
         }
 
         try {
-            // console.log(product.shopid, 'shopid', product.productname, 'productname', product.auction, 'auction');
             await product.save()
              res.status(200).json({
                 success: true,
@@ -140,25 +138,9 @@ const create = async (req, res) => {
         
         
     })
-    console.log('no form data lol');
 }
 
 const update = async (req, res) => {
-    // try {
-    //     let product = req.product
-    //     product = _.extend(product, req.body)
-    //     product.updated = Date.now()
-    //     await product.save()
-    //     return res.json({
-    //         success: true,
-    //         product: product
-    //     })
-    // } catch (error) {
-    //     return res.status(400).json({
-    //         success: false,
-    //         error: errorHandler.getErrorMessage(error)
-    //     })
-    // }
     const og = _.cloneDeep(req.originalproduct);
     let form = formidable();
     form.keepExtensions = true
@@ -194,8 +176,7 @@ const update = async (req, res) => {
             location,
             slug
         })
-        // console.log('product', product, product.shopId, 'shopid', product.productname, 'productname', product.auction, 'auction');
-        // process images
+        
         if(files.productImages) {
             let arrayOfImages = [];
             files.productImages.forEach(image => {
@@ -205,11 +186,9 @@ const update = async (req, res) => {
                 })
             })
             product.productImages = arrayOfImages;
-            // console.log(arrayOfImages, 'array of images');
         }
 
         try {
-            // console.log(product.shopid, 'shopid', product.productname, 'productname', product.auction, 'auction');
             await product.save()
              res.status(200).json({
                 success: true,
@@ -375,4 +354,41 @@ const defaultPhoto = (req, res) => {
     return res.sendFile(process.cwd() + defaultImage)
 }
 
- export default { productByID, read, update, remove, create, list, photo, defaultPhoto, listByShop }
+const GetFeedForUser = async (req, res) => {
+    const profile = req.user_profile
+    const following = profile.following
+
+    const postsFromFollowedUsers = await Product.find({owner: {$in: following}}).populate('comments.postedBy', '_id name').populate('postedBy', '_id name').sort('-created').exec()
+    const { page, limit, startIndex, endIndex } = req.pagination;
+
+    const paginatedPosts = postsFromFollowedUsers.slice(startIndex, endIndex);
+    const totalPosts = postsFromFollowedUsers.length;
+
+    res.json({
+        success: true,
+        posts: paginatedPosts,
+        page,
+        pages: Math.ceil(totalPosts / limit),
+        total: totalPosts
+    })
+}
+
+const paginationMiddleware = () => {
+    pageSize = 5;
+    return (req, res, next) => {
+      const pageNumber = parseInt(req.query.page) || 1; 
+      const startIndex = (pageNumber - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+  
+      req.pagination = {
+        page: pageNumber,
+        limit: pageSize,
+        startIndex,
+        endIndex
+      };
+  
+      next();
+    };
+  };
+
+ export default { productByID, read, update, remove, create, list, photo, defaultPhoto, listByShop, GetFeedForUser, paginationMiddleware }

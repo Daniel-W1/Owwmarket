@@ -13,6 +13,8 @@ import ShopCard from "./components/ShopCard";
 import Settings from "./pages/settings";
 import Sidebar from "./components/Sidebar";
 import PostCard from "./components/PostCard";
+import FeedSidebar from "./components/FeedSidebar";
+import Feed from "./pages/feed";
 
 const App = () => {
   return (
@@ -64,7 +66,7 @@ const App = () => {
         <Route path="/login" element={<LoginComponent />} />
         <Route path="/login/callback" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
-        <Route path = '/postcard' element = {<PostCard/>}/>
+        <Route path = '/feed' element = {<Feed/>}/>
       </Routes>
     </BrowserRouter>
   )
