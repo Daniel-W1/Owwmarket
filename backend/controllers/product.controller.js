@@ -140,25 +140,10 @@ const create = async (req, res) => {
         
         
     })
-    console.log('no form data lol');
 }
 
 const update = async (req, res) => {
-    // try {
-    //     let product = req.product
-    //     product = _.extend(product, req.body)
-    //     product.updated = Date.now()
-    //     await product.save()
-    //     return res.json({
-    //         success: true,
-    //         product: product
-    //     })
-    // } catch (error) {
-    //     return res.status(400).json({
-    //         success: false,
-    //         error: errorHandler.getErrorMessage(error)
-    //     })
-    // }
+
     const og = _.cloneDeep(req.originalproduct);
     let form = formidable();
     form.keepExtensions = true

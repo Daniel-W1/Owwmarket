@@ -1,7 +1,7 @@
 import { Children, useEffect, useState } from 'react'
 import { ReactComponent as ProfileIcon } from "feather-icons/dist/icons/user.svg";
 import { DiGoogleAnalytics } from 'react-icons/di'
-import { AiFillShopping } from 'react-icons/ai'
+import { AiFillShopping, AiOutlineShoppingCart } from 'react-icons/ai'
 import { AiFillSetting } from 'react-icons/ai'
 import { BiLogOutCircle } from 'react-icons/bi'
 import useScreenSize from '../hooks/useScreenSize';
@@ -61,6 +61,7 @@ const Sidebar = () => {
         { title: 'Profile', src: ProfileIcon, path: `/profile/of/${user._id}` },
         { title: 'Analytics', src: DiGoogleAnalytics, bottom: true, path: `/user/${user._id}/analytics` },
         { title: 'Shops', src: AiFillShopping, path: `/shops/by/${user._id}` },
+        { title: 'Create new shop', src: AiOutlineShoppingCart, path: `/shops/by/${user._id}/create` },
         { title: 'Settings', src: AiFillSetting, bottom: true, path: `/user/${user._id}/settings` },
         { title: 'Logout', src: BiLogOutCircle, path: '/logout' }
     ]
