@@ -56,7 +56,7 @@ app.use(express.static('public'));
 app.use("/", user_router)
 app.use("/", auth_router)
 app.use("/", shop_router)
-app.use("/", profile_router)
+app.use("/profile", profile_router)
 app.use('/', product_router)
 
 app.use((err, req, res, next) => {
