@@ -107,6 +107,34 @@ const UnfollowUser = async (userId, followedId) => {
 
 }
 
+const GetFeedForUser = async (pageNum) => {
+    const url = `http://localhost:3000/feed`;
+    try {
+        const response = await axios.get(url, { headers: current_headers, 
+            params: {
+                page: pageNum
+            }
+        }).then((res) => {
+            return res;
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}   
+
+const GetShopById = async (shopId) => {
+    const url = `http://localhost:3000/shops/${shopId}`;
+    try {
+        const response = await axios.get(url, { headers: current_headers }).then((res) => {
+            return res;
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 
-export { GetProfileForUser, GetShopForUser, GetProductsForShop, GetUserById, GetRandomProfiles, FollowUser, UnfollowUser};
+
+export { GetProfileForUser, GetShopForUser, GetProductsForShop, GetUserById, GetShopById, GetRandomProfiles, FollowUser, UnfollowUser, GetFeedForUser};
