@@ -277,7 +277,7 @@ const listByShop = async (req, res) => {
     }
 
     try {
-        let products = await Product.find({shopId: req.shop._id}).populate('shopId', '_id name').select('shopId productname productdescription slug auction updated created price location intialItemCount itemsLeft')
+        let products = await Product.find({shopId: req.shop._id}).populate('shopId', '_id name').select('shopId productname productdescription slug auction updated created price startedprice location intialItemCount itemsLeft')
         // console.log('fetched!!');
         myCache.set(shopid, products, 0.5*60*60);
 

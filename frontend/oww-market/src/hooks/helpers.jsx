@@ -51,6 +51,19 @@ const GetProductsForShop = async (shopId, userId) => {
     }
 }
 
+const GetShopById = async (shopId) => {
+    const url = `http://localhost:3000/shops/${shopId}`;
+
+    try {
+        const response = await axios.get(url, { withCredentials: true }).then((res) => {
+            return res;
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
 const GetUserById = async (userId) => {
     const url = `http://localhost:3000/users/${userId}`;
     try {
@@ -85,4 +98,4 @@ const CreateNewShop = async (userId, name, description, image) => {
 
 }
 
-export { GetProfileForUser, GetShopForUser, GetProductsForShop, GetUserById, CreateNewShop };
+export { GetProfileForUser, GetShopForUser, GetProductsForShop, GetUserById, CreateNewShop, GetShopById };

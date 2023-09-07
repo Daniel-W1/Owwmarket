@@ -12,6 +12,7 @@ import LoginComponent from "./pages/Login";
 import ShopCard from "./components/ShopCard";
 import Settings from "./pages/settings";
 import Sidebar from "./components/Sidebar";
+import ShopDetails from "./components/ShopDetails";
 
 const App = () => {
   return (
@@ -57,7 +58,7 @@ const App = () => {
             </div>
           </div>
         } />
-        <Route path="/user/:userId/shops/:shopId" element={<ShopCard />} />
+        <Route path="/shops/:shopId" element={<ShopDetails />} />
         <Route path="/user/:userId/settings" element={
           <div className="flex">
             <div className="float-left h-screen">
