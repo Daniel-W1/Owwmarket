@@ -171,9 +171,10 @@ const list = async (req, res) => {
     }
 }
 
-const userByID = async (req, res, next, id) => { 
+const userByID = async (req, res, next) => { 
     try {
-        const user = await User.findById(id);
+        var { userId } = req.params;
+        const user = await User.findById(userId);
         // console.log('we are here', user);
         if (!user)
             return res.status(400).json({

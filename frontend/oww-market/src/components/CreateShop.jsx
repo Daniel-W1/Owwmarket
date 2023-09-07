@@ -37,6 +37,9 @@ const CreateShop = (props) => {
 
   };
 
+  const CreateAgain = (e) => {
+    setsuccess(false)
+  }
  
 
   return (
@@ -46,22 +49,12 @@ const CreateShop = (props) => {
                 <LoadingScreen text={'loading..'} />
             ) : (
                success ? (
-                <div className="w-1/3 flex items-center justify-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="green" // You can change the color of the checkmark here
-            className="w-32 h-32"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
-        </div>
+                <div class="success-animation">
+                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52"><circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" /><path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" /></svg>
+                    <center>
+                    <p className=' text-black font-semibold mt-4'>To create another shop, <button className="underline" onClick={CreateAgain}>Click here!</button></p>
+                    </center>
+               </div>
                ) : (<div className="max-w-md mx-auto my-8 p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-semibold mb-4">Create a New Shop</h2>
       <form onSubmit={handleSubmit}>
@@ -98,7 +91,7 @@ const CreateShop = (props) => {
             id="image"
             accept="image/*"
             onChange={handleImageChange}
-            required
+            
           />
         </div>
         <div className="mb-4">

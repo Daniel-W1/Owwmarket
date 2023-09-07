@@ -41,7 +41,7 @@ const Shops = (props) => {
         <LoadingScreen text={'loading..'} />
       ) : props.type !== "create" ? (
         shops.map((shop) => {
-          return <ShopCard shop={shop} key={shop.id} />;
+          return <ShopCard shop={shop} key={shop._id} />;
         })
       ) : (
         <>
