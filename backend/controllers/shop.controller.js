@@ -71,11 +71,11 @@ const create = async (req, res) => {
 const shopbyId = async (req, res, next, id) => {
     try {
         let shop = await Shop.findById(id)
-        if (!shop)
+        if (!shop) {
             return res.status(400).json({
                 success: false,
                 error: "Shop not found"
-            })
+            })}
         
         req.shop = shop
         next()
