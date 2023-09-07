@@ -48,7 +48,7 @@ const create = async (req, res) => {
             })
         }
         
-        let { productname, productdescription, category, quantity, price, auction, startedprice, location, itemsLeft, intialItemCount } = fields;
+        let { productname, productdescription, category, price, auction, startedprice, location, itemsLeft, intialItemCount } = fields;
         
         
         let productExists = await Product.findOne({ "shopId": shopid,"productname": productname.join(' ') })
@@ -75,8 +75,7 @@ const create = async (req, res) => {
                 shopId: shopid,
                 productname: productname.join(' '),
                 productdescription: productdescription.join(' '),
-                category: category.join(' '),
-                quantity: +quantity.join(' '),
+                category: category ? category.join(' ') : null,
                 startedprice: startedprice ? +startedprice.join(' ') : 0,
                 slug,
                 auction: true,
@@ -85,14 +84,15 @@ const create = async (req, res) => {
                 itemsLeft: +itemsLeft.join(' ')
               });
         } else {
+            console.log(intialItemCount.join(' '));
+
              product = new Product({
                 owner: userId,
                 shopId: shopid,
                 productname: productname.join(' '),
                 productdescription: productdescription.join(' '),
-                category: category.join(' '),
-                quantity: +quantity.join(' '), 
-                price: +price.join(' '),
+                category: category ? category.join(' ') : null,
+                price: +price.join(' ') ,
                 slug,
                 location: location.join(' '),
                 intialItemCount: +intialItemCount.join(' '),
@@ -154,11 +154,10 @@ const update = async (req, res) => {
             })
         }
         
-        let { productname, productdescription, category, quantity, price, startedprice, location, itemsLeft, intialItemCount } = fields;
+        let { productname, productdescription, category, price, startedprice, location, itemsLeft, intialItemCount } = fields;
         let product = req.product;
         productname = productname ? productname.join(' ') : product.productname;
         productdescription = productdescription ? productdescription.join(' ') : product.productdescription;
-        quantity = quantity ? +quantity.join(' ') : product.quantity;
         location = location ? location.join(' ') : product.location;
 
         let slug;
@@ -172,7 +171,6 @@ const update = async (req, res) => {
         product = _.extend(product, {
             productname,
             productdescription,
-            quantity,
             location,
             slug
         })

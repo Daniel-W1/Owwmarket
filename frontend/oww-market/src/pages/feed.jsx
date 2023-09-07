@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import PostCard from '../components/PostCard'
 import FeedSidebar from '../components/FeedSidebar'
@@ -6,6 +6,17 @@ import RightSidecard from '../components/RightSidecard'
 import useScreenSize from '../hooks/useScreenSize'
 
 const Feed = () => {
+
+    const [loading, setloading] = useState(true);
+
+    useEffect(() => {
+        (
+            async () => {
+                
+            }
+        )()
+    }, [])
+
     const posts = [
         <PostCard/>,
         <PostCard/>,

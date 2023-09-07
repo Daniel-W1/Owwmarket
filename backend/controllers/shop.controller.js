@@ -256,15 +256,13 @@ const listByOwner = async (req, res) => {
     const userId = JSON.stringify(req.profile._id)
 
     if (myCache.get(userId) !== undefined) {
-        // console.log(myCache.get(userId), 'myCache.get(userId)');
         return res.status(200).json(
             myCache.get(userId)
         )
     }
-
+    
     try {
         let shops = await Shop.find({ owner: req.profile._id }).sort('-created')
-        console.log('fetched!!!');
         myCache.set(userId, shops, 0.5*60*60);
         res.json(shops)
     } catch (error) {
