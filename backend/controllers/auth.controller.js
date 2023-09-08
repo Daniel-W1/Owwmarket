@@ -138,11 +138,19 @@ const signin = async (req, res) => {
         let user = await User.findOne({
             "email": req.body.email
         })
-        if (!user)
+        if (!user) {
             return res.status(401).json({
                 success: false,
                 error: "User not found"
             })
+          }
+        if(user.googleID) {
+          return res.status(401).send({
+            success: false,
+            error: "This email address uses Google Sign-in."
+        })
+        }
+
         if (!user.authenticate(req.body.password)) {
             return res.status(401).send({
                 success: false,
