@@ -41,10 +41,9 @@ const Feed = () => {
     useEffect(() => {
         (
             async () => {
+                setloading(true)
                 const response = await GetFeedForUser(pageNum);
                 const real_posts = response.posts;
-
-                console.log(response);
 
                 sethasMore(posts?.length + 3 < response.total)
                 setposts([...posts, ...real_posts]);
@@ -61,17 +60,17 @@ const Feed = () => {
     const screenSize = useScreenSize();
 
     return (
-        <div className={`flex w-full justify-center px-10 md:justify-around lg:justify-around py-10`}>
+        <div className={`flex w-full justify-center px-10 md:justify-around lg:justify-around py-6`}>
             <FeedSidebar />
-            {loading ? <LoadingScreen text={'loading..'} /> : <div className='flex-col w-3/4 md:w-1/2 lg:w-1/2'>
+            <div className='flex-col w-3/4 md:w-1/2 lg:w-1/2'>
                 {
                     posts.map((post, index) => {
                         return (index === posts.length - 1 ?
-                            <div ref={lastPostElementRef} key={index}>
+                            <div ref={lastPostElementRef} key={index} className='my-3'>
                                 <PostCard post={post} />
                             </div>
                             :
-                            <div key={index}>
+                            <div key={index} className='my-3'>
                                 <PostCard post={post} />
                             </div>
                         )
@@ -79,7 +78,8 @@ const Feed = () => {
                     }
                     )
                 }
-            </div>}
+                {loading && <LoadingScreen text={'loading..'} />}
+            </div>
             <RightSidecard />
         </div>
     )

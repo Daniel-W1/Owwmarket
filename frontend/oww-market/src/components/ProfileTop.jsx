@@ -69,7 +69,7 @@ const Profile = () => {
         }
         (
             async () => {
-                const response = await GetShopForUser(the_userId);
+                const response = await GetProfileForUser(the_userId);
                 const shopdata = await GetShopForUser(the_userId);
 
                 let theProfile = response.profile;

@@ -232,7 +232,7 @@ const update = async (req, res) => {
                 return true;
             }
 
-            if (changedValues !== {}) {
+            if (changedValues.length !== 0) {
 
                 const log = new Log({
                     user: req.auth._id,

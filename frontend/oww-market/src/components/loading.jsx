@@ -3,7 +3,7 @@ import { DotLoader } from 'react-spinners';
 
 const LoadingScreen = ({text}) => {
     return (
-      <div className='w-full h-full flex flex-col justify-center items-center'>
+      <div className='w-full h-screen flex flex-col justify-center items-center'>
           <DotLoader
             css={{display: 'block', margin: '0 auto'}}
             size={70}

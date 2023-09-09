@@ -85,7 +85,7 @@ const updateProfile = async (req, res) => {
                 return true;
             }
 
-            if (changedValues !== {}) {
+            if (changedValues.length !== 0) {
 
                 const log = new Log({
                     user: req.profile._id,
@@ -207,6 +207,7 @@ const profileByUserId = async (req, res) => {
     try {
         let id = req.profile._id;
         let profile = await Profile.findOne({ owner: id });
+
         if (!profile) return res.status(400).json({ success: false, error: "Profile not found" });
         req.user_profile = profile;
 
@@ -254,8 +255,11 @@ const defaultPhoto = (req, res) => {
 
 const list = async (req, res) => {
     try {
-        let profiles = await Profile.find().select('name email updated created');
-        res.json(profiles);
+        let profiles = await Profile.find().select('name email owner updated created');
+        res.json({
+            success: true,
+            profiles: profiles
+        });
     } catch (error) {
         return res.status(400).json({ success: false, error: errorHandler.getErrorMessage(error) });
     }
