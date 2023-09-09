@@ -7,13 +7,25 @@ const current_headers = {
     'Authorization': 'Bearer ' + token
 }
 
+const GetAllProfiles = async () => {
+    const url = `http://localhost:3000/profile`;
+    try {
+        const response = await axios.get(url, { headers: current_headers }).then((res) => {
+            return res;
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
 const GetProfileForUser = async (userId) => {
     const url = `http://localhost:3000/profile/of/${userId}`;
     try {
-        const response = await axios.get(url, { withCredentials: true }).then((res) => {
+        const response = await axios.get(url).then((res) => {
             return res;
         });
-        // console.log('this is the response', response.data);
         return response.data;
     } catch (error) {
         console.error(error);
@@ -137,4 +149,4 @@ const GetShopById = async (shopId) => {
 
 
 
-export { GetProfileForUser, GetShopForUser, GetProductsForShop, GetUserById, GetShopById, GetRandomProfiles, FollowUser, UnfollowUser, GetFeedForUser};
+export { GetProfileForUser, GetShopForUser, GetAllProfiles, GetProductsForShop, GetUserById, GetShopById, GetRandomProfiles, FollowUser, UnfollowUser, GetFeedForUser};

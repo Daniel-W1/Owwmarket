@@ -42,7 +42,7 @@ const RightSidecard = () => {
     const screenSize = useScreenSize()
     return (loading ? <div className={`flex-col sticky top-0 w-56 xl:w-72  ${screenSize.width < 1200 ? 'hidden' : 'block'}`}> <LoadingScreen text={'loading..'} /> </div> :
         <div className={profiles.length > 0 ? 'block': 'hidden'}>   
-            <div className={`sticky top-0 flex flex-col rounded-lg shadow-md items-center justify-center w-full my-3 pb-3 ${screenSize.width < 800 ? 'hidden' : 'block'}`}>
+            <div className={`sticky top-1/2  flex flex-col rounded-lg shadow-md items-center justify-center w-full my-3 pb-3 ${screenSize.width < 800 ? 'hidden' : 'block'}`}>
                 <div className='flex w-full items-center justify-between px-4'>
                     <span className='font-semibold'>Add Network</span>
                 </div>

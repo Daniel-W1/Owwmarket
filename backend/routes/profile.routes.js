@@ -10,7 +10,7 @@ router.route('/follow').put(authController.requireSignin, profileController.addF
 router.route('/unfollow').put(authController.requireSignin, profileController.removeFollowing, profileController.removeFollower)
 router.route('/of/:userId').get(profileController.profileByUserId).put(authController.requireSignin, profileController.isOwner, profileController.updateProfile).delete(authController.requireSignin, profileController.isOwner, profileController.remove);
 router.route('/:profileId/photo').get(profileController.photo, profileController.defaultPhoto);
-router.route('/').get(authController.requireSignin, authController.isAdmin, profileController.list)
+router.route('/').get(authController.requireSignin, profileController.list)
 router.param('userId', userCtrl.userByID);
 router.param('profileId', profileController.profileByID);
 
