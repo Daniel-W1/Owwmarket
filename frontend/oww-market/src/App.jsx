@@ -13,6 +13,7 @@ import ShopCard from "./components/ShopCard";
 import Settings from "./pages/settings";
 import Sidebar from "./components/Sidebar";
 import ShopDetails from "./components/ShopDetails";
+import ProductPage from "./components/ProductPage";
 
 const App = () => {
   return (
@@ -59,6 +60,11 @@ const App = () => {
           </div>
         } />
         <Route path="/shops/:shopId" element={<ShopDetails />} />
+        <Route path="/shops/:shopId/products/:productId" element={
+          <div className="max-w-7xl mx-auto p-8">
+            <ProductPage/>
+          </div>
+      }/>
         <Route path="/user/:userId/settings" element={
           <div className="flex">
             <div className="float-left h-screen">

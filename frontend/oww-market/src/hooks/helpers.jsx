@@ -50,9 +50,35 @@ const GetProductsForShop = async (shopId, userId) => {
         console.error(error);
     }
 }
+const GetBids = async (productId) => {
+    const url = `http://localhost:3000/products/${productId}/bids`;
 
+    try {
+        const response = await axios.get(url, { withCredentials: true }).then((res) => {
+            // console.log(res.data, 'this is the response');
+            return res;
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
 const GetShopById = async (shopId) => {
     const url = `http://localhost:3000/shops/${shopId}`;
+
+    try {
+        const response = await axios.get(url, { withCredentials: true }).then((res) => {
+            return res;
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+const GetProductById = async (shopId, productId) => {
+    const url = `http://localhost:3000/from/${shopId}/products/${productId}`;
 
     try {
         const response = await axios.get(url, { withCredentials: true }).then((res) => {
@@ -98,4 +124,4 @@ const CreateNewShop = async (userId, name, description, image) => {
 
 }
 
-export { GetProfileForUser, GetShopForUser, GetProductsForShop, GetUserById, CreateNewShop, GetShopById };
+export { GetProfileForUser, GetBids, GetShopForUser, GetProductsForShop, GetUserById, GetProductById, CreateNewShop, GetShopById };

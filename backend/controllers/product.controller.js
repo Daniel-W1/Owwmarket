@@ -12,14 +12,15 @@ const defaultImage = '/public/files/default.png'
 
 const productByID = async (req, res, next, id) => { 
     try {
-        const product = await Product.findById(id);
+        const product = await Product.findById(id).populate("bids.userid");
         if (!product)
             return res.status(400).json({
                 success: false,
                 error: "Product not found"
             })
-        req.originalproduct = { ...product };
+           
         req.product = product;
+
         next()
     } catch (error) {
         return res.status(400).json({
@@ -29,6 +30,12 @@ const productByID = async (req, res, next, id) => {
     }
  }
 
+const bids = async (req, res) => {
+    var product = req.product
+    return res.json({ 
+        bids: product.bids && Array.isArray(product.bids) ? product.bids.sort((a, b) => b.bid - a.bid) : []
+     })
+}
  const read = async (req, res) => {
     return res.json(req.product)
 }
@@ -144,7 +151,7 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
 
-    const og = _.cloneDeep(req.originalproduct);
+    const og = _.cloneDeep(req.product);
     let form = formidable();
     form.keepExtensions = true
     form.maxFileSize = 100 * 1024 * 1024;
@@ -239,7 +246,8 @@ const update = async (req, res) => {
         return true;
       }
 
-      if (changedValues !== {}) {
+      if (Object.keys(changedValues).length > 0) {
+
         
         const log = new Log({
           user: req.auth._id,
@@ -360,4 +368,4 @@ const defaultPhoto = (req, res) => {
     return res.sendFile(process.cwd() + defaultImage)
 }
 
- export default { productByID, read, update, remove, create, list, photo, defaultPhoto, listByShop }
+ export default { productByID, bids, read, update, remove, create, list, photo, defaultPhoto, listByShop }
