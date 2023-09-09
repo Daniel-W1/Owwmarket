@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const ProductSchema = new mongoose.Schema(
   {
+    owner: { type: mongoose.Schema.ObjectId, ref: "User", required: "Owner is required"},
     shopId: { type: mongoose.Schema.ObjectId, ref: "Shop", required: "ShopID is required" },
     productname: {
       type: String,
@@ -20,9 +21,6 @@ const ProductSchema = new mongoose.Schema(
     category: {
       type: String,
       default: null,
-    },
-    quantity: {
-      type: Number,
     },
     price: {
       type: Number,

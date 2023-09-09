@@ -6,6 +6,8 @@ import { User } from '../models/user.schema.js';
 import errorHandler from '../helpers/dbhelper.js';
 import Shop from '../models/shop.schema.js';
 import Log from '../models/log.schema.js'
+import { myCache } from '../index.js';
+
 const defaultImage = '/public/files/default.png';
 
 const updateProfile = async (req, res) => {
@@ -17,11 +19,11 @@ const updateProfile = async (req, res) => {
     form.parse(req, async (err, fields, files) => {
         if (err) return res.status(400).json({ success: false, error: 'Image could not be uploaded' });
         // console.log(req.profile._id, 'req.profile._id');
-        let profile = await Profile.findOne({owner: req.profile._id}).exec().then((pro) => {
+        let profile = await Profile.findOne({ owner: req.profile._id }).exec().then((pro) => {
             return pro;
         }
         ).catch((err) => {
-            return res.status(400).json({ success: false,error: 'Could not find profile'});
+            return res.status(400).json({ success: false, error: 'Could not find profile' });
         });
 
         const updates = {
@@ -32,8 +34,8 @@ const updateProfile = async (req, res) => {
 
         profile = _.extend(profile, updates);
         // console.log(fields, 'fields');
-        
-        if (files.image) {  
+
+        if (files.image) {
             profile.image.data = fs.readFileSync(files.image[0].filepath)
             profile.image.contentType = files.image[0].mimetype
         }
@@ -44,60 +46,61 @@ const updateProfile = async (req, res) => {
             const updatedFields = [];
             const changedValues = {};
             const productKeys = Object.keys(profile._doc);
-      
+
             for (const key of productKeys) {
-              if (
-                key === "_id" ||
-                key === "createdAt" ||
-                key === "updatedAt" ||
-                key === "owner" ||
-                key === "email" ||
-                key === "followers" ||
-                key === "followig"
-              ) {
-                continue;
-              }
-      
-              if (Array.isArray(profile._doc[key])) {
-                if (!arraysEqual(og._doc[key], profile._doc[key])) {
-                  updatedFields.push(key);
-                  changedValues[key] = { old: og._doc[key], new: profile._doc[key] };
+                if (
+                    key === "_id" ||
+                    key === "createdAt" ||
+                    key === "updatedAt" ||
+                    key === "owner" ||
+                    key === "email" ||
+                    key === "followers" ||
+                    key === "followig"
+                ) {
+                    continue;
                 }
-              } else if (og._doc[key] !== profile._doc[key]) {
-                updatedFields.push(key);
-                changedValues[key] = { old: og._doc[key], new: profile._doc[key] };
-              }
+
+                if (Array.isArray(profile._doc[key])) {
+                    if (!arraysEqual(og._doc[key], profile._doc[key])) {
+                        updatedFields.push(key);
+                        changedValues[key] = { old: og._doc[key], new: profile._doc[key] };
+                    }
+                } else if (og._doc[key] !== profile._doc[key]) {
+                    updatedFields.push(key);
+                    changedValues[key] = { old: og._doc[key], new: profile._doc[key] };
+                }
             }
-      
+
             const updatedFieldsString = updatedFields.join(", ");
-      
+
             function arraysEqual(a, b) {
-              if (a === b) return true;
-              if (a == null || b == null) return false;
-              if (a.length !== b.length) return false;
-      
-              for (let i = 0; i < a.length; i++) {
-                if (a[i] !== b[i]) return false;
-              }
-      
-              return true;
+                if (a === b) return true;
+                if (a == null || b == null) return false;
+                if (a.length !== b.length) return false;
+
+                for (let i = 0; i < a.length; i++) {
+                    if (a[i] !== b[i]) return false;
+                }
+
+                return true;
             }
-      
-            if (changedValues !== {}) {
-              
-              const log = new Log({
-                user: req.profile._id,
-                resource: "user",
-                resourceid: profile._id,
-                action: "profileupdate",
-                description: `${updatedFieldsString} was updated`,
-                details: changedValues,
-              });
-      
-              await log.save();
+
+            if (changedValues.length !== 0) {
+
+                const log = new Log({
+                    user: req.profile._id,
+                    resource: "user",
+                    resourceid: profile._id,
+                    action: "profileupdate",
+                    description: `${updatedFieldsString} was updated`,
+                    details: changedValues,
+                });
+
+                await log.save();
             }
         } catch (error) {
-            return res.status(400).json({ success: false,
+            return res.status(400).json({
+                success: false,
                 error: errorHandler.getErrorMessage(error)
             });
         }
@@ -119,34 +122,34 @@ const addFollowing = async (req, res, next) => {
     try {
         const userProfile = await Profile.findOne({ owner: req.body.followerId });
         await Profile.findByIdAndUpdate(userProfile._id, {
-            $push: { following: req.body.theFollowedId }
+            $push: { following: req.body.followedId }
         }).populate('following', '_id name')
             .populate('followers', '_id name')
             .exec();
 
-            next()
-
-            var followed = await User.findById(req.body.theFollowedId)
-            const log = new Log({
-                user: req.body.followerId,
-                resource: "user",
-                action: "addfollow",
-                resourceid: req.body.theFollowedId,
-                description: `${userProfile.name} start following ${followed.name}`,
-                details: followed
-            })
-            await log.save();
+        var followed = await User.findById(req.body.followedId)
+        const log = new Log({
+            user: req.body.followerId,
+            resource: "user",
+            action: "addfollow",
+            resourceid: req.body.followedId,
+            description: `${userProfile.name} start following ${followed.name}`,
+            details: followed
+        })
+        await log.save();
+        next()
     } catch (error) {
+        console.log(error);
         return res.status(400).json({ success: false, error: errorHandler.getErrorMessage(error) });
     }
 }
 
 const addFollower = async (req, res) => {
     try {
-        const userProfile = await Profile.findOne({owner: req.body.theFollowedId});
-        // console.log(userProfile, 'yeeeaaaa', req.body.theFollowedId);
+        console.log(req.body);
+        const userProfile = await Profile.findOne({ owner: req.body.followedId });
         const updatedProfile = await Profile.findByIdAndUpdate(userProfile._id, {
-            $push: { followers: req.body.followerId}
+            $push: { followers: req.body.followerId }
         }, { new: true })
             .populate('following', '_id name')
             .populate('followers', '_id name')
@@ -160,25 +163,25 @@ const addFollower = async (req, res) => {
 
 const removeFollowing = async (req, res, next) => {
     try {
-        const userProfile = Profile.findOne({owner : req.body.removerId});
+        const userProfile = await Profile.findOne({ owner: req.body.removerId });
         await Profile.findByIdAndUpdate(userProfile._id, {
-            $pull: { following: req.body.theRemovedId }
+            $pull: { following: req.body.removedId }
         }).populate('following', '_id name')
             .populate('followers', '_id name')
             .exec();
-        
-        next();
 
-        var removed = await User.findById(req.body.theRemovedId)
+
+        var removed = await User.findById(req.body.removedId)
         const log = new Log({
             user: req.body.removerId,
             resource: "user",
             action: "removefollow",
-            resourceid: req.body.theFollowedId,
+            resourceid: req.body.removedId,
             description: `${userProfile.name} unfollow ${removed.name}`,
             details: removed
         })
         await log.save();
+        next();
     } catch (error) {
         return res.status(400).json({ success: false, error: errorHandler.getErrorMessage(error) });
     }
@@ -186,7 +189,7 @@ const removeFollowing = async (req, res, next) => {
 
 const removeFollower = async (req, res) => {
     try {
-        const userProfile = Profile.findOne({owner : req.body.theRemovedId});
+        const userProfile = await Profile.findOne({ owner: req.body.removedId });
         const updatedProfile = await Profile.findByIdAndUpdate(userProfile._id, {
             $pull: { followers: req.body.removerId }
         }, { new: true })
@@ -203,7 +206,8 @@ const removeFollower = async (req, res) => {
 const profileByUserId = async (req, res) => {
     try {
         let id = req.profile._id;
-        let profile = await Profile.findOne({owner: id});
+        let profile = await Profile.findOne({ owner: id });
+
         if (!profile) return res.status(400).json({ success: false, error: "Profile not found" });
         req.user_profile = profile;
 
@@ -251,8 +255,11 @@ const defaultPhoto = (req, res) => {
 
 const list = async (req, res) => {
     try {
-        let profiles = await Profile.find().select('name email updated created');
-        res.json(profiles);
+        let profiles = await Profile.find().select('name email owner updated created');
+        res.json({
+            success: true,
+            profiles: profiles
+        });
     } catch (error) {
         return res.status(400).json({ success: false, error: errorHandler.getErrorMessage(error) });
     }
@@ -268,5 +275,21 @@ const isOwner = async (req, res, next) => {
     next();
 }
 
+const GetRandomProfiles = async (req, res) => {
 
-export default { list, defaultPhoto, profileByID, profileByUserId, remove, addFollower, addFollowing, photo, isOwner, updateProfile, read, removeFollower, removeFollowing };
+
+    try {
+        const count = await Profile.countDocuments();
+        const random = Math.floor(Math.random() * count);
+        const profiles = await Profile.find().skip(random).limit(3);
+        res.json({
+            success: true,
+            profiles: profiles
+        });
+    } catch (error) {
+        return res.status(400).json({ success: false, error: errorHandler.getErrorMessage(error) });
+    }
+}
+
+
+export default { list, defaultPhoto, profileByID, profileByUserId, remove, addFollower, addFollowing, photo, isOwner, updateProfile, read, removeFollower, removeFollowing, GetRandomProfiles };
