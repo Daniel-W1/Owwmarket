@@ -8,11 +8,11 @@ const create = async (req, res) => {
     const { name, email, password, gmaildata } = req.body;
     try {
         let userExists = await User.findOne({ "email": email })
-        if (userExists)
+        if (userExists){
         return res.status(403).json({
             success: false,
-            error: "Email is already taken!"
-        })
+            error: userExists.googleID ?  "This email address uses Google Sign-in" :"Email is already taken!"
+        })}
         let user;
         const verificationToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         if(gmaildata) {
@@ -171,9 +171,10 @@ const list = async (req, res) => {
     }
 }
 
-const userByID = async (req, res, next, id) => { 
+const userByID = async (req, res, next) => { 
     try {
-        const user = await User.findById(id);
+        var { userId } = req.params;
+        const user = await User.findById(userId);
         // console.log('we are here', user);
         if (!user)
             return res.status(400).json({

@@ -2,8 +2,9 @@ import axios from "axios";
 
 const token = localStorage.getItem('token');
 
+// create a header for form data
 const current_headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': 'multipart/form-data',
     'Authorization': 'Bearer ' + token
 }
 
@@ -23,7 +24,7 @@ const GetAllProfiles = async () => {
 const GetProfileForUser = async (userId) => {
     const url = `http://localhost:3000/profile/of/${userId}`;
     try {
-        const response = await axios.get(url).then((res) => {
+        const response = await axios.get(url, { withCredentials: true }).then((res) => {
             return res;
         });
         return response.data;
@@ -52,8 +53,7 @@ const GetProductsForShop = async (shopId, userId) => {
         const response = await axios.get(url, {withCredentials : true}).then((res) => {
             return res;
         });
-        
-        console.log('we are here in the get products for shop', response.data);
+
         return response.data;
     } catch (error) {
         console.error(error);
@@ -149,4 +149,26 @@ const GetShopById = async (shopId) => {
 
 
 
-export { GetProfileForUser, GetShopForUser, GetAllProfiles, GetProductsForShop, GetUserById, GetShopById, GetRandomProfiles, FollowUser, UnfollowUser, GetFeedForUser};
+const CreateNewShop = async (userId, name, description, image) => {
+    const url = `http://localhost:3000/shops/by/${userId}`;
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('description', description);
+    if (image) {
+        formData.append('image', image);
+    }
+    try {
+        const response = await axios.post(url, formData, {
+            headers: current_headers
+        }).then((res) => {
+            return res;
+        });
+        console.log(response.data)
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+
+}
+
+export { GetProfileForUser, GetShopForUser, GetAllProfiles, GetProductsForShop, GetUserById, CreateNewShop , GetShopById, GetRandomProfiles, FollowUser, UnfollowUser, GetFeedForUser};

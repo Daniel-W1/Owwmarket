@@ -142,6 +142,7 @@ const create = async (req, res) => {
 }
 
 const update = async (req, res) => {
+
     const og = _.cloneDeep(req.originalproduct);
     let form = formidable();
     form.keepExtensions = true
