@@ -7,6 +7,7 @@ import _ from 'lodash'
 import { myCache } from '../index.js'
 import { imagefrombuffer } from "imagefrombuffer"; //first import 
 import { User } from '../models/user.schema.js'
+import { log } from 'console'
 
 
 const defaultImage = '/public/default.png'
@@ -16,9 +17,7 @@ const create = async (req, res) => {
     form.keepExtensions = true
     form.maxFileSize = 50 * 1024 * 1024; // 5MB
 
-    // console.log(form);
     form.parse(req, async (err, fields, files) => {
-        // console.log(fields);
         if (err) {
             return res.status(400).json({
                 success: false,
