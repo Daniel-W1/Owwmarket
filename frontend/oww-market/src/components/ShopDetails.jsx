@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { MdOutlineProductionQuantityLimits, MdContactPage, MdAnnouncement } from 'react-icons/md';
 import LoadingScreen from './loading';
-import { GetProductsForShop, GetProfileForUser, GetShopById } from '../hooks/helpers';
-import { useParams } from 'react-router-dom';
+import { GetProductsForShop, GetProfileForUser, GetShopById, GetBids } from '../hooks/helpers';
+import { Link, useParams } from 'react-router-dom';
+import ProductItem from './ProductItem';
 
 const ShopDetails = () => {
   const params = useParams();
@@ -12,7 +13,6 @@ const ShopDetails = () => {
   const [followers, setFollowers] = useState(0);
   const [name, setName] = useState('');
   const [shop, setShop] = useState(null);
-
   useEffect(() => {
     (async () => {
       try {
@@ -34,6 +34,7 @@ const ShopDetails = () => {
       }
     })();
   }, [params.shopId]);
+
 
   if (loading) {
     return <LoadingScreen text={'Loading...'} />;
@@ -104,27 +105,7 @@ const ShopDetails = () => {
       <div className="container mx-auto mt-8 px-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {products.map((product) => (
-            <div key={product._id} className="bg-white shadow-lg rounded-lg p-4">
-                <img
-              src={`http://localhost:3000/products/${product._id}/images`}  // Replace with the actual image source URL
-              alt={product.productname}
-              className="w-full h-40 object-cover rounded-t-lg"
-            />
-              <h2 className="text-lg font-semibold text-primary-500">
-                {product.productname} {product.auction ? <span className='text-yellow-500'>(Auction)</span> : null}
-              </h2>
-              <p className="text-gray-600 text-sm mt-2">
-                {product.productdescription}
-              </p>
-              <div className="flex justify-between mt-4">
-                <div className="text-lg font-semibold text-primary-500">
-                  ${product.auction ? product.startedprice : product.price} 
-                </div>
-                <div className="text-sm font-medium text-gray-600">
-                  {product.itemsLeft}/{product.intialItemCount} left
-                </div>
-              </div>
-            </div>
+            <ProductItem key={product._id} product={product} shop={shop}/>
           ))}
         </div>
       </div>
