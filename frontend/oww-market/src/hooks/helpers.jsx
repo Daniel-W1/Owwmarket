@@ -59,7 +59,33 @@ const GetProductsForShop = async (shopId, userId) => {
         console.error(error);
     }
 }
+const GetBids = async (productId) => {
+    const url = `http://localhost:3000/products/${productId}/bids`;
 
+    try {
+        const response = await axios.get(url, { withCredentials: true }).then((res) => {
+            // console.log(res.data, 'this is the response');
+            return res;
+        });
+        console.log(response.data)
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+const GetProductById = async (shopId, productId) => {
+    const url = `http://localhost:3000/from/${shopId}/products/${productId}`;
+
+    try {
+        const response = await axios.get(url, { withCredentials: true }).then((res) => {
+            return res;
+        });
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+}
 const GetUserById = async (userId) => {
     const url = `http://localhost:3000/users/${userId}`;
     try {
@@ -171,4 +197,4 @@ const CreateNewShop = async (userId, name, description, image) => {
 
 }
 
-export { GetProfileForUser, GetShopForUser, GetAllProfiles, GetProductsForShop, GetUserById, CreateNewShop , GetShopById, GetRandomProfiles, FollowUser, UnfollowUser, GetFeedForUser};
+export { GetProfileForUser, GetBids, GetShopForUser, GetAllProfiles, GetProductsForShop, GetUserById, GetProductById, CreateNewShop , GetShopById, GetRandomProfiles, FollowUser, UnfollowUser, GetFeedForUser};
