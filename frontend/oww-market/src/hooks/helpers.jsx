@@ -58,7 +58,7 @@ const GetBids = async (productId) => {
             // console.log(res.data, 'this is the response');
             return res;
         });
-
+        console.log(response.data)
         return response.data;
     } catch (error) {
         console.error(error);
@@ -71,7 +71,6 @@ const GetShopById = async (shopId) => {
         const response = await axios.get(url, { withCredentials: true }).then((res) => {
             return res;
         });
-
         return response.data;
     } catch (error) {
         console.error(error);
@@ -84,7 +83,6 @@ const GetProductById = async (shopId, productId) => {
         const response = await axios.get(url, { withCredentials: true }).then((res) => {
             return res;
         });
-
         return response.data;
     } catch (error) {
         console.error(error);

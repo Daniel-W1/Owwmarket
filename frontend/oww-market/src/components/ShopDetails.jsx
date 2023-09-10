@@ -33,7 +33,7 @@ const ShopDetails = () => {
         setLoading(false);
       }
     })();
-  }, [params.shopId]);
+  }, []);
 
 
   if (loading) {

@@ -32,8 +32,9 @@ const productByID = async (req, res, next, id) => {
 
 const bids = async (req, res) => {
     var product = req.product
+    console.log(Array.isArray(product.bids) ? product.bids.sort((a, b) => b.bid - a.bid) : [])
     return res.json({ 
-        bids: product.bids && Array.isArray(product.bids) ? product.bids.sort((a, b) => b.bid - a.bid) : []
+        bids: Array.isArray(product.bids) ? product.bids.sort((a, b) => b.bid - a.bid) : []
      })
 }
  const read = async (req, res) => {

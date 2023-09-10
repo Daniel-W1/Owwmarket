@@ -1,24 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { GetBids } from '../hooks/helpers';
 import { Link } from 'react-router-dom';
 
 const ProductItem = ({ product, shop }) => {
-  const [productBid, setProductBid] = useState(null);
+  const [productBid, setProductBid] = useState("Calculating...");
 
   useEffect(() => {
+    let isMounted = true; // Flag to check if the component is still mounted
+  
     // Function to fetch the bid for a product
     const fetchProductBid = async (productId) => {
       try {
         const res = await GetBids(productId);
         const bid = res.bids[0].bid || product.startedprice;
-        setProductBid(bid);
+        if (isMounted) {
+          setProductBid(bid);
+        }
       } catch (error) {
         console.error('Error fetching product bid:', error);
       }
     };
+  
+    // Conditionally fetch the bid for a product if it's an auction
+    if (product.auction) {
+      fetchProductBid(product._id);
+    }
+  
+    // Cleanup function to update isMounted when the component unmounts
+    return () => {
+      isMounted = false;
+    };
+  }, [product._id, product.auction]);
+  
 
-    fetchProductBid(product._id);
-  }, [productBid]);
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-4">
