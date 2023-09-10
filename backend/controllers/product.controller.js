@@ -13,14 +13,15 @@ const defaultImage = '/public/files/default.png'
 
 const productByID = async (req, res, next, id) => {
     try {
-        const product = await Product.findById(id);
+        const product = await Product.findById(id).populate("bids.userid");
         if (!product)
             return res.status(400).json({
                 success: false,
                 error: "Product not found"
             })
-        req.originalproduct = { ...product };
+           
         req.product = product;
+
         next()
     } catch (error) {
         return res.status(400).json({
@@ -30,7 +31,14 @@ const productByID = async (req, res, next, id) => {
     }
 }
 
-const read = async (req, res) => {
+const bids = async (req, res) => {
+    var product = req.product
+    console.log(Array.isArray(product.bids) ? product.bids.sort((a, b) => b.bid - a.bid) : [])
+    return res.json({ 
+        bids: Array.isArray(product.bids) ? product.bids.sort((a, b) => b.bid - a.bid) : []
+     })
+}
+ const read = async (req, res) => {
     return res.json(req.product)
 }
 
@@ -143,7 +151,7 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
 
-    const og = _.cloneDeep(req.originalproduct);
+    const og = _.cloneDeep(req.product);
     let form = formidable();
     form.keepExtensions = true
     form.maxFileSize = 100 * 1024 * 1024;
@@ -233,8 +241,7 @@ const update = async (req, res) => {
                 return true;
             }
 
-            if (changedValues.length !== 0) {
-
+      if (Object.keys(changedValues).length > 0) {
                 const log = new Log({
                     user: req.auth._id,
                     resource: "product",
@@ -271,7 +278,7 @@ const listByShop = async (req, res) => {
     }
 
     try {
-        let products = await Product.find({ shopId: req.shop._id }).populate('shopId', '_id name').select('shopId productname productdescription slug auction updated created price location intialItemCount itemsLeft')
+        let products = await Product.find({shopId: req.shop._id}).populate('shopId', '_id name').select('shopId productname productdescription slug auction updated created price startedprice location intialItemCount itemsLeft')
         // console.log('fetched!!');
         myCache.set(shopid, products, 0.5 * 60 * 60);
 
@@ -390,4 +397,4 @@ const paginationMiddleware = (req, res, next) => {
     next();
 };
 
-export default { productByID, read, update, remove, create, list, photo, defaultPhoto, listByShop, GetFeedForUser, paginationMiddleware }
+export default { productByID, bids, read, update, remove, create, list, photo, defaultPhoto, listByShop, GetFeedForUser, paginationMiddleware }
