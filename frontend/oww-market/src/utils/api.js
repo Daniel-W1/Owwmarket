@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const getToken = () => {
-  return localStorage.getItem('token');
+  return JSON.parse(localStorage.getItem('token'));
 };
 
 const apiRequest = (url, method = 'POST', data = {}) => {

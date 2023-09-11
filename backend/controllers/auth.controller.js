@@ -10,29 +10,30 @@ const authenticateToken = (req, res, next) => {
     const token = req.header('Authorization'); // Assuming the token is sent in the Authorization header
   
     if (!token) {
-      return res.status(401).json({ message: 'No token provided.' });
+      return res.status(401).json({ success: false, message: 'No token provided.' });
     }
   
     jwt.verify(token.replace('Bearer ', ''), process.env.JWT_SECRET, (err, decodedToken) => {
       if (err) {
-        return res.status(401).json({ message: 'Invalid token.' });
+        return res.json({ success: false, message: 'Invalid token.' });
       }
       const userId = decodedToken._id;
 
       User.findById(userId)
         .then((user) => {
           if (!user) {
-            return res.status(401).json({ message: 'User not found.' });
+            return res.status(401).json({ success: false, message: 'User not found.' });
           }
           req.token = token.replace('Bearer ', '');
           req.profile = user;
           next();
         })
         .catch((error) => {
-          res.status(500).json({ message: 'Server error.' });
+          res.status(500).json({ success: false, message: 'Server error.' });
         });
     });
   };
+
 
 const verifyaccount = async (req, res) => {
   try {
@@ -56,7 +57,7 @@ const loginSuccess = (req, res) => {
   if (req.profile) {
     res.json({
       success: true,
-      message: "Successfully Logged In",
+      message: "Access token verified!",
       token: req.token,
       user: req.profile,
     });

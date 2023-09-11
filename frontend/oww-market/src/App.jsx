@@ -18,6 +18,8 @@ import Feed from "./pages/feed";
 import FeedHeader from "./components/FeedHeader";
 import ShopDetails from "./components/ShopDetails";
 import ProductPage from "./components/ProductPage";
+// Seller Dashboard
+import Page from "./pages/sellerdashboard/page";
 
 const App = () => {
   return (
@@ -90,6 +92,7 @@ const App = () => {
             <Feed />
           </>
         }/>
+        <Route path="/dashboard" element={ <Page /> } />
       </Routes>
     </BrowserRouter>
   )
