@@ -3,6 +3,8 @@ import _ from 'lodash'
 import errorHandler from '../helpers/dbhelper.js'
 import Profile from '../models/profile.schema.js'
 import transporter from '../config/nodemailer.js'
+import Subscription from '../models/subscription.schema.js'
+import Log from '../models/log.schema.js'
 
 const create = async (req, res) => {
     const { name, email, password, gmaildata } = req.body;
@@ -240,4 +242,199 @@ const isSeller = (req, res, next) => {
     next()
 }
 
-export default { create, userByID, read, list, remove, update, isSeller }
+const isSubscribed = (req, res, next) => {
+  const isSubscribed = req.profile && req.profile.isSubscribed;
+  if (!isSubscribed) {
+    return res.status(403).json({
+      success: false,
+      error: "there are no active subscriptions associated with this user.",
+    });
+  }
+  next();
+};
+const readSubscription = async (req, res) => {
+  const subs = await Subscription.findOne({ owner: req.profile._id });
+  if (!subs) {
+    return res.status(403).json({
+      success: false,
+      error: "there are no active subscriptions associated with this user.",
+    });
+  }
+  res.json({
+    success: true,
+    isSubscribed: true,
+    subscription: subs,
+  });
+};
+const createSubscription = async (req, res) => {
+  const isSubscribed = req.profile && req.profile.isSubscribed;
+  if (isSubscribed) {
+    return res.status(403).json({
+      success: false,
+      error: "already have a subscriptions associated with this user!",
+    });
+  }
+  var { planName, duration, startDate } = req.body;
+  const endDate = addDaysToDate(startDate ? startDate : new Date(), duration); // duration by days!
+
+  try {
+    const user = await User.findById(req.profile._id);
+    const subscription = new Subscription({
+      owner: user._id,
+      planName,
+      duration,
+      startDate: startDate ? startDate : new Date(),
+      endDate,
+    });
+    user.isSubscribed = true;
+    user.subscription = subscription;
+
+    await user.save();
+    await subscription.save();
+    res.json({
+      success: true,
+      subscription,
+    });
+    const log = new Log({
+      user: user._id,
+      resource: "user",
+      action: "subscriptionadd",
+      resourceid: user._id,
+      description: `Subscription added for ${user.name}`,
+      details: subscription._id,
+    });
+    await log.save();
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      error: errorHandler.getErrorMessage(error),
+    });
+  }
+
+  function addDaysToDate(date, daysToAdd) {
+    const newDate = new Date(date);
+    const daysToAddAsInt = parseInt(daysToAdd, 10);
+    if (!isNaN(daysToAddAsInt)) {
+      newDate.setDate(newDate.getDate() + daysToAddAsInt);
+    }
+    return newDate;
+  }
+};
+async function removeUserSubscription(userId) {
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return; // User not found
+    }
+
+    const removedSubscription = await Subscription.findOneAndDelete({
+      owner: userId,
+    });
+    user.isSubscribed = false;
+    user.subscription = undefined;
+
+    await user.save();
+
+    // Log the subscription end
+    const log = new Log({
+      user: userId,
+      resource: "user",
+      action: "subscriptionend",
+      resourceid: userId,
+      description: `Subscription for ${user.name} has expired`,
+      details: removedSubscription._id,
+    });
+    await log.save();
+  } catch (error) {
+    console.error("Error removing user subscription:", error);
+  }
+}
+// Original removeSubscription function
+const removeSubscription = async (req, res) => {
+  try {
+    const subs = await Subscription.findOne({ owner: req.profile._id });
+    if (!subs) {
+      return res.status(403).json({
+        success: false,
+        error: "There are no active subscriptions associated with this user.",
+      });
+    }
+
+    await removeUserSubscription(req.profile._id);
+
+    res.json({
+      success: true,
+      subscription: subs,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      error: errorHandler.getErrorMessage(error),
+    });
+  }
+};
+
+// Function to check if a subscription has expired
+function hasSubscriptionExpired(subscriptionEndDate) {
+  const currentDate = new Date();
+  return currentDate > new Date(subscriptionEndDate);
+}
+
+function formatDate(date) {
+    const options = { 
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+    };
+    return new Date(date).toLocaleDateString('en-GB', options);
+  }
+
+// Function to check and update subscription statuses
+async function checkSubscriptions() {
+  try {
+    const usersWithSubscriptions = await User.find({ isSubscribed: true });
+    const removedSubs = [];
+    for (const user of usersWithSubscriptions) {
+        const subscription = await Subscription.findOne({ owner: user._id });
+      if (hasSubscriptionExpired(subscription.endDate)) {
+        await removeUserSubscription(user._id);
+        removedSubs.push(subscription)
+      }
+    }
+        let log;
+    if(removedSubs.length >= 1) {
+         log = new Log({
+          user: "system",
+          action: "removesubscriptions",
+          description: `${
+            removedSubs.length > 1
+              ? `${removedSubs.length} subscriptions`
+              : `${removedSubs.length} subscription`
+          } has been expired!`,
+          details: { removedSubs
+          },
+        });
+
+        await log.save();
+    } 
+    const checklog = new Log({
+        user: "system",
+        action: "checksubscriptions",
+        description: `${log ? `true` : `false`} check at ${formatDate(new Date())} ${log ? `log: ${log._id}` : `without subs`}`,
+        details: log ? { removelog: log._id } : null,
+      });
+  
+      await checklog.save();
+
+    // Log the removed users
+    console.log("Subscription check completed.");
+  } catch (error) {
+    console.error("Error checking subscriptions:", error);
+  }
+}
+  
+  
+
+export default { create, userByID, read, list, remove, update, isSeller, isSubscribed, readSubscription, createSubscription, removeSubscription, checkSubscriptions }

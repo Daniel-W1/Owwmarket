@@ -30,12 +30,12 @@ const UserSchema = new mongoose.Schema(
     },
     verificationToken: {
       type: String,
-      default: ''
-  },
-  isVerified: {
+      default: "",
+    },
+    isVerified: {
       type: Boolean,
-      default: false
-  },
+      default: false,
+    },
     googleID: String,
     salt: String,
     admin: {
@@ -46,6 +46,11 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isSubscribed: {
+      type: Boolean,
+      default: false,
+    },
+    subscription: { type: mongoose.Schema.Types.ObjectId, ref: "Subscription" }, // Reference to the Subscription model
   },
   { timestamps: true }
 );

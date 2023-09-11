@@ -12,6 +12,7 @@ import profile_router from './routes/profile.routes.js';
 import product_router from './routes/product.routes.js';
 import passport from './config/passport.js';
 import transporter from './config/nodemailer.js';
+import cron from './config/subscriptions.js';
 import session from 'express-session';
 import path from 'path';
 import NodeCache from 'node-cache';

@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const logSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  user: { type: mongoose.Schema.Types.Mixed, required: true },
   resource: String, // Optional, to indicate the affected resource ("user", "product")
   action: String, //  indicate the action ("userupdated","productupdated")
   resourceid: { type: mongoose.Schema.Types.ObjectId, required: false }, // Reference to affected resource document
