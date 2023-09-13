@@ -20,6 +20,7 @@ import ShopDetails from "./components/ShopDetails";
 import ProductPage from "./components/ProductPage";
 // Seller Dashboard
 import Page from "./pages/sellerdashboard/page";
+import Payment from "./pages/Checkout";
 
 const App = () => {
   return (
@@ -93,6 +94,8 @@ const App = () => {
           </>
         }/>
         <Route path="/dashboard" element={ <Page /> } />
+        <Route path="/subscribe" element={ <Payment /> } />
+        <Route path="/subscribe/success" element={ <Payment /> } />
       </Routes>
     </BrowserRouter>
   )

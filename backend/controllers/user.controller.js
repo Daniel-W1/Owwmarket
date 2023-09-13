@@ -4,7 +4,10 @@ import errorHandler from '../helpers/dbhelper.js'
 import Profile from '../models/profile.schema.js'
 import transporter from '../config/nodemailer.js'
 import Subscription from '../models/subscription.schema.js'
+import Payment from '../models/payment.schema.js'
 import Log from '../models/log.schema.js'
+import Stripe from 'stripe';
+const stripe = Stripe('sk_test_51KGSeNAwm0p9ZmAu7G1vQ0xfZ4PdMcY5sQyO1ulZmj81JPQ4cuyo41E4xKcjrdNChFBelfo2dqYRgqcwU8KthQ6l00Px553QYw')
 
 const create = async (req, res) => {
     const { name, email, password, gmaildata } = req.body;
@@ -266,7 +269,7 @@ const readSubscription = async (req, res) => {
     subscription: subs,
   });
 };
-const createSubscription = async (req, res) => {
+const createSubscription = async (req, res, next) => {
   const isSubscribed = req.profile && req.profile.isSubscribed;
   if (isSubscribed) {
     return res.status(403).json({
@@ -275,26 +278,31 @@ const createSubscription = async (req, res) => {
     });
   }
   var { planName, duration, startDate } = req.body;
-  const endDate = addDaysToDate(startDate ? startDate : new Date(), duration); // duration by days!
+  const endDate = addDaysToDate(startDate ? startDate : new Date(), duration ? duration : req.subsdata.duration); // duration by days!
 
   try {
     const user = await User.findById(req.profile._id);
     const subscription = new Subscription({
       owner: user._id,
-      planName,
-      duration,
+      planName: planName ? planName : req.subsdata.planName,
+      duration: duration ? duration : req.subsdata.duration,
       startDate: startDate ? startDate : new Date(),
-      endDate,
+      endDate: endDate,
     });
     user.isSubscribed = true;
     user.subscription = subscription;
 
     await user.save();
     await subscription.save();
-    res.json({
-      success: true,
-      subscription,
-    });
+    
+    if(req.subsdata) {
+       res.redirect(`${process.env.CLIENT_URL}/subscribe/success`)
+    } else {    
+      res.json({
+        success: true,
+        subscription,
+      });
+    }
     const log = new Log({
       user: user._id,
       resource: "user",
@@ -434,7 +442,83 @@ async function checkSubscriptions() {
     console.error("Error checking subscriptions:", error);
   }
 }
-  
-  
 
-export default { create, userByID, read, list, remove, update, isSeller, isSubscribed, readSubscription, createSubscription, removeSubscription, checkSubscriptions }
+const SubsType = new Map([
+  [1, { priceInCents: 100, name: "Premuim" }],
+  [2, { priceInCents: 500, name: "Gold" }],
+]);
+
+const createPayment = async (req, res) => {
+  try {
+    var token =
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15);
+
+    const lineItems = req.body.items.map((item) => {
+      const Subs = SubsType.get(item.id);
+      return {
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: Subs.name,
+          },
+          unit_amount: Subs.priceInCents,
+        },
+        quantity: 1,
+      };
+    });
+
+    const amount = lineItems.reduce(
+      (total, lineItem) => total + lineItem.price_data.unit_amount,
+      0
+    );
+
+    
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      line_items: lineItems,
+      success_url: `http://localhost:3000/payment/success/${token}`,
+      cancel_url: `http://localhost:3000/payment/failed`,
+    });
+    const payment = new Payment({
+      user: req.body.userId,
+      token: token,
+      amount: amount,
+      status: 'pending',
+      details: req.body.items[0]
+    });
+    await payment.save();
+    console.log(session)
+    res.json({ url: session.url });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+};
+
+const paymentToken = async (req, res, next) => {
+  try {
+    var { token } = req.params;
+    const payment = await Payment.findOne({ token: token }).populate("user");
+    if (!payment || payment.status === "succeeded" || payment.status === "failed") return res.redirect("/payment/failed");
+    payment.status = "succeeded";
+    await payment.save();
+    req.profile = payment.user;
+    req.subsdata = {
+      planName: payment.details.name,
+      duration: 31
+    }
+    next();
+  } catch (error) {
+    console.log("err", error);
+  }
+};
+
+const paymentFailed = (req, res) => {
+  return res.json({
+    success: false,
+    message: "Payment Failed!"
+  })
+}
+
+export default { create, userByID, read, list, remove, update, isSeller, isSubscribed, readSubscription, createSubscription, removeSubscription, checkSubscriptions, createPayment, paymentToken, paymentFailed }

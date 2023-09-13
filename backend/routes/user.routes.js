@@ -10,5 +10,7 @@ router.param('userId', userCtrl.userByID);
 
 // Subscription
 router.route('/users/:userId/subscription').get(userCtrl.isSubscribed, userCtrl.readSubscription).post(userCtrl.createSubscription).delete(userCtrl.isSubscribed, userCtrl.removeSubscription)
-
+router.route('/createpayment').post(userCtrl.createPayment)
+router.route('/payment/success/:token').get(userCtrl.paymentToken, userCtrl.createSubscription)
+router.route('/payment/failed').get(userCtrl.paymentFailed)
 export default router;
