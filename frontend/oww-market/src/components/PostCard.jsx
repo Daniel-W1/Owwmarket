@@ -9,6 +9,7 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css'
 import { imagefrombuffer } from "imagefrombuffer"; //first import 
 import { GetProfileForUser, GetShopById, GetShopForUser } from '../hooks/helpers';
 import LoadingScreen from './loading';
+import { Link } from 'react-router-dom';
 
 const images = [
     profileImage,
@@ -32,6 +33,8 @@ const PostCard = ({ post }) => {
     const [profile, setprofile] = useState(null);
     const [shop, setshop] = useState(null);
 
+
+    console.log(post);
     useEffect(() => {
         (async () => {
             const response = await GetProfileForUser(post.owner)
@@ -110,9 +113,11 @@ const PostCard = ({ post }) => {
                     {post.productdescription}
                 </div>
 
-                <button className='my-2 border-none bg-primary-200 rounded-lg text-white px-2 py-1 lg:px-3 lg:py-2'>
-                    View Details
-                </button>
+                <Link to={`/shops/${post.shopId}/products/${post._id}`}>
+                    <button className='my-2 border-none bg-primary-200 rounded-lg text-white px-2 py-1 lg:px-3 lg:py-2'>
+                        View Details
+                    </button>
+                </Link>
             </div>
         </div>
     )
