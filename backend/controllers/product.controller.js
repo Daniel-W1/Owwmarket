@@ -374,6 +374,52 @@ const GetFeedForUser = async (req, res) => {
     })
 }
 
+const CreateBidForProduct = async (req, res) => {
+    const product = req.product
+    const {price, userId, productId} = req.body
+
+    const auction = await ProductAuction.findOne({productId: productId}).exec()
+    try {
+
+        auction.bids.push({
+            userid: userId,
+            bid: price
+        })
+
+        await auction.save()
+        
+        res.status(200).json({
+            success: true,
+            auction: auction
+        })
+        
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            error: errorHandler.getErrorMessage(error)
+        })
+    }
+
+}
+
+const GetAuctionForProduct = async (req, res) => {
+    const product = req.product
+    const auction = await ProductAuction.findOne({productId: product._id}).exec()
+    try {
+        res.status(200).json({
+            success: true,
+            auction: auction
+        })
+
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            error: errorHandler.getErrorMessage(error)
+        })
+    }
+}
+
+
 const paginationMiddleware = (req, res, next) => {
     const pageSize = 3;
     const pageNumber = parseInt(req.query.page) || 1;
@@ -390,4 +436,4 @@ const paginationMiddleware = (req, res, next) => {
     next();
 };
 
-export default { productByID, read, update, remove, create, list, photo, defaultPhoto, listByShop, GetFeedForUser, paginationMiddleware }
+export default { productByID, read, update, remove, create, list, photo, defaultPhoto, listByShop, GetFeedForUser, paginationMiddleware, CreateBidForProduct, GetAuctionForProduct }

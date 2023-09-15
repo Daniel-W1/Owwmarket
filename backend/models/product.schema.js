@@ -48,6 +48,7 @@ const ProductSchema = new mongoose.Schema(
 const Product = mongoose.model("Product", ProductSchema);
 
 const ProductAuctionSchema = new mongoose.Schema({
+  productId: { type: mongoose.Schema.ObjectId, ref: "Product", required: "ProductID is required" },
   startedprice: {
     type: Number,
     default: 0
@@ -59,13 +60,10 @@ const ProductAuctionSchema = new mongoose.Schema({
         type: Number,
         required: "You should give a price!"
       },
-      biddingAt: {
-        type: Date,
-        default: Date.now()
-      }
     }
   ]
-});
+}, { timestamps: true }
+);
 
 // Set up the discriminator for Google users
 const ProductAuction = Product.discriminator("ProductAuction", ProductAuctionSchema);

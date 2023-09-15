@@ -15,6 +15,8 @@ import transporter from './config/nodemailer.js';
 import session from 'express-session';
 import path from 'path';
 import NodeCache from 'node-cache';
+import http from 'http';
+import { Server } from 'socket.io';
 
 export const myCache = new NodeCache();
 
@@ -31,57 +33,80 @@ app.use(helmet(
   {
     crossOriginResourcePolicy: false,
   }
-))
+  ))
 app.use(
     cors({
       origin: "http://localhost:5173",
       methods: "GET,POST,PUT,DELETE",
       credentials: true,
     })
-  );
-app.use(
-    session({
-      secret: "SECRET", // Replace with a more secure secret
-      resave: false,
-      saveUninitialized: false,
-      cookie: { maxAge: 24 * 60 * 60 * 1000 }, // Set maxAge to 24 hours in milliseconds
-    })
-  );
-
-  
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use(express.static('public'));
-app.use("/", user_router)
-app.use("/", auth_router)
-app.use("/", shop_router)
-app.use("/profile", profile_router)
-app.use('/', product_router)
-
-app.use((err, req, res, next) => {
+    );
+    app.use(
+      session({
+        secret: "SECRET", // Replace with a more secure secret
+        resave: false,
+        saveUninitialized: false,
+        cookie: { maxAge: 24 * 60 * 60 * 1000 }, // Set maxAge to 24 hours in milliseconds
+      })
+      );
+      
+      
+      app.use(passport.initialize());
+      app.use(passport.session());
+      
+      app.use(express.static('public'));
+      app.use("/", user_router)
+      app.use("/", auth_router)
+      app.use("/", shop_router)
+      app.use("/profile", profile_router)
+      app.use('/', product_router)
+      
+      app.use((err, req, res, next) => {
     if (err.name === 'UnauthorizedError') {
-        res.status(401).json({ "error": err.name + ": " + err.message })
+      res.status(401).json({ "error": err.name + ": " + err.message })
     } else if (err) {
-        res.status(400).json({ "error": err.name + ": " + err.message })
+      res.status(400).json({ "error": err.name + ": " + err.message })
         console.log(err)
     }
-})
-
-// connect to the database
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
+  })
+  
+  // connect to the database
+  mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
     console.log('Connected to MongoDB');
-}).catch((err) => {
+  }).catch((err) => {
     console.log('Error: ' + err);
-});
-
-// create a mock routes
-app.get('/', (req, res) => {
+  });
+  
+  // create a mock routes
+  app.get('/', (req, res) => {
     res.send('Hello World!');
-});
+  });
 
-app.listen(PORT, () => {
+  const server = http.createServer(app);
+  const io = new Server(server, {
+    cors: {
+      origin: "http://localhost:5173",
+      methods: ["GET", "POST"]
+    }
+  });
+
+  io.on('connection', (socket) => {
+    console.log('a user connected');
+
+
+    socket.on('disconnect', () => {
+      console.log('user disconnected');
+      io.emit('user disconnected');
+    });
+
+    socket.on('bid', (user_bid) => {
+      io.emit('bid_received', user_bid);
+    });
+
+  });
+
+  server.listen(PORT, () => {
     console.log(`Server is running on port: ${PORT}`);
-});
-
-export default app;
+  });
+  
+  export default app;

@@ -16,6 +16,7 @@ import PostCard from "./components/PostCard";
 import FeedSidebar from "./components/FeedSidebar";
 import Feed from "./pages/feed";
 import FeedHeader from "./components/FeedHeader";
+import Auction from "./components/Auction";
 
 const App = () => {
   return (
@@ -83,6 +84,7 @@ const App = () => {
             <Feed />
           </>
         }/>
+        <Route path="/auction" element={<Auction />} />
       </Routes>
     </BrowserRouter>
   )
