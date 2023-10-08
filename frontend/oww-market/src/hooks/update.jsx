@@ -12,7 +12,7 @@ const handleUpdate = async (endPoint, selectedImage, textData) => {
 
     try {
         const res = await axios.put('http://localhost:3000'+endPoint, formData, {
-            headers: {
+            headers: {  
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${token}`
             }

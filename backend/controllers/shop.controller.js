@@ -71,11 +71,11 @@ const create = async (req, res) => {
 const shopbyId = async (req, res, next, id) => {
     try {
         let shop = await Shop.findById(id)
-        if (!shop)
+        if (!shop) {
             return res.status(400).json({
                 success: false,
                 error: "Shop not found"
-            })
+            })}
         
         req.shop = shop
         next()
@@ -191,7 +191,7 @@ const update = async (req, res) => {
               return true;
             }
       
-            if (changedValues.length !== 0) {
+            if (Object.keys(changedValues).length > 0) {
               
               const log = new Log({
                 user: req.auth._id,

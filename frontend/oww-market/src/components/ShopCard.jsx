@@ -4,7 +4,7 @@ import { imagefrombuffer } from "imagefrombuffer"; //first import
 import axios from 'axios';
 import LoadingScreen from './loading';
 import { GetProductsForShop, GetProfileForUser } from '../hooks/helpers';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 
 
@@ -51,7 +51,9 @@ const ShopCard = ({shop}) => {
         </div>  
 
         <div className='text-center mt-4 md:mt-0'>
-          <div className='font-bold text-lg lg:text-xl xl:text-2xl text-primary-500'>{shop.name}</div>
+          <Link to={`/shops/${shop._id}`}>
+          <div className='cursor-pointer font-bold text-lg lg:text-xl xl:text-2xl text-primary-500'>{shop.name}</div>
+          </Link>
           <div className='font-medium text-sm'>by {name}</div>
         </div>
       </div>

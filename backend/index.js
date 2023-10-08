@@ -99,8 +99,15 @@ app.use(
       io.emit('user disconnected');
     });
 
+    socket.on('join', (data)=>{
+      console.log('data', data);
+      socket.join(data.productId);
+    })
+
     socket.on('bid', (user_bid) => {
-      io.emit('bid_received', user_bid);
+      console.log(user_bid, 'bid');
+      
+      socket.to(user_bid.productId).emit('bid_received', user_bid);
     });
 
   });

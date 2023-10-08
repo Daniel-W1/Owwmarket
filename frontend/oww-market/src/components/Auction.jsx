@@ -15,15 +15,11 @@ const Auction = ({ StartPoint = 0 }) => {
     }, [])
 
     const handleBid = () => {
-        setBid()
+        socket.emit('bid', userBid)
     }
 
     const handleChange = (e) => {
         setUserBid(+e.target.value)
-    }
-
-    const setBid = () => {
-        socket.emit('bid', userBid)
     }
 
     const setBids = (userBid) => {

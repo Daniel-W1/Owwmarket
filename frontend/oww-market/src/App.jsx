@@ -16,6 +16,8 @@ import PostCard from "./components/PostCard";
 import FeedSidebar from "./components/FeedSidebar";
 import Feed from "./pages/feed";
 import FeedHeader from "./components/FeedHeader";
+import ShopDetails from "./components/ShopDetails";
+import ProductPage from "./components/ProductPage";
 import Auction from "./components/Auction";
 
 const App = () => {
@@ -62,7 +64,12 @@ const App = () => {
             </div>
           </div>
         } />
-        <Route path="/user/:userId/shops/:shopId" element={<ShopCard />} />
+        <Route path="/shops/:shopId" element={<ShopDetails />} />
+        <Route path="/shops/:shopId/products/:productId" element={
+          <div className="max-w-7xl mx-auto p-8">
+            <ProductPage/>
+          </div>
+      }/>
         <Route path="/user/:userId/settings" element={
           <div className="flex">
             <div className="float-left h-screen">
